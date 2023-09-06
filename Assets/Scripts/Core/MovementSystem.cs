@@ -17,6 +17,7 @@ public class MovementSystem : MonoBehaviour
 	[SerializeField] private Transform _groundCheckPoint;
 	[SerializeField] private Vector2 _groundCheckSize;
 
+
 	[Header("Assist")]
 	[SerializeField] private float _coyoteTime;	
 
@@ -60,6 +61,7 @@ public class MovementSystem : MonoBehaviour
 	private void FixedUpdate()
 	{
 		Run(1);
+		_movementVector.x = 0;
 	}
 
 	// Update is called once per frame
@@ -102,6 +104,7 @@ public class MovementSystem : MonoBehaviour
 		float movement = speedDif * accelRate;
 
 		_rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
+		_movementVector = Vector2.zero;
 	}
 
 	public void Jump()

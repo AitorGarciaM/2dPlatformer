@@ -6,21 +6,31 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(MovementSystem))]
 public class PlayerController : MonoBehaviour
 {
+
+	[Header("Attack")]
+	[SerializeField] private float _attackWaitTime;
+
+	[Header("Input")]
 	[SerializeField] private float _jumpInputBufferTime;
 
 	[Header("Visual Settings")]
 	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private Animator _animationHandler;
 	[Space(10)]
-	[SerializeField] private Transform _attackArea;
+	[SerializeField] private BoxCollider2D _attackArea;
 	
 	private Rigidbody2D _rb;
 	private MovementSystem _moveSystem;
 	private PlayerAction _input = null;
 	private Vector2 _moveInputVector = Vector2.zero; // Input vector.
 
+	[Header("Layers & Tags")]
+	[SerializeField] private LayerMask _enemiesLayer;
+
 	public float LastPressedJumpTime { get; private set; }
 
+
+	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
 	private bool _jump;
 	private bool _isJumpCut;
@@ -81,10 +91,7 @@ public class PlayerController : MonoBehaviour
 
 	public void OnAttackStarted(InputAction.CallbackContext context)
 	{
-		_stopMovement = true;
-		_timeToEndAttack = 0;
-		_animationHandler.SetTrigger("Attack");
-		_attackArea.gameObject.SetActive(true);
+		OnAttackInputOn();
 	}
 
 	#endregion
@@ -105,10 +112,27 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	private void OnAttackInputOn()
+	{
+		//_stopMovement = true;
+		_currentAttackWaitTime = 0;
+		_timeToEndAttack = 0;
+		_animationHandler.SetTrigger("Attack");
+		_attackArea.gameObject.SetActive(true);
+
+		Collider2D collider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _enemiesLayer);
+
+		if (collider != null)
+		{
+			collider.GetComponent<SkeletoneController>().Hit();
+		}
+	}
+
 	private void Update()
 	{
 		LastPressedJumpTime -= Time.deltaTime;
 		_timeToEndAttack += Time.deltaTime;
+		_currentAttackWaitTime += Time.deltaTime;
 
 		if (_moveSystem.IsGrounded)
 		{
@@ -118,18 +142,19 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 
-		if (_moveInputVector.x > 0)
+		if (_currentAttackWaitTime > _attackWaitTime)
 		{
-			_isFacingLeft = false;
+			if (_moveInputVector.x > 0)
+			{
+				_isFacingLeft = false;
+			}
+			else if (_moveInputVector.x < 0)
+			{
+				_isFacingLeft = true;
+			}
 		}
-		else if (_moveInputVector.x < 0)
-		{
-			_isFacingLeft = true;
-		}
-
-
-
-		if (_moveSystem.CanJump() && LastPressedJumpTime > 0)
+		
+		if (_moveSystem.CanJump() && LastPressedJumpTime > 0 && _currentAttackWaitTime > _attackWaitTime)
 		{
 			_isJumpCut = false;
 			LastPressedJumpTime = 0;
@@ -147,12 +172,12 @@ public class PlayerController : MonoBehaviour
 			_attackArea.gameObject.SetActive(false);
 		}
 
-		StartMovement(new string[] { "Attack", "Combo", "TakeDamage" });
+		//StartMovement(new string[] { "Attack", "Combo", "TakeDamage" });
 
 		if (_isFacingLeft)
-			_attackArea.localPosition = new Vector2(-0.14f, _attackArea.localPosition.y);
+			_attackArea.transform.localPosition = new Vector2(-0.14f, _attackArea.transform.localPosition.y);
 		else
-			_attackArea.localPosition = new Vector2(0.14f, _attackArea.localPosition.y);
+			_attackArea.transform.localPosition = new Vector2(0.14f, _attackArea.transform.localPosition.y);
 
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
 		_animationHandler.SetFloat("Velocity_Y", _rb.velocity.y);
@@ -161,8 +186,10 @@ public class PlayerController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (!_stopMovement)
+		if (_currentAttackWaitTime > _attackWaitTime)
 			_moveSystem.SetDesiredDirection(_moveInputVector);
+		else
+			_moveSystem.SetDesiredDirection(Vector2.zero);
 	}
 
 	private bool CanJumpCut()
@@ -194,11 +221,10 @@ public class PlayerController : MonoBehaviour
 			{
 				AnimatorStateInfo animatorStateInfo = _animationHandler.GetCurrentAnimatorStateInfo(0);
 
-				Debug.Log(animatorClipInfo[0].clip.name + "  " + animatorStateInfo.normalizedTime);
-
-				if (animatorStateInfo.normalizedTime >= 0.99f)
+				if (animatorStateInfo.normalizedTime > 1)
 				{
 					_stopMovement = false;
+					Debug.Log("Movement Stoped");
 					return;
 				}
 			}
