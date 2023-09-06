@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private LayerMask _enemiesLayer;
 
 	public float LastPressedJumpTime { get; private set; }
-
+	public float MovementSpeed { get { return _rb.velocity.x; } }
 
 	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
