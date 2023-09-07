@@ -182,6 +182,7 @@ public class PlayerController : MonoBehaviour
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
 		_animationHandler.SetFloat("Velocity_Y", _rb.velocity.y);
 		_animationHandler.SetFloat("Time_to_end_Attack", _timeToEndAttack);
+		_animationHandler.SetBool("IsGrounded", _moveSystem.IsGrounded);
 	}
 
 	private void FixedUpdate()
