@@ -13,29 +13,38 @@ public class SkeletoneController : MonoBehaviour
 		Dead
 	}
 
+	[Header("Stats")]
+	[SerializeField] private Stats _stats;
+
+	[Header("States")]
+	[Space(5)]
+
 	[Header("Patroll")]
-	[SerializeField] private List<Vector2> _patrollPoints = new List<Vector2>();
 	[SerializeField] private float _playerDetectionRadiurs;
+	[SerializeField] private float _patrollWaitTime;
+	[SerializeField] private List<Vector2> _patrollPoints = new List<Vector2>();
 
 	[Header("Attack")]
-	
+	[SerializeField] private BoxCollider2D _attackArea;
 	[SerializeField] private float _attackRange;
 
-	[Header("Timers")]
-	[SerializeField] private float _attackWaitTime = 1f;
-	[SerializeField] private float _patrollWaitTime;
+	[Header("Hit")]	
 	[SerializeField] private float _hitWaitTime;
 	[SerializeField] private float _hitDelayTime;
 	
+	[Space(5)]
 
 	[Header("Visual")]
 	[SerializeField] private SpriteRenderer _spRenderer;
 	[SerializeField] private Animator _animationHandler;
 
+	[Space(5)]
+
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _playerLayerMask;
 
 	private Rigidbody2D _rb;
+	private CircleCollider2D _collider2d;
 	private MovementSystem _moveSystem;
 	private Transform _target;
 
@@ -54,18 +63,26 @@ public class SkeletoneController : MonoBehaviour
 	private bool _isAttacking = false;
 	private bool _reciveHit = false;
 
-	public void Hit()
+	public void Hit(Stats stats)
 	{
-		
+		_stats.GetDamage(stats);
+		_reciveHit = true;
 		_currentHitWaitTime = 0;
 		_currentHitDelayTime = _hitDelayTime;
-		_reciveHit = true;
-		_state = State.Follow;
+		if(_stats.CurrentHealth > 0)
+		{
+			_state = State.Follow;
+		}
+		else
+		{
+			_state = State.Dead;
+		}
 	}
 
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();
+		_collider2d = GetComponent<CircleCollider2D>();
 		_moveSystem = GetComponent<MovementSystem>();
 
 		_currentPatrollPoint = 0;
@@ -83,6 +100,8 @@ public class SkeletoneController : MonoBehaviour
 		_state = State.Patroll;
 
 		_currentHitDelayTime = _hitDelayTime;
+
+		_stats.Init();
 	}
 
 	// Start is called before the first frame update
@@ -104,7 +123,7 @@ public class SkeletoneController : MonoBehaviour
 
 		if(_currentHitWaitTime < _hitWaitTime)
 		{
-			_currentAttackWaitTime = _attackWaitTime;
+			_currentAttackWaitTime = _stats.AttackRate;
 		}
 
 		Collider2D collider = Physics2D.OverlapCircle(_rb.position, _playerDetectionRadiurs, _playerLayerMask);
@@ -145,14 +164,19 @@ public class SkeletoneController : MonoBehaviour
 					_state = State.Follow;
 				}
 
-				if (_currentAttackWaitTime >= _attackWaitTime)
+				Collider2D playercollider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _playerLayerMask);
+
+				if (playercollider != null)
 				{
-					
-					_animationHandler.SetTrigger("Attack");
-					_currentAttackWaitTime = 0;
+					playercollider.GetComponent<PlayerController>().Hit(_stats);
 				}
+
+				_animationHandler.SetTrigger("Attack");
+				_currentAttackWaitTime = 0;
+				
 				break;
 			case State.Dead:
+				// Do Nothign.
 				break;
 			default:
 				break;
@@ -212,9 +236,19 @@ public class SkeletoneController : MonoBehaviour
 
 		if (_currentHitDelayTime <= 0)
 		{
-			_animationHandler.SetTrigger("Hit");
-			_currentHitDelayTime = _hitDelayTime;
-			_reciveHit = false;
+			if (_stats.CurrentHealth > 0)
+			{
+				_animationHandler.SetTrigger("Hit");
+				_currentHitDelayTime = _hitDelayTime;
+				_reciveHit = false;
+			}
+			else
+			{
+				_animationHandler.SetBool("IsDead", true);
+				_rb.bodyType = RigidbodyType2D.Static;
+				_collider2d.enabled = false;
+				_state = State.Dead;
+			}
 		}
 
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));

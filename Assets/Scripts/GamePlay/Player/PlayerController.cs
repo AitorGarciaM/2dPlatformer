@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(MovementSystem))]
 public class PlayerController : MonoBehaviour
 {
 
-	[Header("Attack")]
-	[SerializeField] private float _attackWaitTime;
+	[Header("Stats")]
+	[SerializeField] private Stats _stats;
+
+	[Header("Timers")]
+	[SerializeField] private float _hitWaitTime;
 
 	[Header("Input")]
 	[SerializeField] private float _jumpInputBufferTime;
@@ -18,6 +22,9 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private Animator _animationHandler;
 	[Space(10)]
 	[SerializeField] private BoxCollider2D _attackArea;
+
+	[Header("HUD")]
+	[SerializeField] Slider _healthBar;
 	
 	private Rigidbody2D _rb;
 	private MovementSystem _moveSystem;
@@ -32,10 +39,30 @@ public class PlayerController : MonoBehaviour
 
 	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
+	private float _currentHitWaitTime;
+
 	private bool _jump;
 	private bool _isJumpCut;
 	private bool _isFacingLeft;
 	private bool _stopMovement;
+	private bool _attackIsPerforming = false;
+	private bool _deactiveMovement;
+
+	public void Hit(Stats stats)
+	{
+		if (_currentHitWaitTime < _hitWaitTime)
+			return;
+
+		_currentHitWaitTime = 0;
+		_deactiveMovement = true;
+		_animationHandler.SetTrigger("TakeDamage");
+		_stats.GetDamage(stats);
+
+		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
+
+		if (_stats.CurrentHealth <= 0)
+			_animationHandler.SetBool("Death", true);
+	}
 
 	private void Awake()
 	{
@@ -45,6 +72,7 @@ public class PlayerController : MonoBehaviour
 
 		_isFacingLeft = false;
 		_attackArea.gameObject.SetActive(false);
+		_stats.Init();
 	}
 
 	private void OnEnable()
@@ -55,6 +83,7 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Jump.started += OnJumpStarted;
 		_input.Player.Jump.canceled += OnJumpCanceled;
 		_input.Player.Attack.started += OnAttackStarted;
+		_input.Player.Attack.canceled += OnAttackCanceled;
 	}
 
 	private void OnDisable()
@@ -65,6 +94,7 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Jump.started -= OnJumpStarted;
 		_input.Player.Jump.canceled -= OnJumpCanceled;
 		_input.Player.Attack.started -= OnAttackStarted;
+		_input.Player.Attack.canceled -= OnAttackCanceled;
 	}
 
 	#region Input
@@ -94,17 +124,22 @@ public class PlayerController : MonoBehaviour
 		OnAttackInputOn();
 	}
 
+	public void OnAttackCanceled(InputAction.CallbackContext context)
+	{
+		_attackIsPerforming = false;
+	}
+
 	#endregion
 
 	// Jump performed;
-	public void OnJumpingInput()
+	private void OnJumpingInput()
 	{
 		LastPressedJumpTime = _jumpInputBufferTime;
 		_animationHandler.SetTrigger("Jump");
 	}
 
 	// Jump jumpCanceled.
-	public void OnJumpingUpInput()
+	private void OnJumpingUpInput()
 	{
 		if (CanJumpCut())
 		{
@@ -114,7 +149,6 @@ public class PlayerController : MonoBehaviour
 
 	private void OnAttackInputOn()
 	{
-		//_stopMovement = true;
 		_currentAttackWaitTime = 0;
 		_timeToEndAttack = 0;
 		_animationHandler.SetTrigger("Attack");
@@ -122,27 +156,35 @@ public class PlayerController : MonoBehaviour
 
 		Collider2D collider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _enemiesLayer);
 
-		if (collider != null)
+		if (collider != null && !_attackIsPerforming)
 		{
-			collider.GetComponent<SkeletoneController>().Hit();
+			collider.GetComponent<SkeletoneController>().Hit(_stats);
 		}
+
+		_attackIsPerforming = true;
 	}
 
 	private void Update()
 	{
+		if (_stats.CurrentHealth <= 0)
+			return;
+
 		LastPressedJumpTime -= Time.deltaTime;
 		_timeToEndAttack += Time.deltaTime;
 		_currentAttackWaitTime += Time.deltaTime;
+		_currentHitWaitTime += Time.deltaTime;
 
-		if (_moveSystem.IsGrounded)
+		if(_currentHitWaitTime > _hitWaitTime * 0.5f)
 		{
-			if (_moveSystem.LastOnGroundTime < -0.1f)
-			{
-				// Land animation.
-			}
+			_deactiveMovement = false;
+		}
+			
+		if(_deactiveMovement)
+		{
+			return;
 		}
 
-		if (_currentAttackWaitTime > _attackWaitTime)
+		if (_currentAttackWaitTime > _stats.AttackRate)
 		{
 			if (_moveInputVector.x > 0)
 			{
@@ -154,7 +196,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		
-		if (_moveSystem.CanJump() && LastPressedJumpTime > 0 && _currentAttackWaitTime > _attackWaitTime)
+		if (_moveSystem.CanJump() && LastPressedJumpTime > 0 && _currentAttackWaitTime > _stats.AttackRate)
 		{
 			_isJumpCut = false;
 			LastPressedJumpTime = 0;
@@ -167,13 +209,15 @@ public class PlayerController : MonoBehaviour
 		_spriteRenderer.flipX = _isFacingLeft;
 		int attackFrame = GetCurrentFrame("Attack");
 
-		if (attackFrame == 4)
+		if(attackFrame == 3)
+		{
+			_attackArea.gameObject.SetActive(true);
+		}
+		else if (attackFrame == 4)
 		{
 			_attackArea.gameObject.SetActive(false);
 		}
-
-		//StartMovement(new string[] { "Attack", "Combo", "TakeDamage" });
-
+		
 		if (_isFacingLeft)
 			_attackArea.transform.localPosition = new Vector2(-0.14f, _attackArea.transform.localPosition.y);
 		else
@@ -187,7 +231,10 @@ public class PlayerController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (_currentAttackWaitTime > _attackWaitTime)
+		if (_stats.CurrentHealth <= 0 || _deactiveMovement)
+			return;
+
+		if (_currentAttackWaitTime > _stats.AttackRate)
 			_moveSystem.SetDesiredDirection(_moveInputVector);
 		else
 			_moveSystem.SetDesiredDirection(Vector2.zero);
