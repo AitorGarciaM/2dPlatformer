@@ -7,39 +7,41 @@ using UnityEngine.UI;
 [RequireComponent(typeof(MovementSystem))]
 public class PlayerController : MonoBehaviour
 {
-
 	[Header("Stats")]
 	[SerializeField] private Stats _stats;
 
 	[Header("Timers")]
 	[SerializeField] private float _hitWaitTime;
+	[SerializeField] private float _deactivateMovementTime;
 
 	[Header("Input")]
 	[SerializeField] private float _jumpInputBufferTime;
 
 	[Header("Visual Settings")]
 	[SerializeField] private SpriteRenderer _spriteRenderer;
-	[SerializeField] private Animator _animationHandler;
+	[SerializeField] private PlayerAnimationHandler _animationHandler;
 	[Space(10)]
 	[SerializeField] private BoxCollider2D _attackArea;
 
 	[Header("HUD")]
 	[SerializeField] Slider _healthBar;
 	
+	[Header("Layers & Tags")]
+	[SerializeField] private LayerMask _enemiesLayer;
+
 	private Rigidbody2D _rb;
 	private MovementSystem _moveSystem;
 	private PlayerAction _input = null;
 	private Vector2 _moveInputVector = Vector2.zero; // Input vector.
-
-	[Header("Layers & Tags")]
-	[SerializeField] private LayerMask _enemiesLayer;
+	private Vector2 _moveCamreraVector;
 
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
 
 	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
-	private float _currentHitWaitTime;
+	private float _currentHitWaitTime = 1;
+	private float _currentMovementDeacitvatedTime;
 
 	private bool _jump;
 	private bool _isJumpCut;
@@ -54,14 +56,20 @@ public class PlayerController : MonoBehaviour
 			return;
 
 		_currentHitWaitTime = 0;
+		_currentMovementDeacitvatedTime = 0;
 		_deactiveMovement = true;
-		_animationHandler.SetTrigger("TakeDamage");
+		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
 
 		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
 
 		if (_stats.CurrentHealth <= 0)
 			_animationHandler.SetBool("Death", true);
+	}
+
+	public void Push(Vector2 direction, float force)
+	{
+		_rb.AddForce(direction * force, ForceMode2D.Impulse);
 	}
 
 	private void Awake()
@@ -84,6 +92,8 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Jump.canceled += OnJumpCanceled;
 		_input.Player.Attack.started += OnAttackStarted;
 		_input.Player.Attack.canceled += OnAttackCanceled;
+		_input.Player.Camera.performed += OnMoveCameraPerformed;
+		_input.Player.Camera.canceled += OnMoveCameraCancelled;
 	}
 
 	private void OnDisable()
@@ -95,6 +105,8 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Jump.canceled -= OnJumpCanceled;
 		_input.Player.Attack.started -= OnAttackStarted;
 		_input.Player.Attack.canceled -= OnAttackCanceled;
+		_input.Player.Camera.performed -= OnMoveCameraPerformed;
+		_input.Player.Camera.canceled -= OnMoveCameraCancelled;
 	}
 
 	#region Input
@@ -107,6 +119,16 @@ public class PlayerController : MonoBehaviour
 	private void OnMovementCancelled(InputAction.CallbackContext value)
 	{
 		_moveInputVector = Vector2.zero;
+	}
+
+	private void OnMoveCameraPerformed(InputAction.CallbackContext context)
+	{
+		_moveCamreraVector = context.ReadValue<Vector2>();
+	}
+
+	private void OnMoveCameraCancelled(InputAction.CallbackContext context)
+	{
+		_moveCamreraVector = Vector2.zero;
 	}
 
 	private void OnJumpStarted(InputAction.CallbackContext context)
@@ -131,6 +153,7 @@ public class PlayerController : MonoBehaviour
 
 	#endregion
 
+	
 	// Jump performed;
 	private void OnJumpingInput()
 	{
@@ -149,6 +172,9 @@ public class PlayerController : MonoBehaviour
 
 	private void OnAttackInputOn()
 	{
+		if (_deactiveMovement)
+			return;
+
 		_currentAttackWaitTime = 0;
 		_timeToEndAttack = 0;
 		_animationHandler.SetTrigger("Attack");
@@ -158,7 +184,15 @@ public class PlayerController : MonoBehaviour
 
 		if (collider != null && !_attackIsPerforming)
 		{
-			collider.GetComponent<SkeletoneController>().Hit(_stats);
+			var skeletonController = collider.GetComponent<SkeletoneController>();
+			if (skeletonController != null)
+			{
+				skeletonController.Hit(_stats);
+			}
+			else
+			{
+				collider.GetComponent<BossController>().Hit(_stats);
+			}
 		}
 
 		_attackIsPerforming = true;
@@ -167,22 +201,24 @@ public class PlayerController : MonoBehaviour
 	private void Update()
 	{
 		if (_stats.CurrentHealth <= 0)
+		{
 			return;
+		}
+
+		if (_deactiveMovement)
+		{
+			_currentMovementDeacitvatedTime += Time.deltaTime;
+
+			if (_currentMovementDeacitvatedTime >= _deactivateMovementTime)
+			{
+				_deactiveMovement = false;
+			}
+		}
 
 		LastPressedJumpTime -= Time.deltaTime;
 		_timeToEndAttack += Time.deltaTime;
 		_currentAttackWaitTime += Time.deltaTime;
 		_currentHitWaitTime += Time.deltaTime;
-
-		if(_currentHitWaitTime > _hitWaitTime * 0.5f)
-		{
-			_deactiveMovement = false;
-		}
-			
-		if(_deactiveMovement)
-		{
-			return;
-		}
 
 		if (_currentAttackWaitTime > _stats.AttackRate)
 		{
@@ -207,75 +243,43 @@ public class PlayerController : MonoBehaviour
 	private void LateUpdate()
 	{
 		_spriteRenderer.flipX = _isFacingLeft;
-		int attackFrame = GetCurrentFrame("Attack");
 
-		if(attackFrame == 3)
-		{
-			_attackArea.gameObject.SetActive(true);
-		}
-		else if (attackFrame == 4)
-		{
-			_attackArea.gameObject.SetActive(false);
-		}
-		
+		_attackArea.gameObject.SetActive(_animationHandler.IsAttackActive);
+
 		if (_isFacingLeft)
+		{
 			_attackArea.transform.localPosition = new Vector2(-0.14f, _attackArea.transform.localPosition.y);
+		}
 		else
+		{
 			_attackArea.transform.localPosition = new Vector2(0.14f, _attackArea.transform.localPosition.y);
+		}
 
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
 		_animationHandler.SetFloat("Velocity_Y", _rb.velocity.y);
 		_animationHandler.SetFloat("Time_to_end_Attack", _timeToEndAttack);
-		_animationHandler.SetBool("IsGrounded", _moveSystem.IsGrounded);
+		_animationHandler.SetBool("Is_Grounded", _moveSystem.IsGrounded);
 	}
 
 	private void FixedUpdate()
 	{
 		if (_stats.CurrentHealth <= 0 || _deactiveMovement)
+		{
 			return;
+		}
 
 		if (_currentAttackWaitTime > _stats.AttackRate)
+		{
 			_moveSystem.SetDesiredDirection(_moveInputVector);
+		}
 		else
+		{
 			_moveSystem.SetDesiredDirection(Vector2.zero);
+		}
 	}
 
 	private bool CanJumpCut()
 	{
 		return _moveSystem.IsJumping && _rb.velocity.y > 0;
-	}
-
-	private int GetCurrentFrame(string animationName)
-	{
-		AnimatorClipInfo[] animationClip = _animationHandler.GetCurrentAnimatorClipInfo(0);
-
-		int frame = 0;
-
-		if (animationClip[0].clip.name == animationName)
-		{
-			frame = (int)(animationClip[0].weight * (animationClip[0].clip.length * animationClip[0].clip.frameRate));
-		}
-
-		return frame;
-	}
-
-	private void StartMovement(string[] animations)
-	{
-		AnimatorClipInfo[] animatorClipInfo = _animationHandler.GetCurrentAnimatorClipInfo(0);
-
-		foreach (string animation in animations)
-		{
-			if (animatorClipInfo[0].clip.name == animation)
-			{
-				AnimatorStateInfo animatorStateInfo = _animationHandler.GetCurrentAnimatorStateInfo(0);
-
-				if (animatorStateInfo.normalizedTime > 1)
-				{
-					_stopMovement = false;
-					Debug.Log("Movement Stoped");
-					return;
-				}
-			}
-		}
 	}
 }

@@ -3,7 +3,7 @@ guid: 001be1ebe9830ac499a8c01473ccf3ae
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -20,12 +20,11 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
-    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMipmapLimit: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -64,12 +63,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
-  swizzle: 50462976
-  cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 8192
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -77,7 +74,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -90,7 +86,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -103,7 +98,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -435,23 +429,24 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      demon_slime_FREE_v1.0_2_288x160_spritesheet_0: -918962465
+      demon_slime_FREE_v1.0_2_288x160_spritesheet_5: -759946947
+      demon_slime_FREE_v1.0_2_288x160_spritesheet_2: -14358622
       demon_slime_FREE_v1.0_2_288x160_spritesheet_1: 1766568345
-      demon_slime_FREE_v1.0_2_288x160_spritesheet_10: -1418339545
+      demon_slime_FREE_v1.0_2_288x160_spritesheet_3: 1787387292
       demon_slime_FREE_v1.0_2_288x160_spritesheet_11: 707354542
       demon_slime_FREE_v1.0_2_288x160_spritesheet_12: -1137330598
-      demon_slime_FREE_v1.0_2_288x160_spritesheet_13: 1345000857
       demon_slime_FREE_v1.0_2_288x160_spritesheet_14: 1730101008
-      demon_slime_FREE_v1.0_2_288x160_spritesheet_2: -14358622
-      demon_slime_FREE_v1.0_2_288x160_spritesheet_3: 1787387292
       demon_slime_FREE_v1.0_2_288x160_spritesheet_4: -1548730406
-      demon_slime_FREE_v1.0_2_288x160_spritesheet_5: -759946947
-      demon_slime_FREE_v1.0_2_288x160_spritesheet_6: 381634666
       demon_slime_FREE_v1.0_2_288x160_spritesheet_7: -1125982926
       demon_slime_FREE_v1.0_2_288x160_spritesheet_8: 281485815
       demon_slime_FREE_v1.0_2_288x160_spritesheet_9: -1266502047
-  mipmapLimitGroupName: 
+      demon_slime_FREE_v1.0_2_288x160_spritesheet_0: -918962465
+      demon_slime_FREE_v1.0_2_288x160_spritesheet_6: 381634666
+      demon_slime_FREE_v1.0_2_288x160_spritesheet_13: 1345000857
+      demon_slime_FREE_v1.0_2_288x160_spritesheet_10: -1418339545
+  spritePackingTag: 
   pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

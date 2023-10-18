@@ -14,10 +14,10 @@ TagManager:
   - UI
   - Player
   - Enemy
-  - 
-  - 
-  - 
-  - 
+  - PostProcessing
+  - Doors
+  - Walls
+  - BossWall
   - 
   - 
   - 
@@ -39,14 +39,29 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
+  - name: Sky
+    uniqueID: 3352979235
     locked: 0
   - name: Background
     uniqueID: 2521882413
     locked: 0
+  - name: Background 2
+    uniqueID: 3757458309
+    locked: 0
+  - name: Background3
+    uniqueID: 1315941735
+    locked: 0
   - name: Level
     uniqueID: 2319289413
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Enitites
+    uniqueID: 3586960263
+    locked: 0
+  - name: FireFlame
+    uniqueID: 2540093293
     locked: 0
   - name: Platforms
     uniqueID: 2652538991

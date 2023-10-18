@@ -40,4 +40,9 @@ public class Stats : ScriptableObject
 
 		_currentHealth -= damage;
 	}
+
+	public void GetDamage(float damage)
+	{
+		_currentHealth -= damage;
+	}
 }
