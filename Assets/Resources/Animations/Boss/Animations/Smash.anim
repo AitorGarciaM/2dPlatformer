@@ -115,6 +115,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0.46666667
+    functionName: StartInvincibility
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.6
     functionName: SmashStart
     data: 
@@ -124,6 +131,13 @@ AnimationClip:
     messageOptions: 0
   - time: 0.73333335
     functionName: SmashEnds
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.73333335
+    functionName: EndInvincibility
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

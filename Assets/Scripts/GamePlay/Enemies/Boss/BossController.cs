@@ -34,6 +34,7 @@ public class BossController : MonoBehaviour
 	[SerializeField] private MovementSystem _moveSystem;
 
 	[Header("Physics")]
+	[SerializeField] private CircleCollider2D _selfCollider;
 	[SerializeField] private CapsuleCollider2D _flameCollider;
 	[SerializeField] private BoxCollider2D _knifeCollider;
 	[SerializeField] private BoxCollider2D _jumpCollider;
@@ -68,17 +69,18 @@ public class BossController : MonoBehaviour
 	private bool _performingJump;
 	private bool _startingBattle;
 	private bool _attackEnds;
-	private bool _invincibility;
 	private bool _flamesHitPlayer;
+
+	public bool IsDead { get { return _stats.CurrentHealth < 0; } }
 
 	public void Hit(Stats stats)
 	{
-		if (_currentHitWaitTime < _hitWaitTime || _invincibility)
+		if (_currentHitWaitTime < _hitWaitTime || _animationHandler.IsInvincible)
 		{
-			Debug.Log("Astaroth is invincible");
 			return;
 		}
 
+		CameraShaker.Instance.ShakeCamera(0.025f);
 		_currentHitWaitTime = 0;
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
@@ -128,7 +130,6 @@ public class BossController : MonoBehaviour
 			else
 			{
 				_animationHandler.SetTrigger("Flame_Attack_Ends");
-				_invincibility = false;
 				_currentFlameAttackTime = 0;
 			}
 		}
@@ -157,6 +158,8 @@ public class BossController : MonoBehaviour
 				_player.Hit(_stats);
 				_player.Push(dir, _knockBack);
 			}
+
+			CameraShaker.Instance.ShakeCamera(0.1f);
 		}
 
 		Move();
@@ -191,13 +194,16 @@ public class BossController : MonoBehaviour
 	{
 		float playerDir = Mathf.Sign(_player.transform.position.x - transform.position.x);
 
-		if(playerDir > 0)
+		if (!_animationHandler.IsThtowingFlame)
 		{
-			_spRenderer.flipX = true;
-		}
-		else
-		{
-			_spRenderer.flipX = false;
+			if (playerDir > 0)
+			{
+				_spRenderer.flipX = true;
+			}
+			else
+			{
+				_spRenderer.flipX = false;
+			}
 		}
 		
 		if(_animationHandler.IsThtowingFlame)
@@ -209,6 +215,9 @@ public class BossController : MonoBehaviour
 			_fireFlames.SetActive(false);
 		}
 
+		_jumpCollider.enabled = _animationHandler.IsLanding;
+		_knifeCollider.enabled = _animationHandler.IsSmashing;
+		
 		_animationHandler.SetBool("Is_Grounded", _moveSystem.IsGrounded);
 		_animationHandler.SetFloat("Velocity_y", _rb.velocity.y);
 	}
@@ -224,7 +233,6 @@ public class BossController : MonoBehaviour
 		{
 			Jump();
 			_currentInitBattleTime = 0;
-			//_animationHandler.SetTrigger("Jump_Attack");
 		}
 		
 		if(_performingJump)
@@ -263,7 +271,7 @@ public class BossController : MonoBehaviour
 		if(AttackCoolDown())
 		{
 			float wallRightDistance = Mathf.Abs(transform.position.x - _wallRightCollider.transform.position.x);
-			float wallLeftDistance = Mathf.Abs(transform.position.x - _wallRightCollider.transform.position.x);
+			float wallLeftDistance = Mathf.Abs(transform.position.x - _wallLeftCollider.transform.position.x);
 
 			float playerDistance = Mathf.Abs(transform.position.x - _player.transform.position.x);
 			
@@ -279,7 +287,19 @@ public class BossController : MonoBehaviour
 			}
 			else if (playerDistance < _fireFlameMinRange)
 			{
-				_direction = Mathf.Sign(_player.transform.position.x - transform.position.x);
+				if (wallRightDistance < _samshMaxRange)
+				{
+					_direction = 1;
+				}
+				else if (wallLeftDistance < _samshMaxRange)
+				{
+					_direction = -1;
+				}
+				else
+				{
+					_direction = Mathf.Sign(_player.transform.position.x - transform.position.x) * -1;
+				}
+					
 				Jump();
 			}
 			else
@@ -299,6 +319,8 @@ public class BossController : MonoBehaviour
 		{
 			_animationHandler.SetTrigger("Is_Death");
 			this.enabled = false;
+			_rb.bodyType = RigidbodyType2D.Static;
+			_selfCollider.enabled = false;
 		}
 	}
 
@@ -314,9 +336,7 @@ public class BossController : MonoBehaviour
 	private void ThrowingFlame()
 	{
 		_animationHandler.SetTrigger("Flame_Attack");
-
-		_invincibility = true;
-
+		
 		if(_spRenderer.flipX)
 		{
 			_fireFlames.transform.rotation = Quaternion.Euler(0, 0, 140f);
@@ -357,11 +377,6 @@ public class BossController : MonoBehaviour
 		if (_animationHandler.IsAttackEnding)
 		{
 			_wiatTime += Time.deltaTime;
-
-			//if (_invincibility)
-			//{
-			//	_invincibility = false;
-			//}
 		}
 		else
 		{

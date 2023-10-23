@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
 
 	[Header("Timers")]
 	[SerializeField] private float _hitWaitTime;
-	[SerializeField] private float _deactivateMovementTime;
 
 	[Header("Input")]
 	[SerializeField] private float _jumpInputBufferTime;
@@ -35,20 +34,19 @@ public class PlayerController : MonoBehaviour
 	private Vector2 _moveInputVector = Vector2.zero; // Input vector.
 	private Vector2 _moveCamreraVector;
 
-	public float LastPressedJumpTime { get; private set; }
-	public float MovementSpeed { get { return _rb.velocity.x; } }
-
 	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
 	private float _currentHitWaitTime = 1;
-	private float _currentMovementDeacitvatedTime;
 
 	private bool _jump;
 	private bool _isJumpCut;
 	private bool _isFacingLeft;
 	private bool _stopMovement;
 	private bool _attackIsPerforming = false;
-	private bool _deactiveMovement;
+
+	public float LastPressedJumpTime { get; private set; }
+	public float MovementSpeed { get { return _rb.velocity.x; } }
+	public bool IsDead { get { return _stats.CurrentHealth < 0; } }
 
 	public void Hit(Stats stats)
 	{
@@ -56,8 +54,8 @@ public class PlayerController : MonoBehaviour
 			return;
 
 		_currentHitWaitTime = 0;
-		_currentMovementDeacitvatedTime = 0;
-		_deactiveMovement = true;
+		CameraShaker.Instance.ShakeCamera(0.025f);
+		StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
 
@@ -70,6 +68,11 @@ public class PlayerController : MonoBehaviour
 	public void Push(Vector2 direction, float force)
 	{
 		_rb.AddForce(direction * force, ForceMode2D.Impulse);
+	}
+
+	public void PauseControll(float time)
+	{
+		StartCoroutine(PauseInput(time));
 	}
 
 	private void Awake()
@@ -172,28 +175,9 @@ public class PlayerController : MonoBehaviour
 
 	private void OnAttackInputOn()
 	{
-		if (_deactiveMovement)
-			return;
-
 		_currentAttackWaitTime = 0;
 		_timeToEndAttack = 0;
 		_animationHandler.SetTrigger("Attack");
-		_attackArea.gameObject.SetActive(true);
-
-		Collider2D collider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _enemiesLayer);
-
-		if (collider != null && !_attackIsPerforming)
-		{
-			var skeletonController = collider.GetComponent<SkeletoneController>();
-			if (skeletonController != null)
-			{
-				skeletonController.Hit(_stats);
-			}
-			else
-			{
-				collider.GetComponent<BossController>().Hit(_stats);
-			}
-		}
 
 		_attackIsPerforming = true;
 	}
@@ -203,16 +187,6 @@ public class PlayerController : MonoBehaviour
 		if (_stats.CurrentHealth <= 0)
 		{
 			return;
-		}
-
-		if (_deactiveMovement)
-		{
-			_currentMovementDeacitvatedTime += Time.deltaTime;
-
-			if (_currentMovementDeacitvatedTime >= _deactivateMovementTime)
-			{
-				_deactiveMovement = false;
-			}
 		}
 
 		LastPressedJumpTime -= Time.deltaTime;
@@ -263,11 +237,21 @@ public class PlayerController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (_stats.CurrentHealth <= 0 || _deactiveMovement)
-		{
-			return;
-		}
+		Collider2D collider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _enemiesLayer);
 
+		if (collider != null && _attackArea.gameObject.activeSelf)
+		{
+			var skeletonController = collider.GetComponent<SkeletoneController>();
+			if (skeletonController != null)
+			{
+				skeletonController.Hit(_stats);
+			}
+			else
+			{
+				collider.GetComponent<BossController>().Hit(_stats);
+			}
+		}
+		
 		if (_currentAttackWaitTime > _stats.AttackRate)
 		{
 			_moveSystem.SetDesiredDirection(_moveInputVector);
@@ -281,5 +265,17 @@ public class PlayerController : MonoBehaviour
 	private bool CanJumpCut()
 	{
 		return _moveSystem.IsJumping && _rb.velocity.y > 0;
+	}
+
+	private IEnumerator PauseInput(float time)
+	{
+		_input.Disable();
+
+		yield return new WaitForSeconds(time);
+
+		// Reactivate controll.
+		_input.Enable();
+
+		yield return null;
 	}
 }

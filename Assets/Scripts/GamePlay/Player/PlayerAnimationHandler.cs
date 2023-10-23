@@ -12,7 +12,7 @@ public class PlayerAnimationHandler : AnimationHnadler
 	public bool IsMovementEnable { get { return _stopMovement; } }
 	public bool IsAttackEnable { get { return _blockAttack; } }
 
-    public void StartMoving()
+	public void StartMoving()
 	{
 		_stopMovement = false;
 	}

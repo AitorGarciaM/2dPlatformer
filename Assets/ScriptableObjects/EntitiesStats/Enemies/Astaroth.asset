@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30359d6e8fcf13f4687b44568ec743c0, type: 3}
   m_Name: Astaroth
   m_EditorClassIdentifier: 
-  _health: 1000
+  _health: 3000
   _mana: 0
   _healthRecover: 0
   _manaRecover: 0
   _attackRate: 1
-  _damage: 20
+  _damage: 35

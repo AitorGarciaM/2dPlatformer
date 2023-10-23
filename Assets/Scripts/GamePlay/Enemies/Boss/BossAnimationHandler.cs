@@ -9,11 +9,13 @@ public class BossAnimationHandler : AnimationHnadler
 	private bool _flame = false;
 	private bool _smashing = false;
 	private bool _landing = false;
+	private bool _invincible = false;
 
 	public bool IsAttackEnding { get { return _attackEnds; } }
 	public bool IsThtowingFlame { get { return _flame; } }
 	public bool IsLanding { get { return _landing; } }
 	public bool IsSmashing { get { return _smashing; } }
+	public bool IsInvincible { get { return _invincible; } }
 
 	public bool Flip { get; private set; }
 
@@ -76,5 +78,15 @@ public class BossAnimationHandler : AnimationHnadler
 	public void LandEnds()
 	{
 		_landing = false;
+	}
+
+	public void StartInvincibility()
+	{
+		_invincible = true;
+	}
+
+	public void EndInvincibility()
+	{
+		_invincible = false;
 	}
 }
