@@ -68,10 +68,9 @@ public class BossController : MonoBehaviour
 	private bool _startJump;
 	private bool _performingJump;
 	private bool _startingBattle;
-	private bool _attackEnds;
 	private bool _flamesHitPlayer;
 
-	public bool IsDead { get { return _stats.CurrentHealth < 0; } }
+	public bool IsDead { get { return (_stats.CurrentHealth <= 0); } }
 
 	public void Hit(Stats stats)
 	{
@@ -88,7 +87,6 @@ public class BossController : MonoBehaviour
 		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
 	}
 
-	// Start is called before the first frame update
 	void Start()
     {
 		_rb = GetComponent<Rigidbody2D>();
@@ -103,6 +101,7 @@ public class BossController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		// Flame attack Collision.
 		if(_fireFlames.activeSelf)
 		{
 			Collider2D[] colliders = Physics2D.OverlapCapsuleAll(_flameCollider.transform.position, _flameCollider.size,_flameCollider.direction, _flameCollider.transform.rotation.eulerAngles.z, _playerMask);
@@ -121,6 +120,7 @@ public class BossController : MonoBehaviour
 			}
 		}
 
+		// Flame attack ends timer.
 		if (_fireFlames.activeSelf)
 		{
 			if (_currentFlameAttackTime < _flameAttackTimer)
@@ -134,6 +134,7 @@ public class BossController : MonoBehaviour
 			}
 		}
 
+		// Smash attack Collision.
 		if (_animationHandler.IsSmashing)
 		{
 			Collider2D playerCollider = Physics2D.OverlapBox(_knifeCollider.transform.position + new Vector3(_knifeCollider.offset.x, _knifeCollider.offset.y, 0), _knifeCollider.size, 0, _playerMask);
@@ -147,6 +148,7 @@ public class BossController : MonoBehaviour
 			}
 		}
 
+		// Jump Attack Collision.
 		if(_animationHandler.IsLanding)
 		{
 			Collider2D playerCollider = Physics2D.OverlapBox(_jumpCollider.transform.position + new Vector3(_jumpCollider.offset.x, _jumpCollider.offset.y, 0), _jumpCollider.size, 0, _playerMask);
@@ -160,17 +162,30 @@ public class BossController : MonoBehaviour
 			}
 
 			CameraShaker.Instance.ShakeCamera(0.1f);
+
+			// Smash attack on Land.
+			if (_stage == Stage.Second)
+			{
+				int prob = Random.Range(1, 101);
+
+				if (prob < 10)
+				{
+					StartCoroutine(DelayedSmash(0.25f));
+				}
+			}
 		}
 
+		// Moves the entity towoards desired direction.
 		Move();
 	}
 
-	// Update is called once per frame
 	void Update()
     {
+		// Timers.
 		_currentHitWaitTime += Time.deltaTime;
 		_currentFlameHitPlayerTime += Time.deltaTime;
 
+		// Reactivate flame attack collision with player after getting hitted.
 		if(_currentFlameHitPlayerTime >= _flameHitPlayerTime)
 		{
 			_flamesHitPlayer = false;
@@ -194,7 +209,8 @@ public class BossController : MonoBehaviour
 	{
 		float playerDir = Mathf.Sign(_player.transform.position.x - transform.position.x);
 
-		if (!_animationHandler.IsThtowingFlame)
+		// Orientates boss sprite towards player when it's not throwing flames.
+		if (_animationHandler.IsFlipActive)
 		{
 			if (playerDir > 0)
 			{
@@ -206,7 +222,8 @@ public class BossController : MonoBehaviour
 			}
 		}
 		
-		if(_animationHandler.IsThtowingFlame)
+		// Activates and deactivates flame gameobject acording to animator.
+		if(_animationHandler.IsThrowingFlame)
 		{
 			_fireFlames.SetActive(true);
 		}
@@ -215,6 +232,7 @@ public class BossController : MonoBehaviour
 			_fireFlames.SetActive(false);
 		}
 
+		// Activates and deactivates jump and knife collision acording to animator.
 		_jumpCollider.enabled = _animationHandler.IsLanding;
 		_knifeCollider.enabled = _animationHandler.IsSmashing;
 		
@@ -277,16 +295,19 @@ public class BossController : MonoBehaviour
 			
 			if (wallRightDistance < _samshMaxRange)
 			{
+				// if boss is too close of the right wall jumps away from it.
 				_direction = 1;
 				Jump();
 			}
 			else if (wallLeftDistance < _samshMaxRange)
 			{
+				// if boss is too close of the left wall jumps away from it.
 				_direction = -1;
 				Jump();
 			}
 			else if (playerDistance < _fireFlameMinRange)
 			{
+				// if player is too close to the player jumps away of the player.
 				if (wallRightDistance < _samshMaxRange)
 				{
 					_direction = 1;
@@ -315,9 +336,12 @@ public class BossController : MonoBehaviour
 			}
 		}
 
-		if (_stats.CurrentHealth <= 0)
+		if (IsDead)
 		{
+			// Play Death animation.
 			_animationHandler.SetTrigger("Is_Death");
+
+			// Deactivates boss behaivour and physics.
 			this.enabled = false;
 			_rb.bodyType = RigidbodyType2D.Static;
 			_selfCollider.enabled = false;
@@ -329,7 +353,6 @@ public class BossController : MonoBehaviour
 		_moveSystem.Jump();
 		_cooldDownTime = _jumpCooldDown;
 		_startJump = true;
-		_attackEnds = false;
 		_animationHandler.SetTrigger("Jump_Attack");
 	}
 
@@ -392,6 +415,21 @@ public class BossController : MonoBehaviour
 		return true;
 	}
 
+	private void Smash()
+	{
+		_animationHandler.SetTrigger("Smash");
+		_cooldDownTime = _smashCoolDown;
+
+		if(_spRenderer.flipX)
+		{
+			_knifeCollider.offset = new Vector2(Mathf.Abs(_knifeCollider.offset.x), _knifeCollider.offset.y);
+		}
+		else
+		{
+			_knifeCollider.offset = new Vector2(Mathf.Abs(_knifeCollider.offset.x) * -1, _knifeCollider.offset.y);
+		}
+	}
+
 	private void BaseAttackPattern()
 	{
 		// Select the attack.
@@ -399,8 +437,7 @@ public class BossController : MonoBehaviour
 
 		if ((distance < _samshMaxRange && distance > _samshMinRange))
 		{
-			_animationHandler.SetTrigger("Smash");
-			_cooldDownTime = _smashCoolDown;
+			Smash();
 		}
 		else
 		{
@@ -419,6 +456,14 @@ public class BossController : MonoBehaviour
 		yield return null;
 	}
 
+	private IEnumerator DelayedSmash(float time)
+	{
+		yield return new WaitForSeconds(time);
+		Smash();
+		yield return null;
+	}
+
+	#region Gizmos
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.red;
@@ -427,4 +472,5 @@ public class BossController : MonoBehaviour
 		Gizmos.DrawWireSphere(smashCircleCenter, _samshMinRange);
 		Gizmos.DrawWireSphere(smashCircleCenter, _fireFlameMinRange);
 	}
+	#endregion
 }

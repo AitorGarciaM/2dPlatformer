@@ -10,12 +10,19 @@ public class BossAnimationHandler : AnimationHnadler
 	private bool _smashing = false;
 	private bool _landing = false;
 	private bool _invincible = false;
+	private bool _flipping;
+
+	public void Start()
+	{
+		_flipping = true;
+	}
 
 	public bool IsAttackEnding { get { return _attackEnds; } }
-	public bool IsThtowingFlame { get { return _flame; } }
+	public bool IsThrowingFlame { get { return _flame; } }
 	public bool IsLanding { get { return _landing; } }
 	public bool IsSmashing { get { return _smashing; } }
 	public bool IsInvincible { get { return _invincible; } }
+	public bool IsFlipActive { get { return _flipping; } }
 
 	public bool Flip { get; private set; }
 
@@ -27,27 +34,6 @@ public class BossAnimationHandler : AnimationHnadler
 	public void AttackEnds()
 	{
 		_attackEnds = true;
-	}
-
-	public void Rampage()
-	{
-		_rampageCount++;
-
-		if(_rampageCount % 2 == 0)
-		{
-			Flip = true;
-		}
-		else
-		{
-			Flip = false;
-		}
-
-		if(_rampageCount >= 8)
-		{
-			_rampageCount = 0;
-			_attackEnds = true;
-			Flip = false;
-		}
 	}
 
 	public void FlameStart()
@@ -88,5 +74,15 @@ public class BossAnimationHandler : AnimationHnadler
 	public void EndInvincibility()
 	{
 		_invincible = false;
+	}
+
+	public void StopFlipping()
+	{
+		_flipping = false;
+	}
+
+	public void PlayFlipping()
+	{
+		_flipping = true;
 	}
 }

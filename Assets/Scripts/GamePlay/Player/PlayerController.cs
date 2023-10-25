@@ -24,7 +24,8 @@ public class PlayerController : MonoBehaviour
 
 	[Header("HUD")]
 	[SerializeField] Slider _healthBar;
-	
+	[SerializeField] private Animator _deathScreen;
+
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _enemiesLayer;
 
@@ -39,14 +40,13 @@ public class PlayerController : MonoBehaviour
 	private float _currentHitWaitTime = 1;
 
 	private bool _jump;
-	private bool _isJumpCut;
 	private bool _isFacingLeft;
 	private bool _stopMovement;
-	private bool _attackIsPerforming = false;
+	private bool _deathScreenPlay;
 
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
-	public bool IsDead { get { return _stats.CurrentHealth < 0; } }
+	public bool IsDead { get { return _stats.CurrentHealth <= 0; } }
 
 	public void Hit(Stats stats)
 	{
@@ -59,12 +59,17 @@ public class PlayerController : MonoBehaviour
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
 
+		// Updates health bar.
 		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
 
 		if (_stats.CurrentHealth <= 0)
+		{
 			_animationHandler.SetBool("Death", true);
+			_deathScreenPlay = true;
+		}
 	}
 
+	// Applies knokback to the player.
 	public void Push(Vector2 direction, float force)
 	{
 		_rb.AddForce(direction * force, ForceMode2D.Impulse);
@@ -112,7 +117,7 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Camera.canceled -= OnMoveCameraCancelled;
 	}
 
-	#region Input
+	#region Input Detection
 
 	private void OnMovementPerformed(InputAction.CallbackContext value)
 	{
@@ -151,26 +156,22 @@ public class PlayerController : MonoBehaviour
 
 	public void OnAttackCanceled(InputAction.CallbackContext context)
 	{
-		_attackIsPerforming = false;
 	}
-
-	#endregion
-
 	
 	// Jump performed;
 	private void OnJumpingInput()
 	{
-		LastPressedJumpTime = _jumpInputBufferTime;
-		_animationHandler.SetTrigger("Jump");
+		if (!_stopMovement)
+		{
+			LastPressedJumpTime = _jumpInputBufferTime;
+			_animationHandler.SetTrigger("Jump");
+		}
 	}
 
 	// Jump jumpCanceled.
 	private void OnJumpingUpInput()
 	{
-		if (CanJumpCut())
-		{
-			_isJumpCut = true;
-		}
+		
 	}
 
 	private void OnAttackInputOn()
@@ -178,22 +179,29 @@ public class PlayerController : MonoBehaviour
 		_currentAttackWaitTime = 0;
 		_timeToEndAttack = 0;
 		_animationHandler.SetTrigger("Attack");
-
-		_attackIsPerforming = true;
 	}
+
+	#endregion
 
 	private void Update()
 	{
 		if (_stats.CurrentHealth <= 0)
 		{
+			if (_deathScreenPlay)
+			{
+				_deathScreen.SetTrigger("Play");
+				_deathScreenPlay = false;
+			}
 			return;
 		}
 
+		// Timers.
 		LastPressedJumpTime -= Time.deltaTime;
 		_timeToEndAttack += Time.deltaTime;
 		_currentAttackWaitTime += Time.deltaTime;
 		_currentHitWaitTime += Time.deltaTime;
 
+		// Reorientates player.
 		if (_currentAttackWaitTime > _stats.AttackRate)
 		{
 			if (_moveInputVector.x > 0)
@@ -206,9 +214,9 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		
+		// Perform jump.
 		if (_moveSystem.CanJump() && LastPressedJumpTime > 0 && _currentAttackWaitTime > _stats.AttackRate)
 		{
-			_isJumpCut = false;
 			LastPressedJumpTime = 0;
 			_moveSystem.Jump();
 		}
@@ -220,6 +228,7 @@ public class PlayerController : MonoBehaviour
 
 		_attackArea.gameObject.SetActive(_animationHandler.IsAttackActive);
 
+		// Reorientates attack position.
 		if (_isFacingLeft)
 		{
 			_attackArea.transform.localPosition = new Vector2(-0.14f, _attackArea.transform.localPosition.y);
@@ -229,6 +238,7 @@ public class PlayerController : MonoBehaviour
 			_attackArea.transform.localPosition = new Vector2(0.14f, _attackArea.transform.localPosition.y);
 		}
 
+		// Animations.
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
 		_animationHandler.SetFloat("Velocity_Y", _rb.velocity.y);
 		_animationHandler.SetFloat("Time_to_end_Attack", _timeToEndAttack);
@@ -239,6 +249,7 @@ public class PlayerController : MonoBehaviour
 	{
 		Collider2D collider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _enemiesLayer);
 
+		// Attack collision.
 		if (collider != null && _attackArea.gameObject.activeSelf)
 		{
 			var skeletonController = collider.GetComponent<SkeletoneController>();
@@ -252,6 +263,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		
+		// Updates movement.
 		if (_currentAttackWaitTime > _stats.AttackRate)
 		{
 			_moveSystem.SetDesiredDirection(_moveInputVector);
@@ -260,11 +272,6 @@ public class PlayerController : MonoBehaviour
 		{
 			_moveSystem.SetDesiredDirection(Vector2.zero);
 		}
-	}
-
-	private bool CanJumpCut()
-	{
-		return _moveSystem.IsJumping && _rb.velocity.y > 0;
 	}
 
 	private IEnumerator PauseInput(float time)

@@ -167,7 +167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1210651226}
   - component: {fileID: 1210651227}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -342,7 +342,7 @@ GameObject:
   - component: {fileID: 825020742076741517}
   - component: {fileID: 6126535731796805056}
   - component: {fileID: 866778244}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -560,13 +560,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2998827265672905002}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FireFlame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2998827265672905002
 Transform:
   m_ObjectHideFlags: 0
@@ -607,7 +607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9020102837915087361
 Transform:
   m_ObjectHideFlags: 0
@@ -669,17 +669,22 @@ MonoBehaviour:
   _stats: {fileID: 11400000, guid: 37b63287bc838da41bb00fbe2f8bd580, type: 2}
   _samshMaxRange: 1.5
   _samshMinRange: 1.13
+  _fireFlameMinRange: 0.45
   _initBattleTime: 1
   _smashCoolDown: 1
   _jumpCooldDown: 2
   _flameCoolDown: 1
   _flameAttackTimer: 5
-  _hitWaitTime: 0.5
+  _hitWaitTime: 0.2
+  _flameHitPlayerTime: 5
   _animationHandler: {fileID: 3823903531398767721}
   _moveSystem: {fileID: 176617796138814719}
+  _selfCollider: {fileID: 2110302623}
   _flameCollider: {fileID: 1210651227}
   _knifeCollider: {fileID: 1065252949}
   _jumpCollider: {fileID: 1065252948}
+  _wallLeftCollider: {fileID: 0}
+  _wallRightCollider: {fileID: 0}
   _knockBack: 5
   _healthBar: {fileID: 0}
   _spRenderer: {fileID: 9020102839676445390}
@@ -788,7 +793,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -1.1, y: -0.83}
+  m_Offset: {x: -0.84, y: -0.83}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -799,7 +804,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.66, y: 0.25}
+  m_Size: {x: 1.06, y: 0.25}
   m_EdgeRadius: 0
 --- !u!1 &9020102839676445393
 GameObject:
@@ -874,9 +879,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1975677883
-  m_SortingLayer: 2
-  m_SortingOrder: 3
-  m_Sprite: {fileID: 1426580681, guid: c5292abc77de5fc47a468e967507d3c7, type: 3}
+  m_SortingLayer: -1
+  m_SortingOrder: 0
+  m_Sprite: {fileID: -1832798199, guid: bbb94d779aaa74547b5067672210297b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -931,7 +936,7 @@ GameObject:
   - component: {fileID: 236058212169374378}
   - component: {fileID: 4554371375019858802}
   - component: {fileID: 7245003806698836103}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -992,7 +997,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1754874003
-  m_SortingLayer: 4
+  m_SortingLayer: 2
   m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: f51ca380bc917f24d88947c8643e9610, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
