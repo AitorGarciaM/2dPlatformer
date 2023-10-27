@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(MovementSystem))]
 public class PlayerController : MonoBehaviour
 {
 	[Header("Stats")]
 	[SerializeField] private Stats _stats;
+	[SerializeField] private HealingObject _healing;
+	[SerializeField] private int _healCount;
 
 	[Header("Timers")]
 	[SerializeField] private float _hitWaitTime;
@@ -23,8 +26,10 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private BoxCollider2D _attackArea;
 
 	[Header("HUD")]
-	[SerializeField] Slider _healthBar;
+	[SerializeField] private Slider _healthBar;
 	[SerializeField] private Animator _deathScreen;
+	[SerializeField] private TextMeshProUGUI _healCounter;
+	[SerializeField] private Image _healIcon;
 
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _enemiesLayer;
@@ -38,6 +43,9 @@ public class PlayerController : MonoBehaviour
 	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
 	private float _currentHitWaitTime = 1;
+	private float _currentHealWaitTime = 0;
+
+	private int _currentHealthCount;
 
 	private bool _jump;
 	private bool _isFacingLeft;
@@ -58,9 +66,6 @@ public class PlayerController : MonoBehaviour
 		StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
-
-		// Updates health bar.
-		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
 
 		if (_stats.CurrentHealth <= 0)
 		{
@@ -89,6 +94,8 @@ public class PlayerController : MonoBehaviour
 		_isFacingLeft = false;
 		_attackArea.gameObject.SetActive(false);
 		_stats.Init();
+		_currentHealthCount = _healCount;
+		_healCounter.text = _currentHealthCount.ToString();
 	}
 
 	private void OnEnable()
@@ -102,6 +109,7 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Attack.canceled += OnAttackCanceled;
 		_input.Player.Camera.performed += OnMoveCameraPerformed;
 		_input.Player.Camera.canceled += OnMoveCameraCancelled;
+		_input.Player.Heal.started += OnHealInputStarted;
 	}
 
 	private void OnDisable()
@@ -115,6 +123,7 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Attack.canceled -= OnAttackCanceled;
 		_input.Player.Camera.performed -= OnMoveCameraPerformed;
 		_input.Player.Camera.canceled -= OnMoveCameraCancelled;
+		_input.Player.Heal.started -= OnHealInputStarted;
 	}
 
 	#region Input Detection
@@ -156,8 +165,14 @@ public class PlayerController : MonoBehaviour
 
 	public void OnAttackCanceled(InputAction.CallbackContext context)
 	{
+
 	}
-	
+
+	private void OnHealInputStarted(InputAction.CallbackContext context)
+	{
+		OnHealInputOn();
+	}
+
 	// Jump performed;
 	private void OnJumpingInput()
 	{
@@ -181,6 +196,29 @@ public class PlayerController : MonoBehaviour
 		_animationHandler.SetTrigger("Attack");
 	}
 
+	private void OnHealInputOn()
+	{
+		if (_currentHealthCount > 0 && _currentHealWaitTime >= 1f)
+		{
+			_stats.Heal(_healing);
+
+			if (_stats.CurrentHealth < _stats.BaseHealth)
+			{
+				StartCoroutine(PauseInput(0.7f));
+				_animationHandler.SetTrigger("Heal");
+				_currentHealthCount--;
+				_healCounter.text = _currentHealthCount.ToString();
+				_currentHealWaitTime = 0;
+
+				if(_currentHealthCount == 0)
+				{
+					_healCounter.gameObject.SetActive(false);
+					_healIcon.color = new Color(0.557f, 0.557f, 0.557f);
+				}
+			}
+		}
+	}
+
 	#endregion
 
 	private void Update()
@@ -200,6 +238,7 @@ public class PlayerController : MonoBehaviour
 		_timeToEndAttack += Time.deltaTime;
 		_currentAttackWaitTime += Time.deltaTime;
 		_currentHitWaitTime += Time.deltaTime;
+		_currentHealWaitTime += Time.deltaTime;
 
 		// Reorientates player.
 		if (_currentAttackWaitTime > _stats.AttackRate)
@@ -220,6 +259,9 @@ public class PlayerController : MonoBehaviour
 			LastPressedJumpTime = 0;
 			_moveSystem.Jump();
 		}
+
+		// Other Updates.
+		_stats.Update();
 	}
 
 	private void LateUpdate()
@@ -227,6 +269,9 @@ public class PlayerController : MonoBehaviour
 		_spriteRenderer.flipX = _isFacingLeft;
 
 		_attackArea.gameObject.SetActive(_animationHandler.IsAttackActive);
+
+		// Updates health bar.
+		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
 
 		// Reorientates attack position.
 		if (_isFacingLeft)
@@ -237,7 +282,7 @@ public class PlayerController : MonoBehaviour
 		{
 			_attackArea.transform.localPosition = new Vector2(0.14f, _attackArea.transform.localPosition.y);
 		}
-
+		
 		// Animations.
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
 		_animationHandler.SetFloat("Velocity_Y", _rb.velocity.y);
