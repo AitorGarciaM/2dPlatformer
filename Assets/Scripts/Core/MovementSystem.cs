@@ -18,11 +18,22 @@ public class MovementSystem : MonoBehaviour
 	[Header("Jump")]
 	[SerializeField] private float _jumpHeight;
 	[SerializeField] private float _jumpTimeToApex;
+	[SerializeField] private float _jumpHungTimeThreshold;
+	[SerializeField, Range(1, 10)] private float jumpCutGravityMultiply;
+	[SerializeField] private float _maxFallSpeed;
+	[SerializeField] private float _fallGravityMulty;
+	[SerializeField] private float _jumpHangGravityMulty;
 	[SerializeField] private Transform _groundCheckPoint;
 	[SerializeField] private Vector2 _groundCheckSize;
 
 	[Header("Assist")]
-	[SerializeField] private float _coyoteTime;	
+	[SerializeField] private float _coyoteTime;
+	[SerializeField] private float _slopeCheckDistance;
+
+	[Header("Physics")]
+	[SerializeField] CircleCollider2D _circleCollider;
+	[SerializeField] PhysicsMaterial2D _noFriction;
+	[SerializeField] PhysicsMaterial2D _fullFriction;
 
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _groundLayer;
@@ -34,6 +45,11 @@ public class MovementSystem : MonoBehaviour
 	private float _gravityStrength;
 	private float _gravityScale;
 	private float _jumpForce;
+	private float _slopeDownAngle;
+	private float _slopeDownAnlgeOld;
+
+	private bool _isOnSlope;
+	private bool _isJumpCut;
 
 	public float LastOnGroundTime { get; private set; }
 	public float GravityScale { get { return _gravityScale; } }
@@ -41,6 +57,8 @@ public class MovementSystem : MonoBehaviour
 	public float JumpTimeToApex { get { return _jumpTimeToApex; } }
 	
 	public bool IsGrounded { get; private set; }
+	public bool IsLanding { get; private set; }
+	public bool IsOnSlope { get { return _isOnSlope; } }
 	public bool IsJumping { get; private set; }
 
 	public void SetDesiredDirection(Vector2 desiredDirection)
@@ -66,6 +84,7 @@ public class MovementSystem : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		SlopeCheck();
 		Run(1);
 		_movementVector.x = 0;
 	}
@@ -74,10 +93,19 @@ public class MovementSystem : MonoBehaviour
 	void Update()
     {
 		LastOnGroundTime -= Time.deltaTime;
-		
 
+		#region Collision Check
 		if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer))
 		{
+			if(!IsGrounded)
+			{
+				IsLanding = true;
+			}
+			else
+			{
+				IsLanding = false;
+			}
+
 			IsGrounded = true;
 			LastOnGroundTime = _coyoteTime;
 		}
@@ -85,13 +113,48 @@ public class MovementSystem : MonoBehaviour
 		{
 			IsGrounded = false;
 		}
+		#endregion
 
+		#region Jump Check
 		if (IsJumping && _rb.velocity.y < 0)
 		{
 			IsJumping = false;
 		}
+
+		if(LastOnGroundTime > 0 && !IsJumping)
+		{
+			_isJumpCut = false;
+		}
+		#endregion
+
+		#region Gravity
+		if(_isJumpCut)
+		{
+			Debug.Log("Jump is Cut");
+			// Higer gravity if jump button is released.
+			SetGravityScale(_gravityScale * jumpCutGravityMultiply);
+			_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(_rb.velocity.y, -_maxFallSpeed));
+		}
+		else if(IsJumping && Mathf.Abs(_rb.velocity.y) < _jumpHungTimeThreshold)
+		{
+			SetGravityScale(_gravityScale * _jumpHangGravityMulty);
+		}
+		else if(_rb.velocity.y < 0)
+		{
+			Debug.Log("falling");
+			// Higer gravity if it's falling.
+			SetGravityScale(_gravityScale * _fallGravityMulty);
+			_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(_rb.velocity.y, -_maxFallSpeed));
+		}
+		else
+		{
+			Debug.Log("Default gravity");
+			// Defalut gravity if it's grounded.
+			SetGravityScale(_gravityScale);
+		}
+		#endregion
 	}
-	
+
 	private void Run(float lerpAmount)
 	{
 		float targetSpeed = _movementVector.x * _maxSpeed;
@@ -122,6 +185,62 @@ public class MovementSystem : MonoBehaviour
 		_movementVector = Vector2.zero;
 	}
 
+	private void SlopeCheck()
+	{
+		Vector2 checkPos = transform.position - new Vector3(0.0f, _circleCollider.radius);
+
+		SlopeCheckHorizontal(checkPos);
+		SlopeCheckVertical(checkPos);
+	}
+
+	private void SlopeCheckHorizontal(Vector2 checkPos)
+	{
+		RaycastHit2D slopeHitFront = Physics2D.Raycast(checkPos, transform.right, _slopeCheckDistance, _groundLayer);
+		RaycastHit2D slopeHitBack = Physics2D.Raycast(checkPos, -transform.right, _slopeCheckDistance, _groundLayer);
+
+		if(slopeHitFront)
+		{
+			_isOnSlope = true;
+		}
+		else if(slopeHitBack)
+		{
+			_isOnSlope = true;
+		}
+		else
+		{
+			_isOnSlope = false;
+		}
+	}
+
+	private void SlopeCheckVertical(Vector2 checkPos)
+	{
+		RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, _slopeCheckDistance, _groundLayer);
+
+		if(hit)
+		{
+			_slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+			if(_slopeDownAngle != _slopeDownAnlgeOld)
+			{
+				_isOnSlope = true;
+			}
+		}
+
+		if(_isOnSlope && _movementVector.x == 0.0f)
+		{
+			_rb.sharedMaterial = _fullFriction;
+		}
+		else
+		{
+			_rb.sharedMaterial = _noFriction;
+		}
+	}
+
+	private void SetGravityScale(float scale)
+	{
+		_rb.gravityScale = scale;
+	}
+
 	public void Jump()
 	{
 		IsJumping = true;
@@ -138,6 +257,19 @@ public class MovementSystem : MonoBehaviour
 	public bool CanJump()
 	{
 		return LastOnGroundTime > 0 && !IsJumping;
+	}
+
+	public bool CanJumpCut()
+	{
+		return IsJumping && _rb.velocity.y > 0;
+	}
+
+	public void OnStopJump()
+	{
+		if(CanJumpCut())
+		{
+			_isJumpCut = true;
+		}
 	}
 
 	private void OnValidate()

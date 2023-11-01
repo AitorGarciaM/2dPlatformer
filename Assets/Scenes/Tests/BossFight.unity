@@ -1797,17 +1797,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
-      propertyPath: _healing
-      value: 
-      objectReference: {fileID: 11400000, guid: dc672d927643c34428aa16b1c9e11433, type: 2}
-    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
       propertyPath: _healIcon
       value: 
       objectReference: {fileID: 1532586382}
-    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
-      propertyPath: _healCount
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
       propertyPath: _healthBar
       value: 
@@ -3131,6 +3123,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8101b3b67ee43834895b9fe0d3493677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &1065252954 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 2110302623, guid: d81f0ae137413974dab5253dca7b60d4, type: 3}
+  m_PrefabInstance: {fileID: 1275257708}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1085464981 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5724029757888440534, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
@@ -3366,6 +3363,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1548175333}
     m_Modifications:
+    - target: {fileID: 176617796138814719, guid: d81f0ae137413974dab5253dca7b60d4, type: 3}
+      propertyPath: _maxFallSpeed
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 176617796138814719, guid: d81f0ae137413974dab5253dca7b60d4, type: 3}
+      propertyPath: _circleCollider
+      value: 
+      objectReference: {fileID: 1065252954}
+    - target: {fileID: 176617796138814719, guid: d81f0ae137413974dab5253dca7b60d4, type: 3}
+      propertyPath: _fallGravityMulty
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 176617796138814719, guid: d81f0ae137413974dab5253dca7b60d4, type: 3}
+      propertyPath: _jumpHangGravityMulty
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1062843117595291028, guid: d81f0ae137413974dab5253dca7b60d4, type: 3}
       propertyPath: _healthBar
       value: 

@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
 	[Header("Visual Settings")]
 	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private PlayerAnimationHandler _animationHandler;
+	[SerializeField] private GameObject _jumpFX;
+	[SerializeField] private GameObject _landFX;
 	[Space(10)]
 	[SerializeField] private BoxCollider2D _attackArea;
 
@@ -186,7 +188,7 @@ public class PlayerController : MonoBehaviour
 	// Jump jumpCanceled.
 	private void OnJumpingUpInput()
 	{
-		
+		_moveSystem.OnStopJump();
 	}
 
 	private void OnAttackInputOn()
@@ -258,6 +260,14 @@ public class PlayerController : MonoBehaviour
 		{
 			LastPressedJumpTime = 0;
 			_moveSystem.Jump();
+			GameObject obj = Instantiate(_jumpFX, transform.position - (Vector3.up * transform.localScale.y / 2.5f), Quaternion.Euler(-90, 0, 0));
+			Destroy(obj, 1);
+		}
+
+		if(_moveSystem.IsLanding)
+		{
+			GameObject obj = Instantiate(_landFX, transform.position - (Vector3.up * transform.localScale.y / 2.5f), Quaternion.Euler(-90, 0, 0));
+			Destroy(obj, 1);
 		}
 
 		// Other Updates.
@@ -288,6 +298,7 @@ public class PlayerController : MonoBehaviour
 		_animationHandler.SetFloat("Velocity_Y", _rb.velocity.y);
 		_animationHandler.SetFloat("Time_to_end_Attack", _timeToEndAttack);
 		_animationHandler.SetBool("Is_Grounded", _moveSystem.IsGrounded);
+		_animationHandler.SetBool("IsOnSlope", _moveSystem.IsOnSlope);
 	}
 
 	private void FixedUpdate()

@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 458c3d8a87abccd56f881a9e
+  m_ApplyToSortingLayers: 458c3d8a87abccd56f881a9e00000000
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -184,7 +184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1073974324
 Transform:
   m_ObjectHideFlags: 0
@@ -366,13 +366,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: b00bddc435764994ab09acd9e56ce06c, type: 2}
+  _healing: {fileID: 11400000, guid: dc672d927643c34428aa16b1c9e11433, type: 2}
+  _healCount: 3
   _hitWaitTime: 0.75
   _jumpInputBufferTime: 0.2
   _spriteRenderer: {fileID: 221124397742939796}
   _animationHandler: {fileID: 1763625088}
+  _jumpFX: {fileID: 7985984344845917990, guid: 430737d441d7405429abde3db06212b5, type: 3}
+  _landFX: {fileID: 3536359674076244256, guid: d41c2aaa996d915438d8596199ccfaaf, type: 3}
   _attackArea: {fileID: 1498982444609936325}
   _healthBar: {fileID: 0}
   _deathScreen: {fileID: 0}
+  _healCounter: {fileID: 0}
+  _healIcon: {fileID: 0}
   _enemiesLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -389,16 +395,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxSpeed: 2
-  _runAccelerationAmout: 9
+  _runAccelerationAmout: 15
   _runDecelerationAmount: 9
   _accelInAir: 1
   _deccelInAir: 1
   _doConserveMomontum: 1
-  _jumpHeight: 1.7
+  _jumpHeight: 1.3
   _jumpTimeToApex: 0.5
+  _jumpHungTimeThreshold: 0
+  jumpCutGravityMultiply: 3.5
+  _maxFallSpeed: 18
+  _fallGravityMulty: 2
+  _jumpHangGravityMulty: 1
   _groundCheckPoint: {fileID: 6537366846324980842}
-  _groundCheckSize: {x: 0.15, y: 0.04}
+  _groundCheckSize: {x: 0.3, y: 0.04}
   _coyoteTime: 0.2
+  _slopeCheckDistance: 0.5
+  _circleCollider: {fileID: 7248931602930074575}
+  _noFriction: {fileID: 6200000, guid: 464d8f9ae83bc5b4cbdea059acfb85b7, type: 2}
+  _fullFriction: {fileID: 6200000, guid: 88f6d9f4e279d09479daffacc958aec9, type: 2}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -639,8 +654,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1975677883
-  m_SortingLayer: -1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 1655556677, guid: cc4cbcd59d4fe0e4c919c458740d4c93, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
