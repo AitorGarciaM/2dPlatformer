@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1975677883
-  m_SortingLayer: 2
+  m_SortingLayer: -1
   m_SortingOrder: 1
   m_Sprite: {fileID: 1054710544, guid: d5c1566b76fca2a47a39eec9df05f7a8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -135,7 +135,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2488003965948428172}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.8396, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -225,12 +225,22 @@ MonoBehaviour:
   _runDecelerationAmount: 9
   _accelInAir: 0
   _deccelInAir: 0
+  _isFlying: 0
   _doConserveMomontum: 1
   _jumpHeight: 0
   _jumpTimeToApex: 0
+  _jumpHungTimeThreshold: 0
+  jumpCutGravityMultiply: 0
+  _maxFallSpeed: 0
+  _fallGravityMulty: 0
+  _jumpHangGravityMulty: 0
   _groundCheckPoint: {fileID: 2488003966421098037}
   _groundCheckSize: {x: 0.15, y: 0.04}
   _coyoteTime: 0
+  _slopeCheckDistance: 0
+  _circleCollider: {fileID: 0}
+  _noFriction: {fileID: 0}
+  _fullFriction: {fileID: 0}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8

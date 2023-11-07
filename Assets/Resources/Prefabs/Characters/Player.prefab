@@ -231,7 +231,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 341676551992640902}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.713, y: -0.72, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -399,6 +399,7 @@ MonoBehaviour:
   _runDecelerationAmount: 9
   _accelInAir: 1
   _deccelInAir: 1
+  _isFlying: 0
   _doConserveMomontum: 1
   _jumpHeight: 1.3
   _jumpTimeToApex: 0.5

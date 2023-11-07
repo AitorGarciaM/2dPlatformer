@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(MovementSystem))]
-public class BossController : MonoBehaviour
+public class BossController : MonoBehaviour, IHitable
 {
 	public enum Stage
 	{
@@ -79,7 +79,7 @@ public class BossController : MonoBehaviour
 			return;
 		}
 
-		CameraShaker.Instance.ShakeCamera(0.025f);
+		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 		_currentHitWaitTime = 0;
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);

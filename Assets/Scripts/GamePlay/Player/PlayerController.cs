@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 
 [RequireComponent(typeof(MovementSystem))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IHitable
 {
 	[Header("Stats")]
 	[SerializeField] private Stats _stats;
@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
 			return;
 
 		_currentHitWaitTime = 0;
-		CameraShaker.Instance.ShakeCamera(0.025f);
+		CameraShaker.Instance.ShakeCamera(_stats.ShakerForceImpact);
 		StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
@@ -308,15 +308,8 @@ public class PlayerController : MonoBehaviour
 		// Attack collision.
 		if (collider != null && _attackArea.gameObject.activeSelf)
 		{
-			var skeletonController = collider.GetComponent<SkeletoneController>();
-			if (skeletonController != null)
-			{
-				skeletonController.Hit(_stats);
-			}
-			else
-			{
-				collider.GetComponent<BossController>().Hit(_stats);
-			}
+			var hitable = collider.GetComponent<IHitable>();
+			hitable.Hit(_stats);
 		}
 		
 		// Updates movement.

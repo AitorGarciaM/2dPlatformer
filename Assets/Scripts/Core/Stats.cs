@@ -12,12 +12,14 @@ public class Stats : ScriptableObject
 	[SerializeField] private float _manaRecover;
 	[SerializeField] private float _attackRate;
 	[SerializeField] private float _damage;
+	[SerializeField] private float _shakerForceImpact;
 	
 	public float BaseHealth { get { return _health; } }
 	public float BaseMana { get { return _mana; } }
 	public float HealthRecovery { get { return _healthRecover; } }
 	public float ManaRecovery { get { return _manaRecover; } }
 	public float Damage { get { return _damage; }}
+	public float ShakerForceImpact { get { return _shakerForceImpact; } }
 
 	public float AttackRate { get { return _attackRate; } }
 
@@ -62,7 +64,6 @@ public class Stats : ScriptableObject
 		if((_currentHealth < _health) && (_elapsedHealingDuration > 0))
 		{
 			_currentHealth += _healingObject.HealthPerSecond * Time.deltaTime;
-			Debug.Log(_elapsedHealingDuration);
 		}
 		else
 		{

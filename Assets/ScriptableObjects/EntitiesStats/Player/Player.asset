@@ -18,3 +18,4 @@ MonoBehaviour:
   _manaRecover: 5
   _attackRate: 0.5
   _damage: 30
+  _shakerForceImpact: 0.02

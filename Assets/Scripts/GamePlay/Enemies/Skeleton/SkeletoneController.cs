@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkeletoneController : MonoBehaviour
+public class SkeletoneController : MonoBehaviour, IHitable
 {
 	public enum State
 	{

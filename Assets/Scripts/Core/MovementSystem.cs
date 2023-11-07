@@ -10,6 +10,7 @@ public class MovementSystem : MonoBehaviour
 	[SerializeField] private float _runDecelerationAmount;
 	[SerializeField] private float _accelInAir;
 	[SerializeField] private float _deccelInAir;
+	[SerializeField] private bool _isFlying;
 
 	[Space(5)]
 
@@ -95,23 +96,26 @@ public class MovementSystem : MonoBehaviour
 		LastOnGroundTime -= Time.deltaTime;
 
 		#region Collision Check
-		if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer))
+		if (!_isFlying)
 		{
-			if(!IsGrounded)
+			if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer))
 			{
-				IsLanding = true;
+				if (!IsGrounded)
+				{
+					IsLanding = true;
+				}
+				else
+				{
+					IsLanding = false;
+				}
+
+				IsGrounded = true;
+				LastOnGroundTime = _coyoteTime;
 			}
 			else
 			{
-				IsLanding = false;
+				IsGrounded = false;
 			}
-
-			IsGrounded = true;
-			LastOnGroundTime = _coyoteTime;
-		}
-		else
-		{
-			IsGrounded = false;
 		}
 		#endregion
 
@@ -128,65 +132,91 @@ public class MovementSystem : MonoBehaviour
 		#endregion
 
 		#region Gravity
-		if(_isJumpCut)
+		if (!_isFlying)
 		{
-			Debug.Log("Jump is Cut");
-			// Higer gravity if jump button is released.
-			SetGravityScale(_gravityScale * jumpCutGravityMultiply);
-			_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(_rb.velocity.y, -_maxFallSpeed));
-		}
-		else if(IsJumping && Mathf.Abs(_rb.velocity.y) < _jumpHungTimeThreshold)
-		{
-			SetGravityScale(_gravityScale * _jumpHangGravityMulty);
-		}
-		else if(_rb.velocity.y < 0)
-		{
-			Debug.Log("falling");
-			// Higer gravity if it's falling.
-			SetGravityScale(_gravityScale * _fallGravityMulty);
-			_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(_rb.velocity.y, -_maxFallSpeed));
-		}
-		else
-		{
-			Debug.Log("Default gravity");
-			// Defalut gravity if it's grounded.
-			SetGravityScale(_gravityScale);
+			if (_isJumpCut)
+			{
+				Debug.Log("Jump is Cut");
+				// Higer gravity if jump button is released.
+				SetGravityScale(_gravityScale * jumpCutGravityMultiply);
+				_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(_rb.velocity.y, -_maxFallSpeed));
+			}
+			else if (IsJumping && Mathf.Abs(_rb.velocity.y) < _jumpHungTimeThreshold)
+			{
+				SetGravityScale(_gravityScale * _jumpHangGravityMulty);
+			}
+			else if (_rb.velocity.y < 0)
+			{
+				// Higer gravity if it's falling.
+				SetGravityScale(_gravityScale * _fallGravityMulty);
+				_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(_rb.velocity.y, -_maxFallSpeed));
+			}
+			else
+			{
+				// Defalut gravity if it's grounded.
+				SetGravityScale(_gravityScale);
+			}
 		}
 		#endregion
 	}
 
 	private void Run(float lerpAmount)
 	{
-		float targetSpeed = _movementVector.x * _maxSpeed;
-
-		targetSpeed = Mathf.Lerp(_rb.velocity.x, targetSpeed, lerpAmount);
-
-		float accelRate = 0;
-
-		if (IsGrounded)
+		if (_isFlying)
 		{
-			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? _runAccelerationAmout : _runDecelerationAmount;
+			Vector2 targetSpeed = _movementVector * _maxSpeed;
+			targetSpeed.x = Mathf.Lerp(_rb.velocity.x, targetSpeed.x, lerpAmount);
+			targetSpeed.y = Mathf.Lerp(_rb.velocity.y, targetSpeed.y, lerpAmount);
+
+			float accelerate = 0;
+
+			accelerate = (Mathf.Abs(targetSpeed.magnitude) > 0.01f) ? _runAccelerationAmout : _runDecelerationAmount;
+
+			Vector2 speedDif = targetSpeed - _rb.velocity;
+
+			Vector2 movement = speedDif * accelerate;
+
+			_rb.AddForce(movement, ForceMode2D.Force);
+
 		}
 		else
 		{
-			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? _runAccelerationAmout * _accelInAir : _runDecelerationAmount * _deccelInAir;
+			float targetSpeed = _movementVector.x * _maxSpeed;
+
+			targetSpeed = Mathf.Lerp(_rb.velocity.x, targetSpeed, lerpAmount);
+
+			float accelRate = 0;
+
+			if (IsGrounded)
+			{
+				accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? _runAccelerationAmout : _runDecelerationAmount;
+			}
+			else
+			{
+				accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? _runAccelerationAmout * _accelInAir : _runDecelerationAmount * _deccelInAir;
+			}
+
+			if (_doConserveMomontum && Mathf.Abs(_rb.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(_rb.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
+			{
+				accelRate = 0;
+			}
+
+			float speedDif = targetSpeed - _rb.velocity.x;
+
+			float movement = speedDif * accelRate;
+
+			_rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
+			_movementVector = Vector2.zero;
 		}
-
-		if (_doConserveMomontum && Mathf.Abs(_rb.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(_rb.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
-		{
-			accelRate = 0;
-		}
-
-		float speedDif = targetSpeed - _rb.velocity.x;
-
-		float movement = speedDif * accelRate;
-
-		_rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
-		_movementVector = Vector2.zero;
 	}
 
 	private void SlopeCheck()
 	{
+		if(_isFlying)
+		{
+			return;
+		}
+
 		Vector2 checkPos = transform.position - new Vector3(0.0f, _circleCollider.radius);
 
 		SlopeCheckHorizontal(checkPos);
@@ -283,8 +313,11 @@ public class MovementSystem : MonoBehaviour
 	#region Gizmos
 	private void OnDrawGizmos()
 	{
-		Gizmos.color = Color.green;
-		Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
+		if (!_isFlying)
+		{
+			Gizmos.color = Color.green;
+			Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
+		}
 	}
 	#endregion
 }
