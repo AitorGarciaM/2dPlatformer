@@ -472,5 +472,10 @@ public class BossController : MonoBehaviour, IHitable
 		Gizmos.DrawWireSphere(smashCircleCenter, _samshMinRange);
 		Gizmos.DrawWireSphere(smashCircleCenter, _fireFlameMinRange);
 	}
+
+	public void Hit(float damage)
+	{
+		throw new System.NotImplementedException();
+	}
 	#endregion
 }

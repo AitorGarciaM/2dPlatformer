@@ -69,7 +69,26 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		_reciveHit = true;
 		_currentHitWaitTime = 0;
 		_currentHitDelayTime = _hitDelayTime;
+
+		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
+
 		if(_stats.CurrentHealth > 0)
+		{
+			_state = State.Follow;
+		}
+		else
+		{
+			_state = State.Dead;
+		}
+	}
+
+	public void Hit(float damage)
+	{
+		_stats.GetDamage(damage);
+		_reciveHit = true;
+		_currentHitWaitTime = 0;
+		_currentHitDelayTime = _hitDelayTime;
+		if (_stats.CurrentHealth > 0)
 		{
 			_state = State.Follow;
 		}

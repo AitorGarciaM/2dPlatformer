@@ -52,6 +52,23 @@ public class BatController : MonoBehaviour, IHitable
 		}
 	}
 
+	public void Hit(float damage)
+	{
+		_stats.GetDamage(damage);
+		
+		if (_stats.CurrentHealth <= 0)
+		{
+			_batAnimator.SetBool("Is_Death", true);
+			_rb.gravityScale = 1;
+			_moveSystem.enabled = false;
+			this.enabled = false;
+		}
+		else
+		{
+			_batAnimator.SetTrigger("Hurt");
+		}
+	}
+
 	// Start is called before the first frame update
 	void Start()
     {

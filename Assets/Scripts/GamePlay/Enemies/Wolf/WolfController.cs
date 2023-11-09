@@ -54,6 +54,29 @@ public class WolfController : MonoBehaviour, IHitable
 		}
 	}
 
+	public void Hit(float damage)
+	{
+		if (_currentInvincibleTime < _invincibleCooldown)
+		{
+			return;
+		}
+
+		_stats.GetDamage(damage);
+
+		_animationHandler.SetTrigger("Hit");
+
+		_currentInvincibleTime = 0;
+		_currentAttackRateTime = 0;
+		_attack = false;
+
+		if (_stats.CurrentHealth <= 0)
+		{
+			IsDeath = true;
+			_animationHandler.SetBool("Is_Death", IsDeath);
+			this.enabled = false;
+		}
+	}
+
 	// Start is called before the first frame update
 	void Start()
     {

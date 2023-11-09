@@ -64,10 +64,28 @@ public class PlayerController : MonoBehaviour, IHitable
 			return;
 
 		_currentHitWaitTime = 0;
-		CameraShaker.Instance.ShakeCamera(_stats.ShakerForceImpact);
+		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 		StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
+
+		if (_stats.CurrentHealth <= 0)
+		{
+			_animationHandler.SetBool("Death", true);
+			_deathScreenPlay = true;
+		}
+	}
+
+	public void Hit(float damage)
+	{
+		if (_currentHitWaitTime < _hitWaitTime)
+			return;
+
+		_currentHitWaitTime = 0;
+		CameraShaker.Instance.ShakeCamera(_stats.ShakerForceImpact);
+		StartCoroutine(PauseInput(_hitWaitTime));
+		_animationHandler.SetTrigger("Take_Damage");
+		_stats.GetDamage(damage);
 
 		if (_stats.CurrentHealth <= 0)
 		{

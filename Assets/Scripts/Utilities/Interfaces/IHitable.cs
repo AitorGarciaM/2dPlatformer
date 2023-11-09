@@ -6,4 +6,5 @@ public interface IHitable
 {
 	// calls when entity is hitted.
 	void Hit(Stats stats);
+	void Hit(float damage);
 }
