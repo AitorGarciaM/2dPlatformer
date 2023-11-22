@@ -67,14 +67,15 @@ public class MovementSystem : MonoBehaviour
 		_movementVector = desiredDirection;
 	}
 
-	public void StartJump()
+	public void TransitionToNewScene()
 	{
-		
+		_rb.gravityScale = 0;
 	}
 
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();
+		IsGrounded = true;
 	}
 
 	// Start is called before the first frame update

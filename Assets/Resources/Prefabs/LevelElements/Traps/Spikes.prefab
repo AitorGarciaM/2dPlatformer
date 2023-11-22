@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5314082243207730602}
   - component: {fileID: 5896000063556675110}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HitArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,7 +68,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6841608129764838241}
   - component: {fileID: 7194438839556461739}
-  m_Layer: 0
+  - component: {fileID: 2933939524352604984}
+  m_Layer: 3
   m_Name: Spikes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,6 +110,32 @@ MonoBehaviour:
   _hitMask:
     serializedVersion: 2
     m_Bits: 192
+--- !u!61 &2933939524352604984
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7327266210731100995}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0004079342, y: -0.04917273}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.32022154, y: 0.21398246}
+  m_EdgeRadius: 0
 --- !u!1 &8252008167171263814
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2492678058743390601}
   - component: {fileID: 918019921120165165}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

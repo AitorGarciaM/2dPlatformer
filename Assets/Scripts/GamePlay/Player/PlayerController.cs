@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour, IHitable
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _enemiesLayer;
 
+	private Iinteractable _interactable;
+
 	private Rigidbody2D _rb;
 	private MovementSystem _moveSystem;
 	private PlayerAction _input = null;
@@ -57,6 +59,21 @@ public class PlayerController : MonoBehaviour, IHitable
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
 	public bool IsDead { get { return _stats.CurrentHealth <= 0; } }
+
+	public void RestoreStats()
+	{
+		_stats.Init();
+	}
+
+	public void RestorePotions()
+	{
+		_currentHealthCount = _healCount;
+	}
+
+	public void SetInteractable(Iinteractable iinteractable)
+	{
+		_interactable = iinteractable;
+	}
 
 	public void Hit(Stats stats)
 	{
@@ -100,9 +117,34 @@ public class PlayerController : MonoBehaviour, IHitable
 		_rb.AddForce(direction * force, ForceMode2D.Impulse);
 	}
 
-	public void PauseControll(float time)
+	public void PauseControl(float time)
 	{
 		StartCoroutine(PauseInput(time));
+	}
+
+	public void PauseControl()
+	{
+		_input.Disable();
+	}
+
+	public void RestartControl()
+	{
+		_input.Enable();
+	}
+
+	public void SetForce(Vector2 force)
+	{
+		_rb.AddForce(force);
+	}
+
+	public void UpdateFacing(bool facingLeft)
+	{
+		_isFacingLeft = facingLeft;
+	}
+
+	public void TrasitionToNewScene()
+	{
+		_moveSystem.TransitionToNewScene();
 	}
 
 	private void Awake()
@@ -130,6 +172,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_input.Player.Camera.performed += OnMoveCameraPerformed;
 		_input.Player.Camera.canceled += OnMoveCameraCancelled;
 		_input.Player.Heal.started += OnHealInputStarted;
+		_input.Player.Interact.started += OnInteractStarted;
 	}
 
 	private void OnDisable()
@@ -144,6 +187,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_input.Player.Camera.performed -= OnMoveCameraPerformed;
 		_input.Player.Camera.canceled -= OnMoveCameraCancelled;
 		_input.Player.Heal.started -= OnHealInputStarted;
+		_input.Player.Interact.started -= OnInteractStarted;
 	}
 
 	#region Input Detection
@@ -193,6 +237,11 @@ public class PlayerController : MonoBehaviour, IHitable
 		OnHealInputOn();
 	}
 
+	private void OnInteractStarted(InputAction.CallbackContext context)
+	{
+		OnInteractInputOn();
+	}
+
 	// Jump performed;
 	private void OnJumpingInput()
 	{
@@ -239,6 +288,11 @@ public class PlayerController : MonoBehaviour, IHitable
 		}
 	}
 
+	private void OnInteractInputOn()
+	{
+		_interactable.Interact();
+	}
+
 	#endregion
 
 	private void Update()
@@ -247,8 +301,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		{
 			if (_deathScreenPlay)
 			{
-				_deathScreen.SetTrigger("Play");
-				_deathScreenPlay = false;
+				StartCoroutine(DeathScreen());
 			}
 			return;
 		}
@@ -351,5 +404,16 @@ public class PlayerController : MonoBehaviour, IHitable
 		_input.Enable();
 
 		yield return null;
+	}
+
+	private IEnumerator DeathScreen()
+	{
+		_deathScreen.SetTrigger("Play");
+		_deathScreenPlay = false;
+
+		yield return new WaitForSeconds(2f);
+
+		SceneController.Instance.TransitionToCheckPoint();
+
 	}
 }
