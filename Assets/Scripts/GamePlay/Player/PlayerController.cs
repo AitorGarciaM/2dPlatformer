@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _enemiesLayer;
 
+	private Iinteractable _interactable;
+
 	private Rigidbody2D _rb;
 	private MovementSystem _moveSystem;
 	private PlayerAction _input = null;
@@ -57,6 +59,21 @@ public class PlayerController : MonoBehaviour
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
 	public bool IsDead { get { return _stats.CurrentHealth <= 0; } }
+
+	public void RestoreStats()
+	{
+		_stats.Init();
+	}
+
+	public void RestorePotions()
+	{
+		_currentHealthCount = _healCount;
+	}
+
+	public void SetInteractable(Iinteractable iinteractable)
+	{
+		_interactable = iinteractable;
+	}
 
 	public void Hit(Stats stats)
 	{
@@ -82,9 +99,34 @@ public class PlayerController : MonoBehaviour
 		_rb.AddForce(direction * force, ForceMode2D.Impulse);
 	}
 
-	public void PauseControll(float time)
+	public void PauseControl(float time)
 	{
 		StartCoroutine(PauseInput(time));
+	}
+
+	public void PauseControl()
+	{
+		_input.Disable();
+	}
+
+	public void RestartControl()
+	{
+		_input.Enable();
+	}
+
+	public void SetForce(Vector2 force)
+	{
+		_rb.AddForce(force);
+	}
+
+	public void UpdateFacing(bool facingLeft)
+	{
+		_isFacingLeft = facingLeft;
+	}
+
+	public void TrasitionToNewScene()
+	{
+		_moveSystem.TransitionToNewScene();
 	}
 
 	private void Awake()
@@ -112,6 +154,7 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Camera.performed += OnMoveCameraPerformed;
 		_input.Player.Camera.canceled += OnMoveCameraCancelled;
 		_input.Player.Heal.started += OnHealInputStarted;
+		_input.Player.Interact.started += OnInteractStarted;
 	}
 
 	private void OnDisable()
@@ -126,6 +169,7 @@ public class PlayerController : MonoBehaviour
 		_input.Player.Camera.performed -= OnMoveCameraPerformed;
 		_input.Player.Camera.canceled -= OnMoveCameraCancelled;
 		_input.Player.Heal.started -= OnHealInputStarted;
+		_input.Player.Interact.started -= OnInteractStarted;
 	}
 
 	#region Input Detection
@@ -175,6 +219,11 @@ public class PlayerController : MonoBehaviour
 		OnHealInputOn();
 	}
 
+	private void OnInteractStarted(InputAction.CallbackContext context)
+	{
+		OnInteractInputOn();
+	}
+
 	// Jump performed;
 	private void OnJumpingInput()
 	{
@@ -219,6 +268,11 @@ public class PlayerController : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	private void OnInteractInputOn()
+	{
+		_interactable.Interact();
 	}
 
 	#endregion

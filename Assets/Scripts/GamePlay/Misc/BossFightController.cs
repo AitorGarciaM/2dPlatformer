@@ -54,7 +54,7 @@ public class BossFightController : MonoBehaviour
 				// Close the battle zone.
 				_doors.StartBoosFight();
 
-				_player.PauseControll(3f);
+				_player.PauseControl(3f);
 				StartCoroutine(SummonBoss(1));
 				StartCoroutine(StartMusic(3f));
 			}

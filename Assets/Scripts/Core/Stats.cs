@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class Stats : ScriptableObject
+public class Stats : ScriptableObject, IDataPersistener
 {
 	[Header("Base Stats")]
 	[SerializeField] private float _health;
@@ -23,7 +23,11 @@ public class Stats : ScriptableObject
 
 	public float CurrentHealth { get { return _currentHealth; } }
 	public float CurrentMana { get { return _currentMana; } }
-	
+
+	public bool ResotreHealthOnSceneChange { get { return _currentHealth <= 0; } }
+
+	private DataSettings _dataSettings;
+
 	private HealingObject _healingObject;
 	private float _elapsedHealingDuration;
 	private float _currentHealth;
@@ -34,6 +38,8 @@ public class Stats : ScriptableObject
 		_currentHealth = BaseHealth;
 		_currentMana = BaseMana;
 		_elapsedHealingDuration = 0;
+		_dataSettings = new DataSettings(DataSettings.PersistenceType.ReadWrite);
+		DataPersistenersManager.RegisterDataPersistener(this);
 	}
 
 	public void GetDamage(Stats agressorStates)
@@ -70,5 +76,22 @@ public class Stats : ScriptableObject
 		}
 
 		_elapsedHealingDuration -= Time.deltaTime;
+	}
+
+	public DataSettings GetDataSettings()
+	{
+		return _dataSettings;
+	}
+
+	public Data SaveData()
+	{
+		return new Data<float, float, bool>(_currentHealth, _currentMana, ResotreHealthOnSceneChange);
+	}
+
+	public void LoadData(Data data)
+	{
+		Data<float, float, bool> statsData = (Data<float,float,bool>)data;
+		_currentHealth = statsData.Value2 ? BaseHealth : statsData.Value0;
+		_currentMana = statsData.Value1;
 	}
 }
