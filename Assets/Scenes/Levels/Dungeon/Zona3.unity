@@ -773,7 +773,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.0089, y: 0.0335}
+  m_AnchoredPosition: {x: -0.0089, y: -0.12}
   m_SizeDelta: {x: 82.3111, y: 84.1455}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &113074456
@@ -4133,7 +4133,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370111642}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4788,7 +4788,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 694596765}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.361, y: -0.51, z: -0.595065}
+  m_LocalPosition: {x: -1.361, y: -0.3, z: -0.595065}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4972,6 +4972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transitioningGameObject: {fileID: 1535009933}
   _transitionType: 0
+  _transitionWhen: 2
   _newSceneName: Zona2
   _transitionDestinationTag: 1
   _resetInputValuesOnTransition: 1
@@ -5227,6 +5228,11 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!95 &921069280 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4829122003911691107, guid: 9f5be2b796b7ad745893544dc95040a9, type: 3}
+  m_PrefabInstance: {fileID: 228121822}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &925274336
 GameObject:
   m_ObjectHideFlags: 0
@@ -11246,6 +11252,10 @@ PrefabInstance:
       propertyPath: _healthBar
       value: 
       objectReference: {fileID: 1138271620}
+    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
+      propertyPath: _deathScreen
+      value: 
+      objectReference: {fileID: 921069280}
     - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
       propertyPath: _healCounter
       value: 

@@ -81,6 +81,26 @@ public class SceneController : MonoBehaviour
 		_transitioning = false;
 	}
 
+	private IEnumerator MenuTransition(string newSceneName, bool resetInputValues, TransitionDestination.Destination_Tag destinationTag, TransitionPoint.Transition_Type transitionType = TransitionPoint.Transition_Type.DiferentZone)
+	{
+		_transitioning = true;
+		yield return StartCoroutine(ScreenFader.Instance.FadeSceneOut());
+		yield return SceneManager.LoadSceneAsync(newSceneName);
+		Debug.Log("End new scene loading");
+		DataPersistenersManager.LoadAllData();
+		TransitionDestination entrance = GetDestination(destinationTag);
+		SetEntringGameObjectLocation(entrance);
+		SetUpNewScene(transitionType, entrance);
+		if (entrance != null)
+		{
+			entrance.OnReachDestination.Invoke();
+		}
+		yield return StartCoroutine(ScreenFader.Instance.FadeSceneIn());
+
+		//playerController.RestartControl();
+		_transitioning = false;
+	}
+
 	private TransitionDestination GetDestination(TransitionDestination.Destination_Tag destinationTag)
 	{
 		TransitionDestination[] entrances = FindObjectsOfType<TransitionDestination>();
@@ -129,6 +149,11 @@ public class SceneController : MonoBehaviour
 	public void TransitionToScene(TransitionPoint transitionPoint)
 	{
 		Instance.StartCoroutine(Transition(transitionPoint.NewSceneName, transitionPoint.ResetInputValuesOnTransition, transitionPoint.TransitionDestinationTag, transitionPoint.TransitionType));
+	}
+
+	public void TransitionToStart()
+	{
+		Instance.StartCoroutine(MenuTransition("Tutorial", true, TransitionDestination.Destination_Tag.CheckPoint, TransitionPoint.Transition_Type.DiferentZone));
 	}
 
 	public void SetCheckPoint(CheckPoint checkPoint)

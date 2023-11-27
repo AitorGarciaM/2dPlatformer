@@ -10248,6 +10248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transitioningGameObject: {fileID: 1751005511}
   _transitionType: 0
+  _transitionWhen: 2
   _newSceneName: Tutorial
   _transitionDestinationTag: 0
   _resetInputValuesOnTransition: 1
@@ -14203,6 +14204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transitioningGameObject: {fileID: 1751005511}
   _transitionType: 0
+  _transitionWhen: 2
   _newSceneName: Zona2
   _transitionDestinationTag: 0
   _resetInputValuesOnTransition: 1

@@ -8,9 +8,14 @@ public class TransitionPoint : MonoBehaviour
 	{
 		DiferentZone, DifferentNonGameplayScene, SameScene
 	}
+	public enum Transition_When
+	{
+		ExternalCall, InteractPressed, OnTriggerEnter
+	}
 
 	[SerializeField] private GameObject _transitioningGameObject;
 	[SerializeField] private Transition_Type _transitionType;
+	[SerializeField] private Transition_When _transitionWhen;
 	[SerializeField] private string _newSceneName;
 	[SerializeField] private TransitionDestination.Destination_Tag _transitionDestinationTag;
 	[SerializeField] private bool _resetInputValuesOnTransition = true;
@@ -25,7 +30,10 @@ public class TransitionPoint : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(_transitionWhen == Transition_When.ExternalCall)
+		{
+			_transitioningGameObjectPresent = true;
+		}
     }
 
     // Update is called once per frame
@@ -66,7 +74,28 @@ public class TransitionPoint : MonoBehaviour
 	{
 		if(collision.gameObject == _transitioningGameObject)
 		{
-			_transitioningGameObjectPresent = false;
+			if(ScreenFader.Instance.IsFading || SceneController.Instance.Transitioning)
+			{
+				return;
+			}
+
+			if (_transitionWhen == Transition_When.OnTriggerEnter)
+			{
+				_transitioningGameObjectPresent = false;
+			}
+		}
+	}
+
+	public void Transition()
+	{
+		if(!_transitioningGameObjectPresent)
+		{
+			return;
+		}
+
+		if(_transitionWhen == Transition_When.ExternalCall)
+		{
+			TransitionInternal();
 		}
 	}
 }
