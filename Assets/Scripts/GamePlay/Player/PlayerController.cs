@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour, IHitable
 	[SerializeField] private Animator _deathScreen;
 	[SerializeField] private TextMeshProUGUI _healCounter;
 	[SerializeField] private Image _healIcon;
+	[SerializeField] private GameObject _trinketsMenu;
+	[SerializeField] private GameObject _pauseMenu;
 
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _enemiesLayer;
@@ -59,6 +61,11 @@ public class PlayerController : MonoBehaviour, IHitable
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
 	public bool IsDead { get { return _stats.CurrentHealth <= 0; } }
+
+	public Stats GetStats()
+	{
+		return _stats;
+	}
 
 	public void RestoreStats()
 	{
@@ -173,6 +180,8 @@ public class PlayerController : MonoBehaviour, IHitable
 		_input.Player.Camera.canceled += OnMoveCameraCancelled;
 		_input.Player.Heal.started += OnHealInputStarted;
 		_input.Player.Interact.started += OnInteractStarted;
+		_input.UI.TrinketMenu.started += OnMenuStarted;
+		_input.UI.Pause.started += OnPauseStarted;
 	}
 
 	private void OnDisable()
@@ -188,6 +197,8 @@ public class PlayerController : MonoBehaviour, IHitable
 		_input.Player.Camera.canceled -= OnMoveCameraCancelled;
 		_input.Player.Heal.started -= OnHealInputStarted;
 		_input.Player.Interact.started -= OnInteractStarted;
+		_input.UI.TrinketMenu.started -= OnMenuStarted;
+		_input.UI.Pause.started -= OnPauseStarted;
 	}
 
 	#region Input Detection
@@ -242,6 +253,16 @@ public class PlayerController : MonoBehaviour, IHitable
 		OnInteractInputOn();
 	}
 
+	private void OnMenuStarted(InputAction.CallbackContext context)
+	{
+		OnMenuInputOn();
+	}
+
+	private void OnPauseStarted(InputAction.CallbackContext context)
+	{
+		OnPauseInputOn();
+	}
+
 	// Jump performed;
 	private void OnJumpingInput()
 	{
@@ -290,13 +311,44 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnInteractInputOn()
 	{
-		_interactable.Interact();
+		if (_interactable != null)
+		{
+			_interactable.Interact();
+		}
+	}
+
+	private void OnMenuInputOn()
+	{
+		_trinketsMenu.SetActive(!_trinketsMenu.activeSelf);
+	}
+
+	private void OnPauseInputOn()
+	{
+		_pauseMenu.SetActive(!_pauseMenu.activeSelf);
 	}
 
 	#endregion
 
 	private void Update()
 	{
+		if (_pauseMenu.activeSelf)
+		{
+			Time.timeScale = 0;
+		}
+		else
+		{
+			Time.timeScale = 1;
+		}
+
+		if (_trinketsMenu.activeSelf || _pauseMenu.activeSelf)
+		{
+			_input.Player.Disable();
+		}
+		else
+		{
+			_input.Player.Enable();
+		}
+
 		if (_stats.CurrentHealth <= 0)
 		{
 			if (_deathScreenPlay)
@@ -314,7 +366,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_currentHealWaitTime += Time.deltaTime;
 
 		// Reorientates player.
-		if (_currentAttackWaitTime > _stats.AttackRate)
+		if (_currentAttackWaitTime > _stats.AttackRate && Time.timeScale > 0)
 		{
 			if (_moveInputVector.x > 0)
 			{
@@ -381,6 +433,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		{
 			var hitable = collider.GetComponent<IHitable>();
 			hitable.Hit(_stats);
+			_stats.LiveSuctionOverDamage();
 		}
 		
 		// Updates movement.
@@ -416,4 +469,6 @@ public class PlayerController : MonoBehaviour, IHitable
 		SceneController.Instance.TransitionToCheckPoint();
 
 	}
+
+	
 }

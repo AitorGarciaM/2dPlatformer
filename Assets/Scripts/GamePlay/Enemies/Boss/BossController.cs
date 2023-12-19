@@ -72,6 +72,11 @@ public class BossController : MonoBehaviour, IHitable
 
 	public bool IsDead { get { return (_stats.CurrentHealth <= 0); } }
 
+	public Stats GetStats()
+	{
+		return _stats;
+	}
+
 	public void Hit(Stats stats)
 	{
 		if (_currentHitWaitTime < _hitWaitTime || _animationHandler.IsInvincible)
@@ -85,6 +90,11 @@ public class BossController : MonoBehaviour, IHitable
 		_stats.GetDamage(stats);
 
 		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
+	}
+
+	public void Hit(float damage)
+	{
+		throw new System.NotImplementedException();
 	}
 
 	void Start()
@@ -471,11 +481,6 @@ public class BossController : MonoBehaviour, IHitable
 		Gizmos.DrawWireSphere(smashCircleCenter, _samshMaxRange);
 		Gizmos.DrawWireSphere(smashCircleCenter, _samshMinRange);
 		Gizmos.DrawWireSphere(smashCircleCenter, _fireFlameMinRange);
-	}
-
-	public void Hit(float damage)
-	{
-		throw new System.NotImplementedException();
 	}
 	#endregion
 }

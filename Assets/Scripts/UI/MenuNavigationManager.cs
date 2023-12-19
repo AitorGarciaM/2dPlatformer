@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 public class MenuNavigationManager : MonoBehaviour
 {
 	private static MenuNavigationManager s_isntance;
+
+	private EventSystem _eventSystem;
 	
 	public static MenuNavigationManager Instance
 	{
@@ -38,6 +41,12 @@ public class MenuNavigationManager : MonoBehaviour
 	private void Awake()
 	{
 		DontDestroyOnLoad(gameObject);
+		_eventSystem = EventSystem.current;
+	}
+
+	private void Update()
+	{
+		
 	}
 
 	private IEnumerator ChangeMenuInternal(GameObject selectable)

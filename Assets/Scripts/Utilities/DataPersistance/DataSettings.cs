@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class DataSettings
 {
 	public enum PersistenceType
@@ -9,8 +10,8 @@ public class DataSettings
 		ReadOnly, ReadWrite
 	}
 
-	public readonly string dataTag = System.Guid.NewGuid().ToString();
-	public readonly PersistenceType persistenceType;
+	public string dataTag = System.Guid.NewGuid().ToString();
+	public PersistenceType persistenceType;
 
 	public DataSettings(PersistenceType persistenceType)
 	{

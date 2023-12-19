@@ -64,9 +64,7 @@ public class SceneController : MonoBehaviour
 		//playerController.PauseControl();
 		playerController.TrasitionToNewScene();
 		yield return StartCoroutine(ScreenFader.Instance.FadeSceneOut());
-		Debug.Log("End fade out.");
 		yield return SceneManager.LoadSceneAsync(newSceneName);
-		Debug.Log("End new scene loading");
 		DataPersistenersManager.LoadAllData();
 		TransitionDestination entrance = GetDestination(destinationTag);
 		SetEntringGameObjectLocation(entrance);
@@ -86,7 +84,6 @@ public class SceneController : MonoBehaviour
 		_transitioning = true;
 		yield return StartCoroutine(ScreenFader.Instance.FadeSceneOut());
 		yield return SceneManager.LoadSceneAsync(newSceneName);
-		Debug.Log("End new scene loading");
 		DataPersistenersManager.LoadAllData();
 		TransitionDestination entrance = GetDestination(destinationTag);
 		SetEntringGameObjectLocation(entrance);

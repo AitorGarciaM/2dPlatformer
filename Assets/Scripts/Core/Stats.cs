@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 [CreateAssetMenu()]
 public class Stats : ScriptableObject, IDataPersistener
@@ -13,6 +14,7 @@ public class Stats : ScriptableObject, IDataPersistener
 	[SerializeField] private float _attackRate;
 	[SerializeField] private float _damage;
 	[SerializeField] private float _shakerForceImpact;
+	[SerializeField] private float _liveSuction;
 	
 	public float BaseHealth { get { return _health; } }
 	public float BaseMana { get { return _mana; } }
@@ -28,19 +30,24 @@ public class Stats : ScriptableObject, IDataPersistener
 
 	public bool ResotreHealthOnSceneChange { get { return _currentHealth <= 0; } }
 
-	private DataSettings _dataSettings = new DataSettings(DataSettings.PersistenceType.ReadWrite);
+	[HideInInspector]
+	public DataSettings _dataSettings;
 
 	private HealingObject _healingObject;
 	private float _elapsedHealingDuration;
 	private float _currentHealth;
 	private float _currentMana;
+	private float _currentHealthRegeneration;
+	private float _currentLiveSuction;
 	
 	public void Init()
 	{
 		_currentHealth = BaseHealth;
 		_currentMana = BaseMana;
 		_elapsedHealingDuration = 0;
-		//_dataSettings = new DataSettings(DataSettings.PersistenceType.ReadWrite);
+		_currentHealthRegeneration = _healthRecover;
+		_currentLiveSuction = _liveSuction;
+
 		DataPersistenersManager.RegisterDataPersistener(this);
 	}
 
@@ -63,6 +70,41 @@ public class Stats : ScriptableObject, IDataPersistener
 			_healingObject = healingObject;
 			_elapsedHealingDuration = _healingObject.Duration;
 		}
+	}
+
+	public void HealOverTime()
+	{
+		_currentHealth += _healthRecover * Time.deltaTime;
+	}
+
+	public void LiveSuctionOverDamage()
+	{
+		_currentHealth += _damage * _liveSuction / 100;
+	}
+
+	public void LiveSuctionOverBaseHealth()
+	{
+		_currentHealth += _health * _liveSuction / 100;
+	}
+
+	public void SetHealthRegen(float value)
+	{
+		_currentHealthRegeneration = value;
+	}
+
+	public void SetLiveSuction(float value)
+	{
+		_currentLiveSuction = value;
+	}
+
+	public void ResetLiveSuction()
+	{
+		_currentLiveSuction = _liveSuction;
+	}
+
+	public void ResetHealthRegeneration()
+	{
+		_currentHealthRegeneration = _healthRecover;
 	}
 
 	public void Update()
@@ -95,4 +137,14 @@ public class Stats : ScriptableObject, IDataPersistener
 		_currentHealth = statsData.Value2 ? BaseHealth : statsData.Value0;
 		_currentMana = statsData.Value1;
 	}
+
+	public void SetDataSettings(string dataTag, DataSettings.PersistenceType persistenceType)
+	{
+		_dataSettings.dataTag = dataTag;
+		_dataSettings.persistenceType = persistenceType;
+	}
 }
+
+[CustomEditor(typeof(Stats))]
+public class StatsEditor : DataPersisterEditor
+{}

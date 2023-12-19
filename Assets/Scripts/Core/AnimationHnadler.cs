@@ -75,4 +75,9 @@ public abstract class AnimationHnadler : MonoBehaviour
 	{
 		_animator.SetTrigger(id);
 	}
+
+	public bool AnimationISFinished(string animationName)
+	{
+		return _animator.GetCurrentAnimatorStateInfo(0).IsName(animationName);
+	}
 }

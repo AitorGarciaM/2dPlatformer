@@ -27,6 +27,11 @@ public class WolfController : MonoBehaviour, IHitable
 	private bool _changeDir;
 	private bool _attack;
 
+	public Stats GetStats()
+	{
+		return _stats;
+	}
+
 	public bool IsDeath { get; private set; }
 
 	public void Hit(Stats stats)

@@ -63,6 +63,11 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	private bool _isAttacking = false;
 	private bool _reciveHit = false;
 
+	public Stats GetStats()
+	{
+		return _stats;
+	}
+
 	public void Hit(Stats stats)
 	{
 		_stats.GetDamage(stats);
@@ -311,6 +316,8 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(transform.position, _attackRange);
 	}
+
+	
 	#endregion
 	#endregion
 }

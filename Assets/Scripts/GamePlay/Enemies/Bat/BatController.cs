@@ -34,6 +34,11 @@ public class BatController : MonoBehaviour, IHitable
 	private bool _followPlayer;
 	private bool _goBack;
 
+	public Stats GetStats()
+	{
+		return _stats;
+	}
+
 	public void Hit(Stats stats)
 	{
 		_stats.GetDamage(stats);
@@ -234,4 +239,6 @@ public class BatController : MonoBehaviour, IHitable
 		Gizmos.color = new Color(0.5f, 0, 1);
 		Gizmos.DrawWireSphere(transform.position, _nextWaypointDistance);
 	}
+
+	
 }
