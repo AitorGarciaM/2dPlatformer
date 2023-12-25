@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	private PlayerAction _input = null;
 	private Vector2 _moveInputVector = Vector2.zero; // Input vector.
 	private Vector2 _moveCamreraVector;
+	private TransitionDestination _resetPoint;
 
 	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
@@ -67,6 +68,11 @@ public class PlayerController : MonoBehaviour, IHitable
 		return _stats;
 	}
 
+	public bool ResetingPosition
+	{
+		get; private set;
+	}
+
 	public void RestoreStats()
 	{
 		_stats.Init();
@@ -75,6 +81,11 @@ public class PlayerController : MonoBehaviour, IHitable
 	public void RestorePotions()
 	{
 		_currentHealthCount = _healCount;
+	}
+
+	public void SetLastTransitionDestination(TransitionDestination transitionDestination)
+	{
+		_resetPoint = transitionDestination;
 	}
 
 	public void SetInteractable(Iinteractable iinteractable)
@@ -116,6 +127,11 @@ public class PlayerController : MonoBehaviour, IHitable
 			_animationHandler.SetBool("Death", true);
 			_deathScreenPlay = true;
 		}
+	}
+
+	public void ResetPosition()
+	{
+		StartCoroutine(ResetPositionInternal());
 	}
 
 	// Applies knokback to the player.
@@ -470,5 +486,15 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	}
 
+	private IEnumerator ResetPositionInternal()
+	{
+		ResetingPosition = true;
+		yield return ScreenFader.Instance.FadeSceneOut();
+		_input.Disable();
+		transform.position = _resetPoint.transform.position;
+		yield return ScreenFader.Instance.FadeSceneIn();
+		_input.Enable();
+		ResetingPosition = false;
+	}
 	
 }

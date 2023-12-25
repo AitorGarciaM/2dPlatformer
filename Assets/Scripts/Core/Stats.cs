@@ -145,6 +145,8 @@ public class Stats : ScriptableObject, IDataPersistener
 	}
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(Stats))]
 public class StatsEditor : DataPersisterEditor
 {}
+#endif

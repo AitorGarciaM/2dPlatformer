@@ -38,6 +38,8 @@ public class Spawner : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
+
 #region SpawnerEditor
 [CustomEditor(typeof(Spawner))]
 public class SpawnerEditor : Editor
@@ -58,3 +60,5 @@ public class SpawnerEditor : Editor
 	}
 }
 #endregion
+
+#endif

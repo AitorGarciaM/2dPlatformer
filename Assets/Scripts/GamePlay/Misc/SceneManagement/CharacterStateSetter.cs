@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using System;
+
+#if UNITY_EDITOR
 
 #region CharacterStateSetterEditor
 
@@ -64,6 +65,8 @@ class CharacterStateSetterEditor : Editor
 	}
 }
 #endregion
+
+#endif
 
 public class CharacterStateSetter : MonoBehaviour
 {

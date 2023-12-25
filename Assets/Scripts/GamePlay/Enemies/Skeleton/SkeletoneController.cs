@@ -58,7 +58,9 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 	private int _currentPatrollPoint;
 	private int _nextPatrollPoint;
+	private int _currentWayPoint;
 
+	
 	private bool _isFacingRight;
 	private bool _isAttacking = false;
 	private bool _reciveHit = false;
@@ -93,6 +95,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		_reciveHit = true;
 		_currentHitWaitTime = 0;
 		_currentHitDelayTime = _hitDelayTime;
+
 		if (_stats.CurrentHealth > 0)
 		{
 			_state = State.Follow;

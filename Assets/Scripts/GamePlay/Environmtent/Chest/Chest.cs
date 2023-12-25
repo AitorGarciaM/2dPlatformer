@@ -148,6 +148,8 @@ public class Chest : MonoBehaviour, Iinteractable, IDataPersistener
 	}
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(Chest)), CanEditMultipleObjects]
 public class ChestEditor : DataPersisterEditor
 {}
+#endif

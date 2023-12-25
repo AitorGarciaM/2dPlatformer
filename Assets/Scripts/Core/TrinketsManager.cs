@@ -129,6 +129,8 @@ public class TrinketsManager : MonoBehaviour, IDataPersistener
 	}
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(TrinketsManager))]
 public class TrinketsManagerEditor : DataPersisterEditor
 {}
+#endif

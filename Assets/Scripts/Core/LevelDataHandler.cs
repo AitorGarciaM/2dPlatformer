@@ -77,6 +77,8 @@ public class LevelDataHandler : MonoBehaviour, IDataPersistener
 	}
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(LevelDataHandler))]
 public class LevelDataHandlerEditor : DataPersisterEditor
 {}
+#endif

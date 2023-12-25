@@ -62,7 +62,11 @@ public class SceneController : MonoBehaviour
 
 		PlayerController playerController = FindObjectOfType<PlayerController>();
 		//playerController.PauseControl();
-		playerController.TrasitionToNewScene();
+		if (playerController != null)
+		{
+			playerController.TrasitionToNewScene();
+		}
+
 		yield return StartCoroutine(ScreenFader.Instance.FadeSceneOut());
 		yield return SceneManager.LoadSceneAsync(newSceneName);
 		DataPersistenersManager.LoadAllData();

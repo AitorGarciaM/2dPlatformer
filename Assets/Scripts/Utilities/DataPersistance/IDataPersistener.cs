@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+
 public interface IDataPersistener
 {
 	DataSettings GetDataSettings();
@@ -12,6 +13,7 @@ public interface IDataPersistener
 	void SetDataSettings(string dataTag, DataSettings.PersistenceType persistenceType);
 }
 
+#if UNITY_EDITOR
 public abstract class DataPersisterEditor : Editor
 {
 	IDataPersistener _dataPersister;
@@ -38,3 +40,4 @@ public abstract class DataPersisterEditor : Editor
 		dataPersistener.SetDataSettings(dataTag, persistenceType);
 	}
 }
+#endif

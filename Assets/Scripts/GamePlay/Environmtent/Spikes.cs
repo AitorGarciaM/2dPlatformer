@@ -27,6 +27,16 @@ public class Spikes : MonoBehaviour
 				if(collider.gameObject.TryGetComponent<IHitable>(out hitable))
 				{
 					hitable.Hit(_damage);
+
+					PlayerController player = (PlayerController)hitable;
+
+					if(player != null)
+					{
+						if (!player.ResetingPosition)
+						{
+							player.ResetPosition();
+						}
+					}
 				}
 			}
 		}

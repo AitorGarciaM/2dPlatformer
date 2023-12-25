@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6398737280307183335}
   - component: {fileID: 6625978509427189085}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_3 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8086831925719047389}
   - component: {fileID: 4604806642633451038}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_2 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7889118678811748932}
   - component: {fileID: 2471691857049765385}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_3 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5088276277926568223}
   - component: {fileID: 2989624516998690933}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -346,7 +346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9108406784950600415}
   - component: {fileID: 6057901153714411968}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -430,7 +430,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4861758226117466929}
   - component: {fileID: 8753574479740511485}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -514,7 +514,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1535733185279329439}
   - component: {fileID: 760011938375461376}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -598,7 +598,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6548130694770264518}
   - component: {fileID: 5729839728439914082}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: platform_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -681,7 +681,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6251946845528804563}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloatingPlatform_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}

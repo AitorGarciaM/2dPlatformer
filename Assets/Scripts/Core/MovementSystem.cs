@@ -78,11 +78,7 @@ public class MovementSystem : MonoBehaviour
 		IsGrounded = true;
 	}
 
-	// Start is called before the first frame update
-	void Start()
-    {
-        
-    }
+	
 
 	private void FixedUpdate()
 	{
@@ -303,6 +299,8 @@ public class MovementSystem : MonoBehaviour
 		}
 	}
 
+#if UNITY_EDITOR
+
 	private void OnValidate()
 	{
 		_gravityStrength = -(2 * _jumpHeight) / (_jumpTimeToApex * _jumpTimeToApex);
@@ -310,8 +308,19 @@ public class MovementSystem : MonoBehaviour
 		_gravityScale = _gravityStrength / Physics2D.gravity.y;
 		_jumpForce = Mathf.Abs(_gravityStrength) * _jumpTimeToApex;
 	}
+#elif !UNITY_EDITOR
 
-	#region Gizmos
+	// Start is called before the first frame update
+	void Start()
+    {
+        _gravityStrength = -(2 * _jumpHeight) / (_jumpTimeToApex * _jumpTimeToApex);
+
+		_gravityScale = _gravityStrength / Physics2D.gravity.y;
+		_jumpForce = Mathf.Abs(_gravityStrength) * _jumpTimeToApex;
+    }
+#endif
+
+#region Gizmos
 	private void OnDrawGizmos()
 	{
 		if (!_isFlying)
@@ -320,5 +329,5 @@ public class MovementSystem : MonoBehaviour
 			Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
 		}
 	}
-	#endregion
+#endregion
 }
