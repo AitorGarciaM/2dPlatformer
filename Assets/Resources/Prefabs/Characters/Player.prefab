@@ -10772,7 +10772,7 @@ MonoBehaviour:
   _fullFriction: {fileID: 6200000, guid: 88f6d9f4e279d09479daffacc958aec9, type: 2}
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
 --- !u!114 &1140827518
 MonoBehaviour:
   m_ObjectHideFlags: 0

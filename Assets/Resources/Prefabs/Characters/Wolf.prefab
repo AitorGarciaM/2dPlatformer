@@ -74,7 +74,7 @@ MonoBehaviour:
   _fullFriction: {fileID: 6200000, guid: 88f6d9f4e279d09479daffacc958aec9, type: 2}
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
 --- !u!114 &5280172181262835290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
   _stats: {fileID: 11400000, guid: 227a2b96457d9be4495c9abf783e4e6d, type: 2}
   _attackArea: {fileID: 5280172182935849760}
   _wallChecker: {fileID: 5280172182068980535}
-  _attackPlayerDistance: 0.1
+  _attackPlayerDistance: 0.05
   _invincibleCooldown: 0.5
   _movementSystem: {fileID: 5280172181262835292}
   _animationHandler: {fileID: 5280172181530537414}
@@ -100,7 +100,7 @@ MonoBehaviour:
     m_Bits: 64
   _groundMask:
     serializedVersion: 2
-    m_Bits: 1544
+    m_Bits: 16392
 --- !u!50 &5280172181262835280
 Rigidbody2D:
   serializedVersion: 4

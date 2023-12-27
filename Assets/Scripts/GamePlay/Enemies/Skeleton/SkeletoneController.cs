@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class SkeletoneController : MonoBehaviour, IHitable
 {
@@ -47,20 +48,28 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	private CircleCollider2D _collider2d;
 	private MovementSystem _moveSystem;
 	private Transform _target;
+	private Seeker _seeker;
+	private Path _path;
+
+	private Vector2 _startPosition;
+	private Vector2 _targetPosition;
 
 	private float _direction;
 	private float _currentPatrollWaitTime;
 	private float _currentAttackWaitTime;
 	private float _currentHitWaitTime;
 	private float _currentHitDelayTime;
-
+	private float _changeStateTimer;
 	private State _state;
 
+	private int _currentWayPoint;
 	private int _currentPatrollPoint;
 	private int _nextPatrollPoint;
-	private int _currentWayPoint;
 
-	
+	private bool _reachedEndOfPath = false;
+
+	private bool _followPlayer;
+	private bool _goBack;
 	private bool _isFacingRight;
 	private bool _isAttacking = false;
 	private bool _reciveHit = false;
@@ -111,6 +120,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		_rb = GetComponent<Rigidbody2D>();
 		_collider2d = GetComponent<CircleCollider2D>();
 		_moveSystem = GetComponent<MovementSystem>();
+		_seeker = GetComponent<Seeker>();
 
 		_currentPatrollPoint = 0;
 
@@ -134,14 +144,28 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	// Start is called before the first frame update
 	void Start()
     {
-        
+		_targetPosition = _patrollPoints[_nextPatrollPoint];
+		InvokeRepeating("UpdatePathfind", 0, 0.1f);
     }
 
-    // Update is called once per frame
-    void Update()
+	private void FixedUpdate()
+	{
+		//Check ground at desiredPosition.
+		RaycastHit2D groundCheckRay = Physics2D.Raycast(new Vector2(transform.position.x + 0.25f * Mathf.Sign(_direction), transform.position.y), Vector2.down, 0.25f, LayerMask.GetMask("Ground"));
+
+		if(groundCheckRay.collider == null)
+		{
+			_state = State.Patroll;
+			_changeStateTimer = 2f;
+		}
+	}
+
+	// Update is called once per frame
+	void Update()
 	{
 		_currentAttackWaitTime += Time.deltaTime;
 		_currentHitWaitTime += Time.deltaTime;
+		_changeStateTimer -= Time.deltaTime;
 
 		if (_reciveHit)
 		{
@@ -154,7 +178,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		}
 
 		Collider2D collider = Physics2D.OverlapCircle(_rb.position, _playerDetectionRadiurs, _playerLayerMask);
-
+		
 		switch (_state)
 		{
 			case State.Idle:
@@ -163,7 +187,9 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 				Patroll();
 
-				if (collider != null)
+				_goBack = false;
+
+				if (collider != null && _changeStateTimer <= 0)
 				{
 					_state = State.Follow;
 					_target = collider.transform;
@@ -173,10 +199,12 @@ public class SkeletoneController : MonoBehaviour, IHitable
 			case State.Follow:
 
 				Follow();
-
+				
 				if (collider == null && _target != null)
 				{
 					_target = null;
+					_targetPosition = _patrollPoints[_nextPatrollPoint];
+					_goBack = true;
 					_state = State.Patroll;
 				}
 
@@ -209,6 +237,8 @@ public class SkeletoneController : MonoBehaviour, IHitable
 				break;
 		}
 
+		UpdateDir();
+
 		if (!_isAttacking)
 		{
 			Vector2 desiredDirection = new Vector2(_direction, 0);
@@ -220,7 +250,8 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	{
 		if(Vector2.Distance(_rb.position, _target.position) > _attackRange)
 		{
-			_direction = Mathf.Sign(_target.position.x - _rb.position.x);
+			_targetPosition = _target.position;
+			_followPlayer = true;
 		}
 		else
 		{
@@ -234,16 +265,17 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 		float distanceToNextPoint = Vector2.Distance(_rb.position, _patrollPoints[_nextPatrollPoint]);
 
-		if (distanceToNextPoint <= 0.1f)
+		if (distanceToNextPoint <= 0.1f && _currentPatrollWaitTime >= _patrollWaitTime)
 		{
 			_currentPatrollWaitTime = 0;
 			_currentPatrollPoint = _nextPatrollPoint;
 			_nextPatrollPoint = (_currentPatrollPoint + 1) % _patrollPoints.Count;
+			_targetPosition = _patrollPoints[_nextPatrollPoint];
 		}
-
-		if (_currentPatrollWaitTime >= _patrollWaitTime)
+		else if (distanceToNextPoint <= 0.1f)
 		{
-			_direction = Mathf.Sign(_patrollPoints[_nextPatrollPoint].x - _rb.position.x);
+			_targetPosition = transform.position;
+			_direction = 0;
 		}
 	}
 
@@ -283,14 +315,70 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 		if (!_isAttacking)
 		{
-			if (_direction > 0)
+			if (Mathf.Sign(_rb.velocity.x) > 0)
 				_isFacingRight = false;
-			else if(_direction < 0)
+			else if(Mathf.Sign(_rb.velocity.x) < 0)
 				_isFacingRight = true;
 		}
 
 		_direction = 0;
 	}
+
+	#region Pathfinding
+
+	private void UpdatePathfind()
+	{
+		if(_seeker.IsDone() || _goBack || _followPlayer)
+		{
+			_seeker.StartPath(transform.position, _targetPosition, OnPathComplete);
+		}
+	}
+
+	private void OnPathComplete(Path p)
+	{
+		if(!p.error)
+		{
+			_path = p;
+			_currentWayPoint = 0;
+		}
+		else
+		{
+			Debug.LogWarning(p.errorLog);
+		}
+	}
+
+	private void UpdateDir()
+	{
+		if(_path == null || _currentPatrollWaitTime < _patrollWaitTime)
+		{
+			return;
+		}
+
+		if(_currentWayPoint >= _path.vectorPath.Count)
+		{
+			_reachedEndOfPath = true;
+			return;
+		}
+		else
+		{
+			_reachedEndOfPath = false;
+		}
+
+		Vector2 dir = (_path.vectorPath[_currentWayPoint] - (Vector3)_rb.position).normalized;
+		
+		Debug.DrawLine(_rb.position, dir);
+
+		float distance = Vector2.Distance(_rb.position, _path.vectorPath[_currentWayPoint]);
+
+		if(distance < 0.1f)
+		{
+			_currentWayPoint++;
+		}
+
+		_direction = dir.x;
+	}
+
+	#endregion
 
 	#region Editor
 	private void OnValidate()

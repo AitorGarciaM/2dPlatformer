@@ -193,7 +193,6 @@ public class BatController : MonoBehaviour, IHitable
 			_reachedEndOfPath = false;
 		}
 		
-
 		Vector2 direction = (_path.vectorPath[_currentWaypoint] - transform.position).normalized;
 
 		Debug.DrawLine(transform.position, direction);

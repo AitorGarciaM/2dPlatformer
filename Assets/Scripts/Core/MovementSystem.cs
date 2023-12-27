@@ -25,7 +25,9 @@ public class MovementSystem : MonoBehaviour
 	[SerializeField] private float _fallGravityMulty;
 	[SerializeField] private float _jumpHangGravityMulty;
 	[SerializeField] private Transform _groundCheckPoint;
+	[SerializeField] private Transform _wallCheckPoint;
 	[SerializeField] private Vector2 _groundCheckSize;
+	[SerializeField] private Vector2 _wallCheckSize;
 
 	[Header("Assist")]
 	[SerializeField] private float _coyoteTime;
@@ -38,6 +40,7 @@ public class MovementSystem : MonoBehaviour
 
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _groundLayer;
+	[SerializeField] private LayerMask _wallLayer;
 
 	private Rigidbody2D _rb;
 
@@ -112,6 +115,14 @@ public class MovementSystem : MonoBehaviour
 			else
 			{
 				IsGrounded = false;
+			}
+		}
+
+		if (_wallCheckSize.magnitude != 0)
+		{
+			if (Physics2D.OverlapBox(_wallCheckPoint.position, _wallCheckSize, 0, _wallLayer))
+			{
+				_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(0, -_maxFallSpeed));
 			}
 		}
 		#endregion
@@ -263,6 +274,11 @@ public class MovementSystem : MonoBehaviour
 		}
 	}
 
+	private void WallCheck()
+	{
+		
+	}
+	
 	private void SetGravityScale(float scale)
 	{
 		_rb.gravityScale = scale;
@@ -327,6 +343,11 @@ public class MovementSystem : MonoBehaviour
 		{
 			Gizmos.color = Color.green;
 			Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
+
+			if (_wallCheckPoint != null)
+			{
+				Gizmos.DrawWireCube(_wallCheckPoint.position, _wallCheckSize);
+			}
 		}
 	}
 #endregion

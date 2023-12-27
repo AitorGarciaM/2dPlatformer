@@ -19,9 +19,9 @@ TagManager:
   - Walls
   - BossWall
   - PlayerWallChecker
-  - 
-  - 
-  - 
+  - Void
+  - Platforms
+  - WallChecker
   - 
   - 
   - 
@@ -51,6 +51,9 @@ TagManager:
   - name: Background3
     uniqueID: 1315941735
     locked: 0
+  - name: Platforms
+    uniqueID: 2652538991
+    locked: 0
   - name: Level
     uniqueID: 2319289413
     locked: 0
@@ -62,7 +65,4 @@ TagManager:
     locked: 0
   - name: FireFlame
     uniqueID: 2540093293
-    locked: 0
-  - name: Platforms
-    uniqueID: 2652538991
     locked: 0

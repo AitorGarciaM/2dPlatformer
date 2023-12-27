@@ -663,7 +663,7 @@ MonoBehaviour:
   _fullFriction: {fileID: 0}
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
 --- !u!114 &1062843117595291028
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 2488003965948428211}
   - component: {fileID: 2488003965948428210}
   - component: {fileID: 2488003965948428214}
+  - component: {fileID: 1255233428}
   m_Layer: 7
   m_Name: Skelleton
   m_TagString: Enemy
@@ -195,7 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: ff8d6c6d60fa3f1489ecbcf07bd95584, type: 2}
   _playerDetectionRadiurs: 1.11
-  _patrollWaitTime: 0.5
+  _patrollWaitTime: 2
   _patrollPoints:
   - {x: 0, y: -0.8396}
   - {x: 2, y: -0.8396}
@@ -220,15 +221,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e6694013d886244d9c6e1322b3b4b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxSpeed: 1.2
+  _maxSpeed: 0.6
   _runAccelerationAmout: 9
   _runDecelerationAmount: 9
   _accelInAir: 0
   _deccelInAir: 0
   _isFlying: 0
   _doConserveMomontum: 1
-  _jumpHeight: 0
-  _jumpTimeToApex: 0
+  _jumpHeight: 1
+  _jumpTimeToApex: 0.5
   _jumpHungTimeThreshold: 0
   jumpCutGravityMultiply: 0
   _maxFallSpeed: 0
@@ -238,12 +239,12 @@ MonoBehaviour:
   _groundCheckSize: {x: 0.15, y: 0.04}
   _coyoteTime: 0
   _slopeCheckDistance: 0
-  _circleCollider: {fileID: 0}
-  _noFriction: {fileID: 0}
-  _fullFriction: {fileID: 0}
+  _circleCollider: {fileID: 2488003965948428208}
+  _noFriction: {fileID: 6200000, guid: 464d8f9ae83bc5b4cbdea059acfb85b7, type: 2}
+  _fullFriction: {fileID: 6200000, guid: 88f6d9f4e279d09479daffacc958aec9, type: 2}
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 16392
 --- !u!61 &2488003965948428214
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -270,6 +271,34 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.31}
   m_EdgeRadius: 0
+--- !u!114 &1255233428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488003965948428172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!1 &2488003966215750455
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,9 +23,12 @@ public class WolfController : MonoBehaviour, IHitable
 
 	private float _currentInvincibleTime;
 	private float _currentAttackRateTime;
+	private float _currentObstacleFoundTime;
+	private float _currentAttackDeactivationTime = 0;
 	private float _direction;
 	private bool _changeDir;
 	private bool _attack;
+	private bool _obstacleFound = false;
 
 	public Stats GetStats()
 	{
@@ -47,7 +50,10 @@ public class WolfController : MonoBehaviour, IHitable
 
 		_currentInvincibleTime = 0;
 		_currentAttackRateTime = 0;
+		_currentAttackDeactivationTime = 10;
 		_attack = false;
+
+		Debug.Log(_currentAttackDeactivationTime);
 
 		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 
@@ -93,13 +99,36 @@ public class WolfController : MonoBehaviour, IHitable
 
 	private void FixedUpdate()
 	{
+		_obstacleFound = false;
+
+		// Detects if there is ground infront.
+		int dir = _spRenderer.flipX ? 1 : -1;
+
+		RaycastHit2D groundCheckRay = Physics2D.Raycast(new Vector2(transform.position.x + 0.25f * dir, transform.position.y), Vector2.down, 0.25f, LayerMask.GetMask("Ground"));
+		Debug.DrawLine(new Vector3(transform.position.x + 0.25f * dir, transform.position.y), new Vector3(transform.position.x + 0.25f * dir, transform.position.y - 0.25f), Color.red);
+
+		if(groundCheckRay.collider == null)
+		{
+			// Change direction.
+			_direction *= -1;
+			_currentObstacleFoundTime = 2f;
+			_obstacleFound = true;
+			Debug.LogWarning("Wolf can't reach player.");
+		}
+
 		// Detects if player is attack range.
 		if (Physics2D.OverlapCircle(_attackArea.transform.position, _attackPlayerDistance, _playerMask))
 		{
-			if (_currentAttackRateTime >= _stats.AttackRate)
+			if (_currentAttackRateTime >= _stats.AttackRate && _currentAttackDeactivationTime <= 0)
 			{
+				Debug.Log(_currentAttackDeactivationTime);
 				_attack = true;
 				_currentAttackRateTime = 0;
+				_attackArea.enabled = true;
+			}
+			else if(_currentAttackDeactivationTime >= 0)
+			{
+				_attackArea.enabled = false;
 			}
 		}
 
@@ -117,6 +146,7 @@ public class WolfController : MonoBehaviour, IHitable
 		{
 			Debug.Log("Colliding wall");
 			_direction *= -1;
+			_obstacleFound = true;
 		}
 	}
 
@@ -126,6 +156,8 @@ public class WolfController : MonoBehaviour, IHitable
 		#region Timers
 		_currentInvincibleTime += Time.deltaTime;
 		_currentAttackRateTime += Time.deltaTime;
+		_currentObstacleFoundTime -= Time.deltaTime;
+		_currentAttackDeactivationTime -= Time.deltaTime;
 		#endregion
 
 		// Changes direction when de wolf has passed de player.
@@ -134,7 +166,7 @@ public class WolfController : MonoBehaviour, IHitable
 			_changeDir = true;
 		}
 		
-		if (_animationHandler.CanMove && _changeDir)
+		if (_animationHandler.CanMove && _changeDir && (_currentObstacleFoundTime <= 0))
 		{
 			_direction = Mathf.Sign(_player.transform.position.x - transform.position.x);
 			_changeDir = false;
