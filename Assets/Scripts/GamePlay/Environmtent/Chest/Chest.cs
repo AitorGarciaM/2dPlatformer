@@ -56,6 +56,11 @@ public class Chest : MonoBehaviour, Iinteractable, IDataPersistener
 		}
 	}
 
+	private void OnDestroy()
+	{
+		DataPersistenersManager.UnRegisterDataPersistener(this);
+	}
+
 	private IEnumerator Open()
 	{
 		if(_isOpen)

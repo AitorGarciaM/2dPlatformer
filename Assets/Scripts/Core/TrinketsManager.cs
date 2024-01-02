@@ -120,6 +120,11 @@ public class TrinketsManager : MonoBehaviour, IDataPersistener
 		_trinketsMenu.SetActive(false);
 	}
 
+	private void OnDestroy()
+	{
+		DataPersistenersManager.UnRegisterDataPersistener(this);
+	}
+
 	private void OnApplicationQuit()
 	{
 		foreach(Trinket trinket in _trinkets)

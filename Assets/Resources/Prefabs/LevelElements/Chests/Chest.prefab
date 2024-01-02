@@ -844,6 +844,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InteractableCanvasGroup
       objectReference: {fileID: 0}
+    - target: {fileID: 5481496592568999969, guid: 0ec5838841f61ff4a9a9ca6418144fd0, type: 3}
+      propertyPath: m_text
+      value: Open
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5481496592832142141, guid: 0ec5838841f61ff4a9a9ca6418144fd0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0ec5838841f61ff4a9a9ca6418144fd0, type: 3}

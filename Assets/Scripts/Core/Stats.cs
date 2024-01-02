@@ -121,6 +121,11 @@ public class Stats : ScriptableObject, IDataPersistener
 		_elapsedHealingDuration -= Time.deltaTime;
 	}
 
+	private void OnDestroy()
+	{
+		DataPersistenersManager.UnRegisterDataPersistener(this);
+	}
+
 	public DataSettings GetDataSettings()
 	{
 		return _dataSettings;

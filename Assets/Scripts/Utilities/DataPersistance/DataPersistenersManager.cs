@@ -102,6 +102,11 @@ public class DataPersistenersManager : MonoBehaviour
 		{
 			foreach(var dp in _dataPersisteners)
 			{
+				if(dp == null)
+				{
+					continue;
+				}
+
 				var dataSetting = dp.GetDataSettings();
 
 				if(!string.IsNullOrEmpty(dataSetting.dataTag))
