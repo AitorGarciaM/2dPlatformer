@@ -6,18 +6,19 @@ public class DataPersistenersManager : MonoBehaviour
 {
 	private static DataPersistenersManager _instance;
 
+	private static bool s_quitting;
 	public static DataPersistenersManager Instance
 	{
 		get
 		{
-			if(_instance != null)
+			if (_instance != null)
 			{
 				return _instance;
 			}
 
 			_instance = FindObjectOfType<DataPersistenersManager>();
 
-			if(_instance != null)
+			if (_instance != null)
 			{
 				return _instance;
 			}
@@ -40,9 +41,10 @@ public class DataPersistenersManager : MonoBehaviour
 
 	private System.Action _functionHandler;
 
+
 	private void Awake()
 	{
-		if(Instance != this)
+		if (Instance != this)
 		{
 			Destroy(gameObject);
 		}
@@ -50,10 +52,18 @@ public class DataPersistenersManager : MonoBehaviour
 
 	private void Update()
 	{
-		if(_functionHandler != null)
+		if (_functionHandler != null)
 		{
 			_functionHandler.Invoke();
 			_functionHandler = null;
+		}
+	}
+
+	private void OnDisable()
+	{
+		if (Instance == this)
+		{
+			s_quitting = true;
 		}
 	}
 
@@ -77,12 +87,12 @@ public class DataPersistenersManager : MonoBehaviour
 	{
 		var dataSettings = dataPersistener.GetDataSettings();
 
-		if(dataSettings.persistenceType == DataSettings.PersistenceType.ReadOnly)
+		if (dataSettings.persistenceType == DataSettings.PersistenceType.ReadOnly)
 		{
 			return;
 		}
 
-		if(!string.IsNullOrEmpty(dataSettings.dataTag))
+		if (!string.IsNullOrEmpty(dataSettings.dataTag))
 		{
 			_storedData[dataSettings.dataTag] = dataPersistener.SaveData();
 		}
@@ -100,18 +110,13 @@ public class DataPersistenersManager : MonoBehaviour
 	{
 		_functionHandler += () =>
 		{
-			foreach(var dp in _dataPersisteners)
+			foreach (var dp in _dataPersisteners)
 			{
-				if(dp == null)
-				{
-					continue;
-				}
-
 				var dataSetting = dp.GetDataSettings();
 
-				if(!string.IsNullOrEmpty(dataSetting.dataTag))
+				if (!string.IsNullOrEmpty(dataSetting.dataTag))
 				{
-					if(_storedData.ContainsKey(dataSetting.dataTag))
+					if (_storedData.ContainsKey(dataSetting.dataTag))
 					{
 						dp.LoadData(_storedData[dataSetting.dataTag]);
 					}
@@ -126,8 +131,11 @@ public class DataPersistenersManager : MonoBehaviour
 	}
 
 	public static void UnRegisterDataPersistener(IDataPersistener dataPersistener)
-	{
-		Instance.UnRegister(dataPersistener);
+	{ 
+		if(!s_quitting)
+		{
+			Instance.UnRegister(dataPersistener);
+		}
 	}
 
 	public static void SaveAllData()

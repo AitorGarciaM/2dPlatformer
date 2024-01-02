@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	private bool _isFacingLeft;
 	private bool _stopMovement;
 	private bool _deathScreenPlay;
+	private bool _landFXInvoked = false;
 
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
@@ -403,14 +404,21 @@ public class PlayerController : MonoBehaviour, IHitable
 			Destroy(obj, 1);
 		}
 
-		if(_moveSystem.IsLanding)
+		if(_moveSystem.IsLanding && !_landFXInvoked)
 		{
 			GameObject obj = Instantiate(_landFX, transform.position - (Vector3.up * transform.localScale.y / 2.5f), Quaternion.Euler(-90, 0, 0));
+			_landFXInvoked = true;
 			Destroy(obj, 1);
+			Invoke("ResetLandFX", 1);
 		}
 
 		// Other Updates.
 		_stats.Update();
+	}
+
+	private void ResetLandFX()
+	{
+		_landFXInvoked = false;
 	}
 
 	private void LateUpdate()

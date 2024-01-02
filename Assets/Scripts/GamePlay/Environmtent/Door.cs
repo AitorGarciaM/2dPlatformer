@@ -116,7 +116,7 @@ public class Door : MonoBehaviour, IDataPersistener
 		}
 	}
 
-	private void OnDestroy()
+	private void OnDisable()
 	{
 		DataPersistenersManager.UnRegisterDataPersistener(this);
 	}

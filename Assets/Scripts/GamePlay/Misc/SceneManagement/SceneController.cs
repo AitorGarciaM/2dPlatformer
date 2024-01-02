@@ -87,6 +87,7 @@ public class SceneController : MonoBehaviour
 	{
 		_transitioning = true;
 		yield return StartCoroutine(ScreenFader.Instance.FadeSceneOut());
+		DataPersistenersManager.ClearAllDataPersisteners();
 		yield return SceneManager.LoadSceneAsync(newSceneName);
 		DataPersistenersManager.LoadAllData();
 		TransitionDestination entrance = GetDestination(destinationTag);

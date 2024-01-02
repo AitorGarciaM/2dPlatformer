@@ -26,6 +26,8 @@ public class MenuManager : MonoBehaviour
 
 	public void Quit()
 	{
+		Destroy(DataPersistenersManager.Instance.gameObject);
+
 #if UNITY_EDITOR
 		EditorApplication.isPlaying = false;
 #else
