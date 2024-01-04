@@ -32,6 +32,7 @@ public class BatController : MonoBehaviour, IHitable
 
 	private bool _followPlayer;
 	private bool _goBack;
+	private bool _isInHouse;
 
 	public Stats GetStats()
 	{
@@ -107,8 +108,9 @@ public class BatController : MonoBehaviour, IHitable
 
 			_followPlayer = true;
 			_goBack = false;
+			_isInHouse = false;
 		}
-		else
+		else if(!_isInHouse)
 		{
 			_targetPosition = _startPosition;
 			_followPlayer = false;
@@ -131,20 +133,27 @@ public class BatController : MonoBehaviour, IHitable
 		}
 
 
-		float distanceToStart = Vector2.Distance((Vector2)transform.position, _startPosition);
-
-		if (distanceToStart < 0.1f)
-		{
-			_batAnimator.SetBool("Is_Sleep", true);
-			_goBack = false;
-		}
+		
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		float distanceToStart = Vector2.Distance((Vector2)transform.position, _startPosition);
+
+		if (distanceToStart < 0.01f && !_isInHouse)
+		{
+			_rb.velocity = Vector2.zero;
+			_moveSystem.SetDesiredDirection(Vector2.zero);
+			_batAnimator.SetBool("Is_Sleep", true);
+			_goBack = false;
+			_isInHouse = true;
+		}
+
 		if (_followPlayer || _goBack)
 		{
+			Debug.Log("Following player: " + _followPlayer);
+			Debug.Log("Going back: " + _goBack);
 			Move();
 		}
 	}
