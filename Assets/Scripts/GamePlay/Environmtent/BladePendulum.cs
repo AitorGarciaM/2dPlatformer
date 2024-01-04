@@ -22,7 +22,9 @@ public class BladePendulum : MonoBehaviour
 		// Check if hitable is hitted.
 		ContactFilter2D contactFilter = new ContactFilter2D();
 		contactFilter.layerMask = _playerMask;
+		contactFilter.useTriggers = true;
 		List<Collider2D> colliders = new List<Collider2D>();
+
 		if(Physics2D.OverlapCollider(_bladeCollider, contactFilter,colliders) != 0)
 		{
 			foreach(var collider in colliders)

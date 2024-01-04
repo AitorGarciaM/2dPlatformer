@@ -29,7 +29,6 @@ public class BatController : MonoBehaviour, IHitable
 	private Path _path;
 
 	private int _currentWaypoint = 0;
-	private bool _reachedEndOfPath = false;
 
 	private bool _followPlayer;
 	private bool _goBack;
@@ -183,16 +182,6 @@ public class BatController : MonoBehaviour, IHitable
 			return;
 		}
 
-		if (_currentWaypoint >= _path.vectorPath.Count)
-		{
-			_reachedEndOfPath = true;
-			return;
-		}
-		else
-		{
-			_reachedEndOfPath = false;
-		}
-		
 		Vector2 direction = (_path.vectorPath[_currentWaypoint] - transform.position).normalized;
 
 		Debug.DrawLine(transform.position, direction);

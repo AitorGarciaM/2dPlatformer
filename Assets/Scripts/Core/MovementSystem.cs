@@ -118,13 +118,23 @@ public class MovementSystem : MonoBehaviour
 			}
 		}
 
+		// CheckCollision with walls.
 		if (_wallCheckSize.magnitude != 0)
 		{
-			if (Physics2D.OverlapBox(_wallCheckPoint.position, _wallCheckSize, 0, _wallLayer))
+			if (Physics2D.OverlapBox(_wallCheckPoint.position, _wallCheckSize, 0, _wallLayer) && _rb.velocity.y > 0)
 			{
-				_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(0, -_maxFallSpeed));
+				_rb.velocity = new Vector2(_rb.velocity.x, 0);
+				_isJumpCut = true;
+				IsJumping = false;
+			}
+
+			if(Physics2D.Raycast(transform.position, Vector2.left, 0.1f, _wallLayer) || Physics2D.Raycast(transform.position, Vector2.left * -1, 0.1f, _wallLayer))
+			{
+				_rb.velocity = new Vector2(0, _rb.velocity.y);
 			}
 		}
+
+
 		#endregion
 
 		#region Jump Check
