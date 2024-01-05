@@ -123,6 +123,105 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1040963
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1040964}
+  - component: {fileID: 1040966}
+  - component: {fileID: 1040965}
+  m_Layer: 0
+  m_Name: TransitionDestinationB
+  m_TagString: Untagged
+  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1040964
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040963}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.104, y: -3, z: 9.901865}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 545069293}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1040965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a297ceb865801a449951773f0b1a8064, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 1751005512}
+  _setCharacterVelocity: 0
+  _characterVelocity: {x: 0, y: 0}
+  _setCharacterFacing: 1
+  _faceLeft: 1
+  _setState: 0
+  _animatorParameterSetter:
+    parameterType: 0
+    parameterName: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+  _animationHandler: {fileID: 0}
+--- !u!114 &1040966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e693036ad2023d4f834b9753528c77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _destinationTag: 1
+  _transitioningGameObject: {fileID: 1751005511}
+  OnReachDestination:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1040965}
+        m_TargetAssemblyTypeName: CharacterStateSetter, Assembly-CSharp
+        m_MethodName: SetCharacterState
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1751005512}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: SetLastTransitionDestination
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1040966}
+          m_ObjectArgumentAssemblyTypeName: TransitionDestination, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &10158636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1546,11 +1645,11 @@ PrefabInstance:
       objectReference: {fileID: 606597786}
     - target: {fileID: 1717968601, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.978244
+      value: 2.8822317
       objectReference: {fileID: 0}
     - target: {fileID: 1717968601, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00023758411
+      value: -0.00022959709
       objectReference: {fileID: 0}
     - target: {fileID: 1717968601, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1570,11 +1669,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 419479602220026683, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.5892441
+      value: -0.49323177
       objectReference: {fileID: 0}
     - target: {fileID: 419479602220026683, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.30323756
+      value: 0.30322957
       objectReference: {fileID: 0}
     - target: {fileID: 419479602220026683, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1889,6 +1988,8 @@ Transform:
   - {fileID: 1701713394}
   - {fileID: 1661764402}
   - {fileID: 721554572}
+  - {fileID: 1861234956}
+  - {fileID: 1040964}
   m_Father: {fileID: 1394756768}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13970,6 +14071,83 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c76b6016f644db240a60efdcc8a453cd, type: 3}
+--- !u!1 &1861234955
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1861234956}
+  - component: {fileID: 1861234958}
+  - component: {fileID: 1861234957}
+  m_Layer: 0
+  m_Name: TransitionPointZona2ToZona3
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1861234956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861234955}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.4949996, y: -2.79, z: 10.566865}
+  m_LocalScale: {x: 0.225, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 545069293}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1861234957
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861234955}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &1861234958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861234955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a722a74af7eed740be48f2963d69d04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transitioningGameObject: {fileID: 1751005511}
+  _transitionType: 0
+  _transitionWhen: 2
+  _newSceneName: Zona3
+  _transitionDestinationTag: 0
+  _resetInputValuesOnTransition: 1
 --- !u!1 &1873994365 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4631515661189032121, guid: e7830b495a2074d468c87702923ff16c, type: 3}
