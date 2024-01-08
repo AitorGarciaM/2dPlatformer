@@ -32,5 +32,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Dungeon/Zona7.unity
     guid: 80a56881d68c6424c85ce4acc78138b3
+  - enabled: 1
+    path: Assets/Scenes/Levels/Dungeon/FinalZone.unity
+    guid: 245ed451c112b5840b34ce726c83121d
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 26de95b2b7c401e41bd4d2f70af179b7, type: 2}

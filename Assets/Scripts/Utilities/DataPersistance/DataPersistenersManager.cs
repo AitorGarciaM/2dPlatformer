@@ -31,9 +31,12 @@ public class DataPersistenersManager : MonoBehaviour
 
 	private static void Create()
 	{
-		GameObject instance = Instantiate(Resources.Load<GameObject>("Prefabs/DataPersistenersManager"));
-		DontDestroyOnLoad(instance);
-		_instance = instance.GetComponent<DataPersistenersManager>();
+		if (Application.isPlaying)
+		{
+			GameObject instance = Instantiate(Resources.Load<GameObject>("Prefabs/DataPersistenersManager"));
+			DontDestroyOnLoad(instance);
+			_instance = instance.GetComponent<DataPersistenersManager>();
+		}
 	}
 
 	private HashSet<IDataPersistener> _dataPersisteners = new HashSet<IDataPersistener>();
@@ -132,7 +135,7 @@ public class DataPersistenersManager : MonoBehaviour
 
 	public static void UnRegisterDataPersistener(IDataPersistener dataPersistener)
 	{ 
-		if(!s_quitting)
+		if(!s_quitting && Application.isPlaying)
 		{
 			Instance.UnRegister(dataPersistener);
 		}

@@ -88,6 +88,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _openPosition: {x: -3.749, y: -0.116}
   _closedPosition: {x: -3.749, y: -1.116}
+  _isLeft: 1
   _isOpen: 0
   _chekOpen: 0
   _dataSettings:

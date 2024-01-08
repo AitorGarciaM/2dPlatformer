@@ -226,11 +226,14 @@ public class SkeletoneController : MonoBehaviour, IHitable
 					break;
 				}
 
-				Collider2D playercollider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _playerLayerMask);
-
-				if (playercollider != null)
+				if (_attackArea.enabled == true)
 				{
-					playercollider.GetComponent<PlayerController>().Hit(_stats);
+					Collider2D playercollider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, _attackArea.transform.rotation.z, _playerLayerMask);
+
+					if (playercollider != null)
+					{
+						playercollider.GetComponent<PlayerController>().Hit(_stats);
+					}
 				}
 
 				_currentAttackWaitTime = 0;

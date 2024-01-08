@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	private Rigidbody2D _rb;
 	private MovementSystem _moveSystem;
 	private PlayerAction _input = null;
+	private PlayerInput _playerInput;
 	private Vector2 _moveInputVector = Vector2.zero; // Input vector.
 	private Vector2 _moveCamreraVector;
 	private TransitionDestination _resetPoint;
@@ -148,12 +149,16 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	public void PauseControl()
 	{
+		_input.Player.Disable();
 		_input.Disable();
+		_playerInput.DeactivateInput();
 	}
 
 	public void RestartControl()
 	{
+		_input.Player.Enable();
 		_input.Enable();
+		_playerInput.ActivateInput();
 	}
 
 	public void SetForce(Vector2 force)
@@ -174,6 +179,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	private void Awake()
 	{
 		_input = new PlayerAction();
+		_playerInput = GetComponent<PlayerInput>();
 		_rb = GetComponent<Rigidbody2D>();
 		_moveSystem = GetComponent<MovementSystem>();
 
@@ -222,7 +228,14 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnMovementPerformed(InputAction.CallbackContext value)
 	{
-		_moveInputVector = value.ReadValue<Vector2>();
+		if (!_stopMovement)
+		{
+			_moveInputVector = value.ReadValue<Vector2>();
+		}
+		else
+		{
+			_moveInputVector = Vector2.zero;
+		}
 	}
 
 	private void OnMovementCancelled(InputAction.CallbackContext value)
@@ -298,14 +311,17 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnAttackInputOn()
 	{
-		_currentAttackWaitTime = 0;
-		_timeToEndAttack = 0;
-		_animationHandler.SetTrigger("Attack");
+		if (!_stopMovement)
+		{
+			_currentAttackWaitTime = 0;
+			_timeToEndAttack = 0;
+			_animationHandler.SetTrigger("Attack");
+		}
 	}
 
 	private void OnHealInputOn()
 	{
-		if (_currentHealthCount > 0 && _currentHealWaitTime >= 1f)
+		if (_currentHealthCount > 0 && _currentHealWaitTime >= 1f && !_stopMovement)
 		{
 			_stats.Heal(_healing);
 
@@ -336,12 +352,20 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnMenuInputOn()
 	{
-		_trinketsMenu.SetActive(!_trinketsMenu.activeSelf);
+		if (!_stopMovement)
+		{
+			_trinketsMenu.SetActive(!_trinketsMenu.activeSelf);
+
+		}
 	}
 
 	private void OnPauseInputOn()
 	{
-		_pauseMenu.SetActive(!_pauseMenu.activeSelf);
+		if (!_stopMovement)
+		{
+			_pauseMenu.SetActive(!_pauseMenu.activeSelf);
+
+		}
 	}
 
 	#endregion
@@ -474,13 +498,15 @@ public class PlayerController : MonoBehaviour, IHitable
 	private IEnumerator PauseInput(float time)
 	{
 		_input.Disable();
+		_stopMovement = true;
 
 		yield return new WaitForSeconds(time);
 
 		// Reactivate controll.
 		_input.Enable();
+		_stopMovement = false;
 
-		yield return null;
+		yield break;
 	}
 
 	private IEnumerator DeathScreen()
@@ -492,6 +518,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
 		SceneController.Instance.TransitionToCheckPoint();
 
+		yield break;
 	}
 
 	private IEnumerator ResetPositionInternal()
@@ -503,6 +530,8 @@ public class PlayerController : MonoBehaviour, IHitable
 		yield return ScreenFader.Instance.FadeSceneIn();
 		_input.Enable();
 		ResetingPosition = false;
+
+		yield break;
 	}
 	
 }

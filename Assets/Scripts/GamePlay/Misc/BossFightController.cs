@@ -34,8 +34,17 @@ public class BossFightController : MonoBehaviour
 
 		_initBattle = true;
 		_battleEnded = true;
-		_musicSource.clip = _loop;
-		_musicSource.loop = true;
+		if (_musicSource == null)
+		{
+			Debug.LogWarning("Music Source it's not implemented.");
+		}
+		else
+		{
+			// TO DO: replace for singleton audio manager.
+			_musicSource.Pause();
+			_musicSource.clip = _loop;
+			_musicSource.loop = true;
+		}
     }
 
     // Update is called once per frame
@@ -99,7 +108,10 @@ public class BossFightController : MonoBehaviour
 	private IEnumerator StartMusic(float time)
 	{
 		yield return new WaitForSeconds(time);
-		_musicSource.Play();
+		if (_musicSource != null)
+		{
+			_musicSource.Play();
+		}
 		yield return null;
 	}
 }

@@ -13043,15 +13043,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2075373986}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a722a74af7eed740be48f2963d69d04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _transitioningGameObject: {fileID: 1751005510}
   _transitionType: 0
-  _transitionWhen: 0
-  _newSceneName: BossFight
+  _transitionWhen: 2
+  _newSceneName: FInalZone
   _transitionDestinationTag: 0
   _resetInputValuesOnTransition: 1
 --- !u!61 &2075373989

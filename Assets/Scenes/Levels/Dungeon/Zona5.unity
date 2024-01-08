@@ -9035,10 +9035,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1174559937}
     m_Modifications:
-    - target: {fileID: 1916679029, guid: 50cd09afac9ed3b499629048f5f855b0, type: 3}
-      propertyPath: _isLeft
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4981815053910177009, guid: 50cd09afac9ed3b499629048f5f855b0, type: 3}
       propertyPath: m_Name
       value: DoorLeft

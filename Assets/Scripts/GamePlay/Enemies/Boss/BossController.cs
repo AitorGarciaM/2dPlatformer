@@ -261,6 +261,8 @@ public class BossController : MonoBehaviour, IHitable
 		{
 			Jump();
 			_currentInitBattleTime = 0;
+			_direction = Mathf.Sign(transform.position.x - _player.transform.position.x) * -1;
+			Debug.Log(_direction);
 		}
 		
 		if(_performingJump)
@@ -270,7 +272,7 @@ public class BossController : MonoBehaviour, IHitable
 				_startingBattle = false;
 			}
 
-			_direction = Mathf.Sign(transform.position.x - _player.transform.position.x) * - 1;
+			
 		}
 		else if(!_startingBattle && _moveSystem.IsGrounded)
 		{

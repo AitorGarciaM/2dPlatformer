@@ -191,17 +191,20 @@ public class BatController : MonoBehaviour, IHitable
 			return;
 		}
 
-		Vector2 direction = (_path.vectorPath[_currentWaypoint] - transform.position).normalized;
-
-		Debug.DrawLine(transform.position, direction);
-
-		_moveSystem.SetDesiredDirection(direction);
-
-		float distance = Vector2.Distance(transform.position, _path.vectorPath[_currentWaypoint]);
-
-		if (distance < _nextWaypointDistance)
+		if (_currentWaypoint < _path.vectorPath.Count)
 		{
-			_currentWaypoint++;
+			Vector2 direction = (_path.vectorPath[_currentWaypoint] - transform.position).normalized;
+
+			Debug.DrawLine(transform.position, direction);
+
+			_moveSystem.SetDesiredDirection(direction);
+
+			float distance = Vector2.Distance(transform.position, _path.vectorPath[_currentWaypoint]);
+
+			if (distance < _nextWaypointDistance)
+			{
+				_currentWaypoint++;
+			}
 		}
 	}
 
