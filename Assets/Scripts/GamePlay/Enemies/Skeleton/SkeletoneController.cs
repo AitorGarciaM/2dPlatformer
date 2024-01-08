@@ -81,37 +81,43 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 	public void Hit(Stats stats)
 	{
-		_stats.GetDamage(stats);
-		_reciveHit = true;
-		_currentHitWaitTime = 0;
-		_currentHitDelayTime = _hitDelayTime;
-
-		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
-
-		if(_stats.CurrentHealth > 0)
+		if (_currentHitWaitTime > _hitWaitTime)
 		{
-			_state = State.Follow;
-		}
-		else
-		{
-			_state = State.Dead;
+			_stats.GetDamage(stats);
+			_reciveHit = true;
+			_currentHitWaitTime = 0;
+			_currentHitDelayTime = _hitDelayTime;
+
+			CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
+
+			if (_stats.CurrentHealth > 0)
+			{
+				_state = State.Follow;
+			}
+			else
+			{
+				_state = State.Dead;
+			}
 		}
 	}
 
 	public void Hit(float damage)
 	{
-		_stats.GetDamage(damage);
-		_reciveHit = true;
-		_currentHitWaitTime = 0;
-		_currentHitDelayTime = _hitDelayTime;
+		if (_currentHitWaitTime > _hitWaitTime)
+		{
+			_stats.GetDamage(damage);
+			_reciveHit = true;
+			_currentHitWaitTime = 0;
+			_currentHitDelayTime = _hitDelayTime;
 
-		if (_stats.CurrentHealth > 0)
-		{
-			_state = State.Follow;
-		}
-		else
-		{
-			_state = State.Dead;
+			if (_stats.CurrentHealth > 0)
+			{
+				_state = State.Follow;
+			}
+			else
+			{
+				_state = State.Dead;
+			}
 		}
 	}
 
@@ -145,7 +151,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	void Start()
     {
 		_targetPosition = _patrollPoints[_nextPatrollPoint];
-		InvokeRepeating("UpdatePathfind", 0, 0.1f);
+		InvokeRepeating("UpdatePathfind", 0, 1f);
     }
 
 	private void FixedUpdate()
@@ -197,7 +203,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 				break;
 			case State.Follow:
-
+				
 				Follow();
 				
 				if (collider == null && _target != null)
@@ -214,9 +220,10 @@ public class SkeletoneController : MonoBehaviour, IHitable
 				_isAttacking = true;
 				_direction = 0;
 
-				if (Vector2.Distance(_rb.position, _target.position) > _attackRange)
+				if (Vector2.Distance(_rb.position, _target.position) > _attackRange || _currentAttackWaitTime < _stats.AttackRate)
 				{
 					_state = State.Follow;
+					break;
 				}
 
 				Collider2D playercollider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _playerLayerMask);
@@ -226,8 +233,8 @@ public class SkeletoneController : MonoBehaviour, IHitable
 					playercollider.GetComponent<PlayerController>().Hit(_stats);
 				}
 
-				_animationHandler.SetTrigger("Attack");
 				_currentAttackWaitTime = 0;
+				_animationHandler.SetTrigger("Attack");
 				
 				break;
 			case State.Dead:
@@ -252,10 +259,12 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		{
 			_targetPosition = _target.position;
 			_followPlayer = true;
+			_isAttacking = false;
 		}
 		else
 		{
 			_state = State.Attack;
+			_direction = 0;
 		}
 	}
 
@@ -271,11 +280,11 @@ public class SkeletoneController : MonoBehaviour, IHitable
 			_currentPatrollPoint = _nextPatrollPoint;
 			_nextPatrollPoint = (_currentPatrollPoint + 1) % _patrollPoints.Count;
 			_targetPosition = _patrollPoints[_nextPatrollPoint];
+			_direction = 0;
 		}
 		else if (distanceToNextPoint <= 0.1f)
 		{
 			_targetPosition = transform.position;
-			_direction = 0;
 		}
 	}
 
@@ -283,13 +292,14 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	{
 		AnimatorClipInfo[] animatorClipInfo = _animationHandler.GetCurrentAnimatorClipInfo(0);
 
-		if (animatorClipInfo[0].clip.name == "Attack")
+		if (animatorClipInfo[0].clip.name == "AttackLeft" || animatorClipInfo[0].clip.name == "AttackRight")
 		{
 			AnimatorStateInfo animatorStateInfo = _animationHandler.GetCurrentAnimatorStateInfo(0);
 
 			if (animatorStateInfo.normalizedTime >= 1f)
 			{
 				_isAttacking = false;
+				_currentAttackWaitTime = 0;
 			}
 		}
 
@@ -321,7 +331,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 				_isFacingRight = true;
 		}
 
-		_direction = 0;
+		_animationHandler.SetBool("IsFacingRight", _isFacingRight);
 	}
 
 	#region Pathfinding
@@ -357,6 +367,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		if(_currentWayPoint >= _path.vectorPath.Count)
 		{
 			_reachedEndOfPath = true;
+			_direction = 0;
 			return;
 		}
 		else
@@ -370,12 +381,15 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 		float distance = Vector2.Distance(_rb.position, _path.vectorPath[_currentWayPoint]);
 
-		if(distance < 0.1f)
+		if (distance < 0.1f)
 		{
 			_currentWayPoint++;
 		}
-
-		_direction = dir.x;
+		else
+		{
+			if(dir.x != 0)
+				_direction = Mathf.Sign(dir.x);
+		}
 	}
 
 	#endregion
