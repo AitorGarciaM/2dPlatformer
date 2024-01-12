@@ -66,7 +66,9 @@ MonoBehaviour:
   _fallGravityMulty: 1
   _jumpHangGravityMulty: 1
   _groundCheckPoint: {fileID: 5280172182358151699}
+  _wallCheckPoint: {fileID: 0}
   _groundCheckSize: {x: 0.3, y: 0.04}
+  _wallCheckSize: {x: 0, y: 0}
   _coyoteTime: 0.2
   _slopeCheckDistance: 0.5
   _circleCollider: {fileID: 5280172181262835281}
@@ -75,6 +77,9 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 16392
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &5280172181262835290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,7 +420,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
