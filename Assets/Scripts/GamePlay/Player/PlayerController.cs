@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	private bool _jump;
 	private bool _isFacingLeft;
 	private bool _stopMovement;
+	private bool _stopInput;
 	private bool _deathScreenPlay;
 	private bool _landFXInvoked = false;
 	private bool _invincibility = false;
@@ -153,18 +154,18 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	public void PauseControl()
 	{
-		_input.Player.Disable();
-		_input.Disable();
-		_playerInput.DeactivateInput();
-		_stopMovement = true;
+		//_input.Player.Disable();
+		//_input.Disable();
+		//_playerInput.DeactivateInput();
+		_stopInput = true;
 	}
 
 	public void RestartControl()
 	{
-		_input.Player.Enable();
-		_input.Enable();
-		_playerInput.ActivateInput();
-		_stopMovement = false;
+		////_input.Player.Enable();
+		////_input.Enable();
+		////_playerInput.ActivateInput();
+		_stopInput = false;
 	}
 
 	public void SetForce(Vector2 force)
@@ -234,7 +235,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnMovementPerformed(InputAction.CallbackContext value)
 	{
-		if (!_stopMovement)
+		if (!_stopMovement || !_stopInput)
 		{
 			_moveInputVector = value.ReadValue<Vector2>();
 		}
@@ -302,7 +303,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	// Jump performed;
 	private void OnJumpingInput()
 	{
-		if (!_stopMovement)
+		if (!_stopMovement || !_stopInput)
 		{
 			LastPressedJumpTime = _jumpInputBufferTime;
 			_animationHandler.SetTrigger("Jump");
@@ -317,7 +318,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnAttackInputOn()
 	{
-		if (!_stopMovement)
+		if (!_stopInput)
 		{
 			_currentAttackWaitTime = 0;
 			_timeToEndAttack = 0;
@@ -358,7 +359,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnMenuInputOn()
 	{
-		if (!_stopMovement)
+		if (!_stopInput)
 		{
 			_trinketsMenu.SetActive(!_trinketsMenu.activeSelf);
 
@@ -367,11 +368,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnPauseInputOn()
 	{
-		if (!_stopMovement)
-		{
-			_pauseMenu.SetActive(!_pauseMenu.activeSelf);
-
-		}
+		_pauseMenu.SetActive(!_pauseMenu.activeSelf);
 	}
 
 	#endregion
@@ -491,7 +488,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		}
 		
 		// Updates movement.
-		if (_currentAttackWaitTime > _stats.AttackRate)
+		if (_currentAttackWaitTime > _stats.AttackRate && !_stopInput)
 		{
 			_moveSystem.SetDesiredDirection(_moveInputVector);
 		}
@@ -503,14 +500,11 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private IEnumerator PauseInput(float time)
 	{
-		_input.Disable();
-		_stopMovement = true;
+		_stopInput = true;
 
 		yield return new WaitForSeconds(time);
 
-		// Reactivate controll.
-		_input.Enable();
-		_stopMovement = false;
+		_stopInput = false;
 
 		yield break;
 	}

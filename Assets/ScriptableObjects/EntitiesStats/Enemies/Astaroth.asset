@@ -18,4 +18,8 @@ MonoBehaviour:
   _manaRecover: 0
   _attackRate: 1
   _damage: 35
-  _shakerForceImpact: 0.025
+  _shakerForceImpact: 0.02
+  _liveSuction: 0
+  _dataSettings:
+    dataTag: 
+    persistenceType: 0

@@ -16,7 +16,7 @@ public class PlayerAnimationHandler : AnimationHnadler
 
 	public void StartMoving()
 	{
-		_player.RestartControl();
+		_stopMovement = false;
 	}
 
 	public void EnableAttack()
@@ -31,7 +31,17 @@ public class PlayerAnimationHandler : AnimationHnadler
 
 	public void StopMoving()
 	{
+		_stopMovement = true;
+	}
+
+	public void DeactivateInput()
+	{
 		_player.PauseControl();
+	}
+
+	public void ReactivateInput()
+	{
+		_player.RestartControl();
 	}
 
 	public void ActiveAttack()
