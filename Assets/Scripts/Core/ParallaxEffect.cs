@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ParallaxEffect : MonoBehaviour
 {
-	[SerializeField] private float _parallaxMultiplier;
+	[SerializeField] private float _parallaxMultiplier = 1;
 	[SerializeField] private bool _followCamera = true;
 
 	private Transform _cameraTransform;
@@ -33,27 +33,26 @@ public class ParallaxEffect : MonoBehaviour
 		}
     }
 
+	private void Update()
+	{
+		
+	}
+
 	private void FollowCamera()
 	{
 		float deltaX = (_cameraTransform.position.x - _previousCameraPosition.x) * _parallaxMultiplier;
-		float moveAmout = _cameraTransform.position.x * (1 - _parallaxMultiplier);
+		Debug.Log(deltaX);
 		transform.Translate(deltaX, 0, 0);
+
+		if (transform.position.x < (_startPosition - _spriteWidth) || transform.position.x > (_startPosition + _spriteWidth))
+		{
+			transform.position = new Vector3(_startPosition, transform.position.y, transform.position.z);
+			Debug.Log("Repositioning");
+		}
+
 		_previousCameraPosition = _cameraTransform.position;
-
-		if (moveAmout > (_startPosition + _spriteWidth))
-		{
-			transform.Translate(_spriteWidth, 0, 0);
-
-			_startPosition += _spriteWidth;
-		}
-		else if (moveAmout < (_startPosition - _spriteWidth))
-		{
-			transform.Translate(-_spriteWidth, 0, 0);
-
-			_startPosition -= _spriteWidth;
-		}
 	}
-
+	
 	private void StaticParallax()
 	{
 		float speed = -0.5f * _parallaxMultiplier * Time.fixedDeltaTime;

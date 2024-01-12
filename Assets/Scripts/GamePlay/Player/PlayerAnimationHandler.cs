@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerAnimationHandler : AnimationHnadler
 {
+	private PlayerController _player;
+
 	private bool _attackActive = false;
 	private bool _stopMovement = false;
 	private bool _blockAttack = false;
@@ -14,7 +16,7 @@ public class PlayerAnimationHandler : AnimationHnadler
 
 	public void StartMoving()
 	{
-		_stopMovement = false;
+		_player.RestartControl();
 	}
 
 	public void EnableAttack()
@@ -29,7 +31,7 @@ public class PlayerAnimationHandler : AnimationHnadler
 
 	public void StopMoving()
 	{
-		_stopMovement = true;
+		_player.PauseControl();
 	}
 
 	public void ActiveAttack()
@@ -40,5 +42,10 @@ public class PlayerAnimationHandler : AnimationHnadler
 	public void DeactiveAttack()
 	{
 		_attackActive = false;
+	}
+
+	private void Start()
+	{
+		_player = transform.parent.GetComponent<PlayerController>();
 	}
 }

@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	private bool _stopMovement;
 	private bool _deathScreenPlay;
 	private bool _landFXInvoked = false;
+	private bool _invincibility = false;
 
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
@@ -97,25 +98,26 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	public void Hit(Stats stats)
 	{
-		if (_currentHitWaitTime < _hitWaitTime)
+		if (_currentHitWaitTime < _hitWaitTime || _invincibility) 
 			return;
 
 		_currentHitWaitTime = 0;
 		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
-		StartCoroutine(PauseInput(_hitWaitTime));
+		//StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
 		_stats.GetDamage(stats);
 
 		if (_stats.CurrentHealth <= 0)
 		{
 			_animationHandler.SetBool("Death", true);
+			_stopMovement = true;
 			_deathScreenPlay = true;
 		}
 	}
 
 	public void Hit(float damage)
 	{
-		if (_currentHitWaitTime < _hitWaitTime)
+		if (_currentHitWaitTime < _hitWaitTime || _invincibility)
 			return;
 
 		_currentHitWaitTime = 0;
@@ -127,6 +129,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		if (_stats.CurrentHealth <= 0)
 		{
 			_animationHandler.SetBool("Death", true);
+			_stopMovement = true;
 			_deathScreenPlay = true;
 		}
 	}
@@ -134,6 +137,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	public void ResetPosition()
 	{
 		StartCoroutine(ResetPositionInternal());
+		_stopMovement = false;
 	}
 
 	// Applies knokback to the player.
@@ -152,6 +156,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_input.Player.Disable();
 		_input.Disable();
 		_playerInput.DeactivateInput();
+		_stopMovement = true;
 	}
 
 	public void RestartControl()
@@ -159,6 +164,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_input.Player.Enable();
 		_input.Enable();
 		_playerInput.ActivateInput();
+		_stopMovement = false;
 	}
 
 	public void SetForce(Vector2 force)
@@ -524,13 +530,14 @@ public class PlayerController : MonoBehaviour, IHitable
 	private IEnumerator ResetPositionInternal()
 	{
 		ResetingPosition = true;
+		_invincibility = true;
 		yield return ScreenFader.Instance.FadeSceneOut();
 		_input.Disable();
 		transform.position = _resetPoint.transform.position;
 		yield return ScreenFader.Instance.FadeSceneIn();
 		_input.Enable();
 		ResetingPosition = false;
-
+		_invincibility = false;
 		yield break;
 	}
 	

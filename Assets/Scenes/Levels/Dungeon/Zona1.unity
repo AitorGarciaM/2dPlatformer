@@ -1088,8 +1088,8 @@ MonoBehaviour:
   _transitioningGameObject: {fileID: 829429524}
   _transitionType: 0
   _transitionWhen: 2
-  _newSceneName: Tutorial
-  _transitionDestinationTag: 0
+  _newSceneName: Hub
+  _transitionDestinationTag: 1
   _resetInputValuesOnTransition: 1
 --- !u!4 &415811986 stripped
 Transform:
@@ -6175,7 +6175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
       propertyPath: _hitWaitTime
-      value: 0.25
+      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
@@ -7599,7 +7599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2488003965948428172, guid: c84b5cd6486d8ae4a8b1225808035d6d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2488003965948428173, guid: c84b5cd6486d8ae4a8b1225808035d6d, type: 3}
       propertyPath: m_RootOrder

@@ -164,6 +164,16 @@ public class SkeletoneController : MonoBehaviour, IHitable
 			_state = State.Patroll;
 			_changeStateTimer = 2f;
 		}
+
+		if (_attackArea.enabled == true)
+		{
+			Collider2D playercollider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, _attackArea.transform.rotation.z, _playerLayerMask);
+
+			if (playercollider != null)
+			{
+				playercollider.GetComponent<PlayerController>().Hit(_stats);
+			}
+		}
 	}
 
 	// Update is called once per frame
@@ -224,16 +234,6 @@ public class SkeletoneController : MonoBehaviour, IHitable
 				{
 					_state = State.Follow;
 					break;
-				}
-
-				if (_attackArea.enabled == true)
-				{
-					Collider2D playercollider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, _attackArea.transform.rotation.z, _playerLayerMask);
-
-					if (playercollider != null)
-					{
-						playercollider.GetComponent<PlayerController>().Hit(_stats);
-					}
 				}
 
 				_currentAttackWaitTime = 0;

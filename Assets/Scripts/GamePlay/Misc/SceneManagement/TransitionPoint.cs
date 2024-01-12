@@ -62,6 +62,8 @@ public class TransitionPoint : MonoBehaviour
 		switch (_transitionType)
 		{
 			case Transition_Type.SameScene:
+				TransitionDestination destination = GetDestination(_transitionDestinationTag);
+				_transitioningGameObject.transform.position = destination.transform.position;
 				break;
 			case Transition_Type.DiferentZone:
 			case Transition_Type.DifferentNonGameplayScene:
@@ -97,5 +99,21 @@ public class TransitionPoint : MonoBehaviour
 		{
 			TransitionInternal();
 		}
+	}
+
+	private TransitionDestination GetDestination(TransitionDestination.Destination_Tag destinationTag)
+	{
+		TransitionDestination[] entrances = FindObjectsOfType<TransitionDestination>();
+
+		for (int i = 0; i < entrances.Length; i++)
+		{
+			if (entrances[i].DestinationTag == destinationTag)
+			{
+				return entrances[i];
+			}
+		}
+
+		Debug.LogWarning("No entrances was found with the tag " + destinationTag + ".");
+		return null;
 	}
 }

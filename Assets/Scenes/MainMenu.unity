@@ -2636,7 +2636,7 @@ MonoBehaviour:
   _transitioningGameObject: {fileID: 341676551992640902, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
   _transitionType: 0
   _transitionWhen: 0
-  _newSceneName: Zona1
+  _newSceneName: Tutorial
   _transitionDestinationTag: 4
   _resetInputValuesOnTransition: 1
 --- !u!4 &2014873568

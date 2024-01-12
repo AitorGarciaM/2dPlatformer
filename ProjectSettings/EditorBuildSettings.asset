@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: cff5d043f224566489850b150dd671b8
   - enabled: 1
+    path: Assets/Scenes/Levels/OakWoods/Tutorial.unity
+    guid: f9433eb69fd672e47a2b27959c98c0de
+  - enabled: 1
+    path: Assets/Scenes/Levels/OakWoods/Hub.unity
+    guid: 55113ee91ec485d4dada4d16071ebd6b
+  - enabled: 1
     path: Assets/Scenes/Levels/Dungeon/Zona1.unity
     guid: b96cf07ae9715fd4796ecf738b8fbf3d
   - enabled: 1
