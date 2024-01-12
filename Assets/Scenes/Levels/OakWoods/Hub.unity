@@ -2525,6 +2525,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1253414164 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3926319880141108463, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+  m_PrefabInstance: {fileID: 1803351657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1282192081
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7607,6 +7618,66 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1869860806}
     m_Modifications:
+    - target: {fileID: 2887269846645692510, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: _restedText
+      value: 
+      objectReference: {fileID: 1253414164}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: _transitioningGameObject
+      value: 
+      objectReference: {fileID: 1717859074}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1803351661}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1803351662}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetCheckPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PotionRestore
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CheckPoint, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: PotionRestorerer, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: OnReachDestination.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2887269846645692512, guid: fb6a6da5d63056447af09de30d163429, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -7655,6 +7726,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EffigyOfMartyr
       objectReference: {fileID: 0}
+    - target: {fileID: 2887269847362460908, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+      propertyPath: m_text
+      value: Rest
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb6a6da5d63056447af09de30d163429, type: 3}
 --- !u!4 &1803351658 stripped
@@ -7662,6 +7737,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2887269846645692512, guid: fb6a6da5d63056447af09de30d163429, type: 3}
   m_PrefabInstance: {fileID: 1803351657}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1803351661 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2887269846645692511, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+  m_PrefabInstance: {fileID: 1803351657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda1d98e005eff14e8a143a3375a2a95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1803351662 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2887269846645692508, guid: fb6a6da5d63056447af09de30d163429, type: 3}
+  m_PrefabInstance: {fileID: 1803351657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 397062b9199aa834f8af19f7a64f04da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1809287490
 GameObject:
   m_ObjectHideFlags: 0
