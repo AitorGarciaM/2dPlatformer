@@ -75,7 +75,5 @@ public class ControllerChecker : MonoBehaviour
 		{
 			_controllerType = ControllerType.Gamepad;
 		}
-
-		Debug.Log(_controllerType);
 	}
 }

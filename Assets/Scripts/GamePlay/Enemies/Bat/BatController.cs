@@ -20,6 +20,7 @@ public class BatController : MonoBehaviour, IHitable
 
 	private Rigidbody2D _rb;
 	private BatAnimator _batAnimator;
+	private CurrentStats _currentStats;
 	private MovementSystem _moveSystem;
 	private Seeker _seeker;
 	private PlayerController _player;
@@ -34,17 +35,17 @@ public class BatController : MonoBehaviour, IHitable
 	private bool _goBack;
 	private bool _isInHouse;
 
-	public Stats GetStats()
+	public CurrentStats GetStats()
 	{
-		return _stats;
+		return _currentStats;
 	}
 
-	public void Hit(Stats stats)
+	public void Hit(CurrentStats stats)
 	{
-		_stats.GetDamage(stats);
+		_currentStats.GetDamage(stats);
 		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 
-		if(_stats.CurrentHealth <= 0)
+		if(_currentStats.CurrentHealth <= 0)
 		{
 			_batAnimator.SetBool("Is_Death", true);
 			_rb.gravityScale = 1;
@@ -59,9 +60,9 @@ public class BatController : MonoBehaviour, IHitable
 
 	public void Hit(float damage)
 	{
-		_stats.GetDamage(damage);
+		_currentStats.GetDamage(damage);
 		
-		if (_stats.CurrentHealth <= 0)
+		if (_currentStats.CurrentHealth <= 0)
 		{
 			_batAnimator.SetBool("Is_Death", true);
 			_rb.gravityScale = 1;
@@ -79,6 +80,8 @@ public class BatController : MonoBehaviour, IHitable
     {
 		_rb = GetComponent<Rigidbody2D>();
 
+		_currentStats = GetComponent<CurrentStats>();
+		
 		_batAnimator = GetComponent<BatAnimator>();
 		_moveSystem = GetComponent<MovementSystem>();
 		_seeker = GetComponent<Seeker>();
@@ -91,7 +94,7 @@ public class BatController : MonoBehaviour, IHitable
 		_goBack = false;
 		_followPlayer = false;
 
-		_stats.Init();
+		_currentStats.Init(_stats);
 
 		InvokeRepeating("UpdatePath", 0, 0.5f);
 
@@ -129,7 +132,7 @@ public class BatController : MonoBehaviour, IHitable
 		// Apply damage to player.
 		if(Physics2D.OverlapCircle(_attackCollider.transform.position, _attackCollider.radius, _playerMask) != null && _attackCollider.gameObject.activeSelf == true)
 		{
-			_player.Hit(_stats);
+			_player.Hit(_currentStats);
 		}
 
 
@@ -140,8 +143,10 @@ public class BatController : MonoBehaviour, IHitable
 	void Update()
 	{
 		float distanceToStart = Vector2.Distance((Vector2)transform.position, _startPosition);
+		float distanceToStartX = Mathf.Abs(transform.position.x - _startPosition.x);
+		float distanceToStartY = Mathf.Abs(transform.position.y - _startPosition.y);
 
-		if (distanceToStart < 0.01f && !_isInHouse)
+		if(distanceToStartX < 0.1f && distanceToStartY <= 0.05f && !_isInHouse && _goBack)
 		{
 			_rb.velocity = Vector2.zero;
 			_moveSystem.SetDesiredDirection(Vector2.zero);
@@ -152,8 +157,6 @@ public class BatController : MonoBehaviour, IHitable
 
 		if (_followPlayer || _goBack)
 		{
-			Debug.Log("Following player: " + _followPlayer);
-			Debug.Log("Going back: " + _goBack);
 			Move();
 		}
 	}

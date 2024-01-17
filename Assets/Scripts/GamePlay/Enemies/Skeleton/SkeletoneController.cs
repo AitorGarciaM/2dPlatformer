@@ -46,6 +46,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 	private Rigidbody2D _rb;
 	private CircleCollider2D _collider2d;
+	private CurrentStats _currentStats;
 	private MovementSystem _moveSystem;
 	private Transform _target;
 	private Seeker _seeker;
@@ -74,23 +75,23 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	private bool _isAttacking = false;
 	private bool _reciveHit = false;
 
-	public Stats GetStats()
+	public CurrentStats GetStats()
 	{
-		return _stats;
+		return _currentStats;
 	}
 
-	public void Hit(Stats stats)
+	public void Hit(CurrentStats stats)
 	{
 		if (_currentHitWaitTime > _hitWaitTime)
 		{
-			_stats.GetDamage(stats);
+			_currentStats.GetDamage(stats);
 			_reciveHit = true;
 			_currentHitWaitTime = 0;
 			_currentHitDelayTime = _hitDelayTime;
 
 			CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 
-			if (_stats.CurrentHealth > 0)
+			if (_currentStats.CurrentHealth > 0)
 			{
 				_state = State.Follow;
 			}
@@ -105,12 +106,12 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	{
 		if (_currentHitWaitTime > _hitWaitTime)
 		{
-			_stats.GetDamage(damage);
+			_currentStats.GetDamage(damage);
 			_reciveHit = true;
 			_currentHitWaitTime = 0;
 			_currentHitDelayTime = _hitDelayTime;
 
-			if (_stats.CurrentHealth > 0)
+			if (_currentStats.CurrentHealth > 0)
 			{
 				_state = State.Follow;
 			}
@@ -124,6 +125,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();
+		_currentStats = GetComponent<CurrentStats>();
 		_collider2d = GetComponent<CircleCollider2D>();
 		_moveSystem = GetComponent<MovementSystem>();
 		_seeker = GetComponent<Seeker>();
@@ -144,7 +146,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 		_currentHitDelayTime = _hitDelayTime;
 
-		_stats.Init();
+		_currentStats.Init(_stats);
 	}
 
 	// Start is called before the first frame update
@@ -168,11 +170,17 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		if (_attackArea.enabled == true)
 		{
 			Collider2D playercollider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, _attackArea.transform.rotation.z, _playerLayerMask);
-
+			
 			if (playercollider != null)
 			{
-				playercollider.GetComponent<PlayerController>().Hit(_stats);
+				playercollider.GetComponent<PlayerController>().Hit(_currentStats);
 			}
+		}
+
+		if (_currentStats.CurrentHealth <= 0)
+		{
+			_state = State.Dead;
+			_animationHandler.SetBool("IsDead", true);
 		}
 	}
 
@@ -241,7 +249,8 @@ public class SkeletoneController : MonoBehaviour, IHitable
 				
 				break;
 			case State.Dead:
-				// Do Nothign.
+				_attackArea.gameObject.SetActive(true);
+				_attackArea.enabled = false;
 				break;
 			default:
 				break;
@@ -260,7 +269,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	{
 		if(Vector2.Distance(_rb.position, _target.position) > _attackRange)
 		{
-			_targetPosition = _target.position;
+			_targetPosition = new Vector2(_target.position.x, transform.position.y);
 			_followPlayer = true;
 			_isAttacking = false;
 		}
@@ -308,7 +317,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 		if (_currentHitDelayTime <= 0)
 		{
-			if (_stats.CurrentHealth > 0)
+			if (_currentStats.CurrentHealth > 0)
 			{
 				_animationHandler.SetTrigger("Hit");
 				_currentHitDelayTime = _hitDelayTime;

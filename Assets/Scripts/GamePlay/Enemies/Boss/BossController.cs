@@ -53,6 +53,8 @@ public class BossController : MonoBehaviour, IHitable
 	[Header("Layers")]
 	[SerializeField] private LayerMask _playerMask;
 
+	private CurrentStats _currentStats;
+
 	private PlayerController _player;
 
 	private Rigidbody2D _rb;
@@ -70,14 +72,14 @@ public class BossController : MonoBehaviour, IHitable
 	private bool _startingBattle;
 	private bool _flamesHitPlayer;
 
-	public bool IsDead { get { return (_stats.CurrentHealth <= 0); } }
+	public bool IsDead { get { return (_currentStats.CurrentHealth <= 0); } }
 
-	public Stats GetStats()
+	public CurrentStats GetStats()
 	{
-		return _stats;
+		return _currentStats;
 	}
 
-	public void Hit(Stats stats)
+	public void Hit(CurrentStats stats)
 	{
 		if (_currentHitWaitTime < _hitWaitTime || _animationHandler.IsInvincible)
 		{
@@ -87,9 +89,9 @@ public class BossController : MonoBehaviour, IHitable
 		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 		_currentHitWaitTime = 0;
 		_animationHandler.SetTrigger("Take_Damage");
-		_stats.GetDamage(stats);
+		_currentStats.GetDamage(stats);
 
-		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
+		_healthBar.normalizedValue = _currentStats.CurrentHealth / _stats.BaseHealth;
 	}
 
 	public void Hit(float damage)
@@ -101,7 +103,7 @@ public class BossController : MonoBehaviour, IHitable
     {
 		_rb = GetComponent<Rigidbody2D>();
 		_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-		_stats.Init();
+		_currentStats.Init(_stats);
 		_stage = Stage.BattleInit;
 		_startingBattle = true;
 		_fireFlames = transform.GetChild(1).gameObject;
@@ -122,7 +124,7 @@ public class BossController : MonoBehaviour, IHitable
 				{
 					float playerDir = Mathf.Sign(_player.transform.position.x - transform.position.x);
 					Vector2 dir = new Vector2(playerDir, 0f);
-					_player.Hit(_stats);
+					_player.Hit(_currentStats);
 					_player.Push(dir, _knockBack);
 					_flamesHitPlayer = true;
 					_currentFlameHitPlayerTime = 0;
@@ -153,7 +155,7 @@ public class BossController : MonoBehaviour, IHitable
 			{
 				float playerDir = Mathf.Sign(_player.transform.position.x - transform.position.x);
 				Vector2 dir = new Vector2(playerDir, 0f);
-				_player.Hit(_stats);
+				_player.Hit(_currentStats);
 				_player.Push(dir, _knockBack);
 			}
 		}
@@ -167,7 +169,7 @@ public class BossController : MonoBehaviour, IHitable
 			{
 				float playerDir = Mathf.Sign(_player.transform.position.x - transform.position.x);
 				Vector2 dir = new Vector2(playerDir, 0f);
-				_player.Hit(_stats);
+				_player.Hit(_currentStats);
 				_player.Push(dir, _knockBack);
 			}
 
@@ -262,7 +264,6 @@ public class BossController : MonoBehaviour, IHitable
 			Jump();
 			_currentInitBattleTime = 0;
 			_direction = Mathf.Sign(transform.position.x - _player.transform.position.x) * -1;
-			Debug.Log(_direction);
 		}
 		
 		if(_performingJump)
@@ -290,7 +291,7 @@ public class BossController : MonoBehaviour, IHitable
 			BaseAttackPattern();
 		}
 
-		if (_stats.CurrentHealth <= (_stats.BaseHealth * 0.7f))
+		if (_currentStats.CurrentHealth <= (_stats.BaseHealth * 0.7f))
 		{
 			_stage = Stage.Second;
 		}
@@ -475,6 +476,7 @@ public class BossController : MonoBehaviour, IHitable
 		yield return null;
 	}
 
+	
 	#region Gizmos
 	private void OnDrawGizmos()
 	{
@@ -484,5 +486,9 @@ public class BossController : MonoBehaviour, IHitable
 		Gizmos.DrawWireSphere(smashCircleCenter, _samshMinRange);
 		Gizmos.DrawWireSphere(smashCircleCenter, _fireFlameMinRange);
 	}
+
+	
+
+	
 	#endregion
 }

@@ -81,8 +81,6 @@ public class MovementSystem : MonoBehaviour
 		IsGrounded = true;
 	}
 
-	
-
 	private void FixedUpdate()
 	{
 		SlopeCheck();
@@ -154,7 +152,6 @@ public class MovementSystem : MonoBehaviour
 		{
 			if (_isJumpCut)
 			{
-				Debug.Log("Jump is Cut");
 				// Higer gravity if jump button is released.
 				SetGravityScale(_gravityScale * jumpCutGravityMultiply);
 				_rb.velocity = new Vector2(_rb.velocity.x, Mathf.Max(_rb.velocity.y, -_maxFallSpeed));

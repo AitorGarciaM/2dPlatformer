@@ -41,13 +41,11 @@ public class ParallaxEffect : MonoBehaviour
 	private void FollowCamera()
 	{
 		float deltaX = (_cameraTransform.position.x - _previousCameraPosition.x) * _parallaxMultiplier;
-		Debug.Log(deltaX);
 		transform.Translate(deltaX, 0, 0);
 
 		if (transform.position.x < (_startPosition - _spriteWidth) || transform.position.x > (_startPosition + _spriteWidth))
 		{
 			transform.position = new Vector3(_startPosition, transform.position.y, transform.position.z);
-			Debug.Log("Repositioning");
 		}
 
 		_previousCameraPosition = _cameraTransform.position;

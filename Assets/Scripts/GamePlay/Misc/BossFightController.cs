@@ -88,10 +88,12 @@ public class BossFightController : MonoBehaviour
 	private void EndBattle()
 	{
 		// Change battle loop clip to final clip.
-		_musicSource.Pause();
-		_musicSource.clip = _end;
-		_musicSource.loop = false;
-		_musicSource.Play();
+		if (_musicSource != null)
+		{ _musicSource.Pause();
+			_musicSource.clip = _end;
+			_musicSource.loop = false;
+			_musicSource.Play();
+		}
 
 		_battleEnded = true;
 	}

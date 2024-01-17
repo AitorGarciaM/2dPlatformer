@@ -10,12 +10,10 @@ public class LiveSuctionEffect : Effect
 	public override void Apply(GameObject gameObject)
 	{
 		gameObject.GetComponent<IHitable>().GetStats().SetLiveSuction(_value);
-		Debug.Log("Effect has been applied!");
 	}
 
 	public override void Disapply(GameObject gameObject)
 	{
 		gameObject.GetComponent<IHitable>().GetStats().ResetLiveSuction();
-		Debug.Log("Effect has been disabled!");
 	}
 }

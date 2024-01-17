@@ -11,7 +11,7 @@ public class DataSettings
 	}
 
 	public string dataTag = System.Guid.NewGuid().ToString();
-	public PersistenceType persistenceType;
+	public PersistenceType persistenceType = PersistenceType.ReadWrite;
 
 	public DataSettings(PersistenceType persistenceType)
 	{

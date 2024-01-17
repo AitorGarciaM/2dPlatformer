@@ -9,7 +9,7 @@ public class HealthRegenerationEffect : Effect
 
 	public override void Apply(GameObject gameObject)
 	{
-		gameObject.GetComponent<Stats>().SetHealthRegen(_value);
+		gameObject.GetComponent<CurrentStats>().SetHealthRegen(_value);
 	}
 
 	public override void Disapply(GameObject gameObject)

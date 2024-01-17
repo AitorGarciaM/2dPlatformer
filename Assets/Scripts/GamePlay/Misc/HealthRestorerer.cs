@@ -10,7 +10,7 @@ public class HealthRestorerer : MonoBehaviour
 	{
 		if (_player != null)
 		{
-			_player.RestoreStats();
+			_player.ResetHealth();
 		}
 	}
 

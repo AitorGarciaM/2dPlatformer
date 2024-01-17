@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 2488003965948428210}
   - component: {fileID: 2488003965948428214}
   - component: {fileID: 1255233428}
+  - component: {fileID: 6971882801530428340}
   m_Layer: 7
   m_Name: Skelleton
   m_TagString: Enemy
@@ -236,7 +237,9 @@ MonoBehaviour:
   _fallGravityMulty: 0
   _jumpHangGravityMulty: 0
   _groundCheckPoint: {fileID: 2488003966421098037}
+  _wallCheckPoint: {fileID: 0}
   _groundCheckSize: {x: 0.15, y: 0.04}
+  _wallCheckSize: {x: 0, y: 0}
   _coyoteTime: 0
   _slopeCheckDistance: 0
   _circleCollider: {fileID: 2488003965948428208}
@@ -245,6 +248,9 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 16392
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!61 &2488003965948428214
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -299,6 +305,21 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
+--- !u!114 &6971882801530428340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488003965948428172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e2f7843318b374f95030843c71b24b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dataSettings:
+    dataTag: 
+    persistenceType: 0
 --- !u!1 &2488003966215750455
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +359,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2488003966215750455}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -366,7 +387,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2488003966421098037}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: GroundChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}

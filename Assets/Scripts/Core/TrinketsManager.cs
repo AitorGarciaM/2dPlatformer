@@ -63,9 +63,7 @@ public class TrinketsManager : MonoBehaviour, IDataPersistener
 		Data<List<Trinket>> trinketsData = (Data<List<Trinket>>)data;
 
 		_trinkets = trinketsData.Value;
-
-		Debug.Log("Number of Trinkets: " + _trinkets.Count);
-
+		
 		// Activates all the Trinkets slots that player found.
 		foreach (Trinket trinket in _trinkets)
 		{

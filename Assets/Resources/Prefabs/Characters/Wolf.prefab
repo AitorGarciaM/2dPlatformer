@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5280172181262835280}
   - component: {fileID: 5280172181262835281}
   - component: {fileID: 5280172181262835294}
+  - component: {fileID: -1926529070283086022}
   m_Layer: 7
   m_Name: Wolf
   m_TagString: Untagged
@@ -169,6 +170,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.23}
   m_EdgeRadius: 0
+--- !u!114 &-1926529070283086022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5280172181262835291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e2f7843318b374f95030843c71b24b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dataSettings:
+    dataTag: 
+    persistenceType: 0
 --- !u!1 &5280172181530537410
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,7 +197,7 @@ GameObject:
   - component: {fileID: 5280172181530537415}
   - component: {fileID: 5280172181530537412}
   - component: {fileID: 5280172181530537414}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,7 +315,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5280172182068980532}
   - component: {fileID: 5280172182068980535}
-  m_Layer: 7
+  m_Layer: 15
   m_Name: WallChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5280172182358151699}
-  m_Layer: 7
+  m_Layer: 15
   m_Name: GroundChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -388,7 +404,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5280172182935849761}
   - component: {fileID: 5280172182935849760}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: AttackArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}

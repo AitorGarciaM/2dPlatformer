@@ -99,8 +99,6 @@ public class CharacterStateSetter : MonoBehaviour
 	
 	public void SetCharacterState()
 	{
-		Debug.Log(gameObject.name + " " + gameObject.scene.name);
-
 		if(_setCharacterVelocity)
 		{
 			 _player.SetForce(_characterVelocity);

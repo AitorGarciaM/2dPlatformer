@@ -20,6 +20,7 @@ public class WolfController : MonoBehaviour, IHitable
 	[SerializeField] private LayerMask _groundMask;
 
 	private PlayerController _player;
+	private CurrentStats _currentStats;
 
 	private float _currentInvincibleTime;
 	private float _currentAttackRateTime;
@@ -30,21 +31,21 @@ public class WolfController : MonoBehaviour, IHitable
 	private bool _attack;
 	private bool _obstacleFound = false;
 
-	public Stats GetStats()
+	public CurrentStats GetStats()
 	{
-		return _stats;
+		return _currentStats;
 	}
 
 	public bool IsDeath { get; private set; }
 
-	public void Hit(Stats stats)
+	public void Hit(CurrentStats stats)
 	{
 		if(_currentInvincibleTime < _invincibleCooldown)
 		{
 			return;
 		}
 
-		_stats.GetDamage(stats);
+		_currentStats.GetDamage(stats);
 
 		_animationHandler.SetTrigger("Hit");
 
@@ -53,11 +54,10 @@ public class WolfController : MonoBehaviour, IHitable
 		_currentAttackDeactivationTime = 10;
 		_attack = false;
 
-		Debug.Log(_currentAttackDeactivationTime);
 
 		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 
-		if(_stats.CurrentHealth <= 0)
+		if(_currentStats.CurrentHealth <= 0)
 		{
 			IsDeath = true;
 			_animationHandler.SetBool("Is_Death", IsDeath);
@@ -72,7 +72,7 @@ public class WolfController : MonoBehaviour, IHitable
 			return;
 		}
 
-		_stats.GetDamage(damage);
+		_currentStats.GetDamage(damage);
 
 		_animationHandler.SetTrigger("Hit");
 
@@ -80,7 +80,7 @@ public class WolfController : MonoBehaviour, IHitable
 		_currentAttackRateTime = 0;
 		_attack = false;
 
-		if (_stats.CurrentHealth <= 0)
+		if (_currentStats.CurrentHealth <= 0)
 		{
 			IsDeath = true;
 			_animationHandler.SetBool("Is_Death", IsDeath);
@@ -91,10 +91,12 @@ public class WolfController : MonoBehaviour, IHitable
 	// Start is called before the first frame update
 	void Start()
     {
+		_currentStats = GetComponent<CurrentStats>();
+
 		_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
 		IsDeath = false;
-		_stats.Init();
+		_currentStats.Init(_stats);
     }
 
 	private void FixedUpdate()
@@ -121,7 +123,6 @@ public class WolfController : MonoBehaviour, IHitable
 		{
 			if (_currentAttackRateTime >= _stats.AttackRate && _currentAttackDeactivationTime <= 0)
 			{
-				Debug.Log(_currentAttackDeactivationTime);
 				_attack = true;
 				_currentAttackRateTime = 0;
 				_attackArea.enabled = true;
@@ -137,14 +138,13 @@ public class WolfController : MonoBehaviour, IHitable
 		{
 			if(_attackArea.enabled == true)
 			{
-				_player.Hit(_stats);
+				_player.Hit(_currentStats);
 			}
 		}
 
 		// Check if is colliding with a wall.
 		if (Physics2D.OverlapBox(_wallChecker.transform.position, _wallChecker.size, 0, _groundMask))
 		{
-			Debug.Log("Colliding wall");
 			_direction *= -1;
 			_obstacleFound = true;
 		}

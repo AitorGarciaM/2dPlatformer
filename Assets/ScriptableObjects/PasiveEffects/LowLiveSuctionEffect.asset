@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1967a05a46216b4f873d6fe7f075cc8, type: 3}
   m_Name: LowLiveSuctionEffect
   m_EditorClassIdentifier: 
-  _value: 5
+  _value: 2

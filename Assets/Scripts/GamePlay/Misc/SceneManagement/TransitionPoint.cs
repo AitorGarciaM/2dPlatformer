@@ -53,6 +53,13 @@ public class TransitionPoint : MonoBehaviour
 				return;
 			}
 
+			MovementSystem movementSystem = collision.GetComponent<MovementSystem>();
+
+			if(movementSystem != null)
+			{
+				movementSystem.enabled = false;
+			}
+					   
 			TransitionInternal();
 		}
 	}

@@ -37,8 +37,6 @@ public class MenuManager : MonoBehaviour
 
 	public void ChangeMenu(GameObject selected)
 	{
-		Debug.Log("Changing Menu");
-
 		_eventSystem.firstSelectedGameObject = null;
 		_eventSystem.firstSelectedGameObject = selected;
 	}

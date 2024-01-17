@@ -37,16 +37,19 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _enemiesLayer;
+	[SerializeField] private string _cameraFocusTag;
 
 	private Iinteractable _interactable;
 
 	private Rigidbody2D _rb;
+	private CurrentStats _currentStats;
 	private MovementSystem _moveSystem;
 	private PlayerAction _input = null;
 	private PlayerInput _playerInput;
+	private Transform _cameraFocus;
 	private Vector2 _moveInputVector = Vector2.zero; // Input vector.
 	private Vector2 _moveCamreraVector;
-	private TransitionDestination _resetPoint;
+	private CheckPoint _resetPoint;
 
 	private float _currentAttackWaitTime;
 	private float _timeToEndAttack;
@@ -65,11 +68,11 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	public float LastPressedJumpTime { get; private set; }
 	public float MovementSpeed { get { return _rb.velocity.x; } }
-	public bool IsDead { get { return _stats.CurrentHealth <= 0; } }
+	public bool IsDead { get { return _currentStats.CurrentHealth <= 0; } }
 
-	public Stats GetStats()
+	public CurrentStats GetStats()
 	{
-		return _stats;
+		return _currentStats;
 	}
 
 	public bool ResetingPosition
@@ -79,7 +82,12 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	public void RestoreStats()
 	{
-		_stats.Init();
+		_currentStats.Init(_stats);
+	}
+
+	public void ResetHealth()
+	{
+		_currentStats.ResetHealth();
 	}
 
 	public void RestorePotions()
@@ -87,7 +95,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_currentHealthCount = _healCount;
 	}
 
-	public void SetLastTransitionDestination(TransitionDestination transitionDestination)
+	public void SetLastTransitionDestination(CheckPoint transitionDestination)
 	{
 		_resetPoint = transitionDestination;
 	}
@@ -97,7 +105,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_interactable = iinteractable;
 	}
 
-	public void Hit(Stats stats)
+	public void Hit(CurrentStats stats)
 	{
 		if (_currentHitWaitTime < _hitWaitTime || _invincibility) 
 			return;
@@ -106,9 +114,9 @@ public class PlayerController : MonoBehaviour, IHitable
 		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 		//StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
-		_stats.GetDamage(stats);
+		_currentStats.GetDamage(stats);
 
-		if (_stats.CurrentHealth <= 0)
+		if (_currentStats.CurrentHealth <= 0)
 		{
 			_animationHandler.SetBool("Death", true);
 			_stopMovement = true;
@@ -125,9 +133,9 @@ public class PlayerController : MonoBehaviour, IHitable
 		CameraShaker.Instance.ShakeCamera(_stats.ShakerForceImpact);
 		StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
-		_stats.GetDamage(damage);
+		_currentStats.GetDamage(damage);
 
-		if (_stats.CurrentHealth <= 0)
+		if (_currentStats.CurrentHealth <= 0)
 		{
 			_animationHandler.SetBool("Death", true);
 			_stopMovement = true;
@@ -186,13 +194,22 @@ public class PlayerController : MonoBehaviour, IHitable
 	private void Awake()
 	{
 		_input = new PlayerAction();
+		_currentStats = GetComponent<CurrentStats>();
 		_playerInput = GetComponent<PlayerInput>();
 		_rb = GetComponent<Rigidbody2D>();
 		_moveSystem = GetComponent<MovementSystem>();
 
+		foreach (Transform child in transform)
+		{
+			if(child.tag == _cameraFocusTag)
+			{
+				_cameraFocus = child;
+			}
+		}
+
 		_isFacingLeft = false;
 		_attackArea.gameObject.SetActive(false);
-		_stats.Init();
+		_currentStats.Init(_stats);
 		_currentHealthCount = _healCount;
 		_healCounter.text = _currentHealthCount.ToString();
 	}
@@ -330,9 +347,9 @@ public class PlayerController : MonoBehaviour, IHitable
 	{
 		if (_currentHealthCount > 0 && _currentHealWaitTime >= 1f && !_stopMovement)
 		{
-			_stats.Heal(_healing);
+			_currentStats.Heal(_healing);
 
-			if (_stats.CurrentHealth < _stats.BaseHealth)
+			if (_currentStats.CurrentHealth < _stats.BaseHealth)
 			{
 				StartCoroutine(PauseInput(0.7f));
 				_animationHandler.SetTrigger("Heal");
@@ -393,7 +410,7 @@ public class PlayerController : MonoBehaviour, IHitable
 			_input.Player.Enable();
 		}
 
-		if (_stats.CurrentHealth <= 0)
+		if (_currentStats.CurrentHealth <= 0)
 		{
 			if (_deathScreenPlay)
 			{
@@ -440,7 +457,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		}
 
 		// Other Updates.
-		_stats.Update();
+		_currentStats.Update();
 	}
 
 	private void ResetLandFX()
@@ -450,13 +467,15 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void LateUpdate()
 	{
+		MoveCamera();
+
 		_spriteRenderer.flipX = _isFacingLeft;
 
 		_attackArea.gameObject.SetActive(_animationHandler.IsAttackActive);
 
 		// Updates health bar.
-		_healthBar.normalizedValue = _stats.CurrentHealth / _stats.BaseHealth;
-
+		_healthBar.normalizedValue = _currentStats.CurrentHealth / _stats.BaseHealth;
+		
 		// Reorientates attack position.
 		if (_isFacingLeft)
 		{
@@ -474,6 +493,14 @@ public class PlayerController : MonoBehaviour, IHitable
 		_animationHandler.SetBool("Is_Grounded", _moveSystem.IsGrounded);
 		_animationHandler.SetBool("IsOnSlope", _moveSystem.IsOnSlope);
 	}
+	
+	private void MoveCamera()
+	{
+		_cameraFocus.position = Vector2.MoveTowards(_cameraFocus.position, (Vector2)transform.position + _moveCamreraVector, 1 * Time.deltaTime);
+		_cameraFocus.position = new Vector2(transform.position.x, _cameraFocus.position.y);
+
+		
+	}
 
 	private void FixedUpdate()
 	{
@@ -483,8 +510,9 @@ public class PlayerController : MonoBehaviour, IHitable
 		if (collider != null && _attackArea.gameObject.activeSelf)
 		{
 			var hitable = collider.GetComponent<IHitable>();
-			hitable.Hit(_stats);
-			_stats.LiveSuctionOverDamage();
+			hitable.Hit(_currentStats);
+			_currentStats.LiveSuctionOverDamage();
+			_attackArea.gameObject.SetActive(false);
 		}
 		
 		// Updates movement.
@@ -527,7 +555,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_invincibility = true;
 		yield return ScreenFader.Instance.FadeSceneOut();
 		_input.Disable();
-		transform.position = _resetPoint.transform.position;
+		transform.position = new Vector3(_resetPoint.transform.position.x, _resetPoint.transform.position.y, transform.position.z);
 		yield return ScreenFader.Instance.FadeSceneIn();
 		_input.Enable();
 		ResetingPosition = false;

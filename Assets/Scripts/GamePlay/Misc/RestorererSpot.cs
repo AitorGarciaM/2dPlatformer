@@ -58,7 +58,6 @@ public class RestorererSpot : MonoBehaviour, Iinteractable
 		while(_restedText.color.a > 0)
 		{
 			textColor.a -= _textFadeSpeed * Time.deltaTime;
-			Debug.Log(textColor.a);
 			_restedText.color = textColor;
 			yield return new WaitForEndOfFrame();
 		}

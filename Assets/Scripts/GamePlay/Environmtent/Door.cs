@@ -107,12 +107,10 @@ public class Door : MonoBehaviour, IDataPersistener
 		if((_player.position.x < transform.position.x && _isLeft) || (_player.position.x > transform.position.x && !_isLeft))
 		{
 			transform.position = new Vector3(transform.position.x, transform.position.y, -1f);
-			Debug.Log("A");
 		}
 		else if((_player.position.x > transform.position.x && _isLeft) || (_player.position.x < transform.position.x && !_isLeft))
 		{
 			transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
-			Debug.Log("B");
 		}
 	}
 
