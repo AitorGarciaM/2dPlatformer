@@ -8,12 +8,14 @@ public class CurrentStats : MonoBehaviour, IDataPersistener
 	private Stats _baseStats;
 
 	private float _currentHealth;
+	private int _currentHealings;
 	private float _currentMana;
 	private float _currentDamage;
 	private float _currentHealthRegeneration;
 	private float _currentLiveSuction;
 
-	public float CurrentHealth { get { return _currentHealth; } }
+	public float CurrentHealth { get { return _currentHealth; }}
+	public int CurrentHealings { get { return _currentHealings; } }
 	public float CurrentMana { get { return _currentMana; } }
 	public float Damage { get { return _currentDamage; } }
 	public float ShakerForceImpact { get { return _baseStats.ShakerForceImpact; } }
@@ -39,6 +41,7 @@ public class CurrentStats : MonoBehaviour, IDataPersistener
 		_baseStats = stats;
 
 		_currentHealth = stats.BaseHealth;
+		_currentHealings = stats.BaseHealings;
 		_currentMana = stats.BaseMana;
 		_elapsedHealingDuration = 0;
 		_currentHealthRegeneration = stats.HealthRecovery;
@@ -51,6 +54,16 @@ public class CurrentStats : MonoBehaviour, IDataPersistener
 	public void ResetHealth()
 	{
 		_currentHealth = _baseStats.BaseHealth;
+	}
+
+	public void ResetHealings()
+	{
+		_currentHealings = _baseStats.BaseHealings;
+	}
+	
+	public void UseHealings()
+	{
+		_currentHealings--;
 	}
 
 	public void GetDamage(CurrentStats currentStats)
@@ -132,14 +145,15 @@ public class CurrentStats : MonoBehaviour, IDataPersistener
 
 	public Data SaveData()
 	{
-		return new Data<float, float, bool>(_currentHealth, _currentMana, ResotreHealthOnSceneChange);
+		return new Data<float, float, int, bool>(_currentHealth, _currentMana, _currentHealings , ResotreHealthOnSceneChange);
 	}
 
 	public void LoadData(Data data)
 	{
-		Data<float, float, bool> statsData = (Data<float, float, bool>)data;
-		_currentHealth = statsData.Value2 ? _baseStats.BaseHealth : statsData.Value0;
+		Data<float, float, int, bool> statsData = (Data<float, float, int, bool>)data;
+		_currentHealth = statsData.Value3 ? _baseStats.BaseHealth : statsData.Value0;
 		_currentMana = statsData.Value1;
+		_currentHealings = statsData.Value3 ? _baseStats.BaseHealings : statsData.Value2;
 	}
 
 	public void SetDataSettings(string dataTag, DataSettings.PersistenceType persistenceType)

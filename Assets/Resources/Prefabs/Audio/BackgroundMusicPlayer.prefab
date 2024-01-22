@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5656035623864129997
+--- !u!1 &7067838255519858057
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,44 +8,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8088286138041446614}
-  - component: {fileID: 5656035623864129998}
+  - component: {fileID: 8246851291154206199}
+  - component: {fileID: 7960189868818345969}
   m_Layer: 0
-  m_Name: MenuManager
+  m_Name: BackgroundMusicPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &8088286138041446614
-RectTransform:
+--- !u!4 &8246851291154206199
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5656035623864129997}
+  m_GameObject: {fileID: 7067838255519858057}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.48561543}
+  m_LocalPosition: {x: -0.31999993, y: -0.3291914, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 474.5878, y: 236.57677}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5656035623864129998
+--- !u!114 &7960189868818345969
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5656035623864129997}
+  m_GameObject: {fileID: 7067838255519858057}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da4a3d2a9b2affd47bc9981ecc30d195, type: 3}
+  m_Script: {fileID: 11500000, guid: b062d17049fa21f4198774d9c21fa97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _musicClip: {fileID: 0}
+  _musicOutput: {fileID: 0}
+  _playMusicOnAwake: 0
+  _musicVolume: 0
+  _ambientClip: {fileID: 0}
+  _ambientOutput: {fileID: 0}
+  _playAmbientOnAwake: 0
+  _ambientVolume: 0

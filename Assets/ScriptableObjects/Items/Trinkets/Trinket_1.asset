@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Trinket_1
   m_EditorClassIdentifier: 
   _name: Vlad's Ring
-  _description: Each time player hits an enemy restores a 5% of base health
+  _description: Each time player hits an enemy restores {Value}% of base health
   _sprite: {fileID: 21300000, guid: 89733f6f459917945ad590e00e034e74, type: 3}
   _effect: {fileID: 11400000, guid: 1d3604287fd8f064ba3c6039e68aa6ab, type: 2}

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5481496591966453685}
   - component: {fileID: 5481496591966453684}
+  - component: {fileID: 5703942441072266992}
   m_Layer: 0
   m_Name: InteractableCanvasGroup
   m_TagString: Untagged
@@ -51,6 +52,22 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &5703942441072266992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5481496591966453686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7b8af27f4a14674fa8e6a2ca8700aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonSprites:
+  - {fileID: 894601734, guid: b4c7cf50bb792c54eb213d2deeda34ba, type: 3}
+  - {fileID: -967305186, guid: 09eb07fc3c7a8594da1633870cca8732, type: 3}
+  _image: {fileID: 5481496592832142143}
 --- !u!1 &5481496592568999971
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,7 +214,6 @@ GameObject:
   - component: {fileID: 5481496592832142136}
   - component: {fileID: 5481496592832142142}
   - component: {fileID: 5481496592832142143}
-  - component: {fileID: 5481496592832142141}
   m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
@@ -263,23 +279,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!95 &5481496592832142141
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5481496592832142137}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c66b5d8774131754d918118020fb5cf2, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

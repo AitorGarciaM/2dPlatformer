@@ -27,6 +27,11 @@ public class PlayerController : MonoBehaviour, IHitable
 	[Space(10)]
 	[SerializeField] private BoxCollider2D _attackArea;
 
+	[Header("Audio")]
+	[SerializeField] private RandomAudioPlayer _footStepsPlayer;
+	[SerializeField] private RandomAudioPlayer _hitPlayer;
+	[SerializeField] private RandomAudioPlayer _healPlayer;
+
 	[Header("HUD")]
 	[SerializeField] private Slider _healthBar;
 	[SerializeField] private Animator _deathScreen;
@@ -46,6 +51,7 @@ public class PlayerController : MonoBehaviour, IHitable
 	private MovementSystem _moveSystem;
 	private PlayerAction _input = null;
 	private PlayerInput _playerInput;
+
 	private Transform _cameraFocus;
 	private Vector2 _moveInputVector = Vector2.zero; // Input vector.
 	private Vector2 _moveCamreraVector;
@@ -55,8 +61,6 @@ public class PlayerController : MonoBehaviour, IHitable
 	private float _timeToEndAttack;
 	private float _currentHitWaitTime = 1;
 	private float _currentHealWaitTime = 0;
-
-	private int _currentHealthCount;
 
 	private bool _jump;
 	private bool _isFacingLeft;
@@ -88,11 +92,15 @@ public class PlayerController : MonoBehaviour, IHitable
 	public void ResetHealth()
 	{
 		_currentStats.ResetHealth();
+
+		_healCounter.gameObject.SetActive(true);
 	}
 
 	public void RestorePotions()
 	{
-		_currentHealthCount = _healCount;
+		_currentStats.ResetHealings();
+		_healCounter.text = _currentStats.CurrentHealings.ToString();
+		_healIcon.color = new Color(1, 1, 1, 1);
 	}
 
 	public void SetLastTransitionDestination(CheckPoint transitionDestination)
@@ -115,6 +123,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		//StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
 		_currentStats.GetDamage(stats);
+		_hitPlayer.PlayRandomSound();
 
 		if (_currentStats.CurrentHealth <= 0)
 		{
@@ -134,6 +143,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		StartCoroutine(PauseInput(_hitWaitTime));
 		_animationHandler.SetTrigger("Take_Damage");
 		_currentStats.GetDamage(damage);
+		_hitPlayer.PlayRandomSound();
 
 		if (_currentStats.CurrentHealth <= 0)
 		{
@@ -191,6 +201,11 @@ public class PlayerController : MonoBehaviour, IHitable
 		_moveSystem.TransitionToNewScene();
 	}
 
+	public void PlayFootSteps()
+	{
+		_footStepsPlayer.PlayRandomSound();
+	}
+	
 	private void Awake()
 	{
 		_input = new PlayerAction();
@@ -210,8 +225,6 @@ public class PlayerController : MonoBehaviour, IHitable
 		_isFacingLeft = false;
 		_attackArea.gameObject.SetActive(false);
 		_currentStats.Init(_stats);
-		_currentHealthCount = _healCount;
-		_healCounter.text = _currentHealthCount.ToString();
 	}
 
 	private void OnEnable()
@@ -345,7 +358,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void OnHealInputOn()
 	{
-		if (_currentHealthCount > 0 && _currentHealWaitTime >= 1f && !_stopMovement)
+		if (_currentStats.CurrentHealings > 0 && _currentHealWaitTime >= 1f && !_stopInput)
 		{
 			_currentStats.Heal(_healing);
 
@@ -353,22 +366,18 @@ public class PlayerController : MonoBehaviour, IHitable
 			{
 				StartCoroutine(PauseInput(0.7f));
 				_animationHandler.SetTrigger("Heal");
-				_currentHealthCount--;
-				_healCounter.text = _currentHealthCount.ToString();
+				_currentStats.UseHealings();
+				_healCounter.text = _currentStats.CurrentHealings.ToString();
 				_currentHealWaitTime = 0;
 
-				if(_currentHealthCount == 0)
-				{
-					_healCounter.gameObject.SetActive(false);
-					_healIcon.color = new Color(0.557f, 0.557f, 0.557f);
-				}
+				_healPlayer.PlayRandomSound();
 			}
 		}
 	}
 
 	private void OnInteractInputOn()
 	{
-		if (_interactable != null)
+		if (_interactable != null && !_stopInput)
 		{
 			_interactable.Interact();
 		}
@@ -392,6 +401,16 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	private void Update()
 	{
+		if (_healCounter.text == "")
+		{
+			_healCounter.text = _currentStats.CurrentHealings.ToString();
+		}
+		else if (_currentStats.CurrentHealings == 0 && _healCounter.gameObject.activeSelf)
+		{
+			_healCounter.gameObject.SetActive(false);
+			_healIcon.color = new Color(0.557f, 0.557f, 0.557f);
+		}
+
 		if (_pauseMenu.activeSelf)
 		{
 			Time.timeScale = 0;
@@ -485,11 +504,19 @@ public class PlayerController : MonoBehaviour, IHitable
 		{
 			_attackArea.transform.localPosition = new Vector2(0.14f, _attackArea.transform.localPosition.y);
 		}
-		
-		// Animations.
-		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
+
+		// Set animations parameters.
+		if (!_stopInput)
+		{
+			_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_moveInputVector.x));
+			_animationHandler.SetFloat("Time_to_end_Attack", _timeToEndAttack);
+		}
+		else
+		{
+			_animationHandler.SetFloat("Velocity_X", 0);
+		}
+
 		_animationHandler.SetFloat("Velocity_Y", _rb.velocity.y);
-		_animationHandler.SetFloat("Time_to_end_Attack", _timeToEndAttack);
 		_animationHandler.SetBool("Is_Grounded", _moveSystem.IsGrounded);
 		_animationHandler.SetBool("IsOnSlope", _moveSystem.IsOnSlope);
 	}

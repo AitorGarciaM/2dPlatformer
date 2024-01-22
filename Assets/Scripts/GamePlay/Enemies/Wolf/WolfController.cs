@@ -15,6 +15,9 @@ public class WolfController : MonoBehaviour, IHitable
 	[SerializeField] private MovementSystem _movementSystem;
 	[SerializeField] private WolfAnimationHandler _animationHandler;
 	[SerializeField] private SpriteRenderer _spRenderer;
+	[Header("Audio")]
+	[SerializeField] private RandomAudioPlayer _attackPlayer;
+	[SerializeField] private RandomAudioPlayer _hitPlayer;
 	[Header("Layers & tags")]
 	[SerializeField] private LayerMask _playerMask;
 	[SerializeField] private LayerMask _groundMask;
@@ -48,6 +51,7 @@ public class WolfController : MonoBehaviour, IHitable
 		_currentStats.GetDamage(stats);
 
 		_animationHandler.SetTrigger("Hit");
+		_hitPlayer.PlayRandomSound();
 
 		_currentInvincibleTime = 0;
 		_currentAttackRateTime = 0;
@@ -92,7 +96,6 @@ public class WolfController : MonoBehaviour, IHitable
 	void Start()
     {
 		_currentStats = GetComponent<CurrentStats>();
-
 		_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
 		IsDeath = false;
@@ -197,6 +200,7 @@ public class WolfController : MonoBehaviour, IHitable
 		if(_attack)
 		{
 			_animationHandler.SetTrigger("Attack");
+			_attackPlayer.PlayRandomSound();
 			_attack = false;
 		}
 	}

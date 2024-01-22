@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BossAnimationHandler : AnimationHnadler
 {
+	private BossController _bossController;
+
 	private int _rampageCount;
 	private bool _attackEnds = true;
 	private bool _flame = false;
@@ -25,6 +27,11 @@ public class BossAnimationHandler : AnimationHnadler
 	public bool IsFlipActive { get { return _flipping; } }
 
 	public bool Flip { get; private set; }
+	
+	public void SetController(BossController bossController)
+	{
+		_bossController = bossController;
+	}
 
 	public void StartAttack()
 	{
@@ -51,6 +58,11 @@ public class BossAnimationHandler : AnimationHnadler
 		_smashing = true;
 	}
 
+	public void SmashHits()
+	{
+		_bossController.PlaySmash();
+	}
+
 	public void SmashEnds()
 	{
 		_smashing = false;
@@ -59,6 +71,11 @@ public class BossAnimationHandler : AnimationHnadler
 	public void LandStart()
 	{
 		_landing = true;
+	}
+	
+	public void LandExplosion()
+	{
+		_bossController.PlayLand();
 	}
 
 	public void LandEnds()

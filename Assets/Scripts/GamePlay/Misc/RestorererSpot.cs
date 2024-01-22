@@ -7,6 +7,7 @@ public class RestorererSpot : MonoBehaviour, Iinteractable
 {
 	[SerializeField] private CanvasGroup _canvasGroup;
 	[SerializeField] private TextMeshProUGUI _restedText;
+	[SerializeField] private RandomAudioPlayer _restorerPlayer;
 	[SerializeField] private float _textFadeSpeed;
 
 	private PlayerController _player;
@@ -85,6 +86,7 @@ public class RestorererSpot : MonoBehaviour, Iinteractable
 
 		textColor.a = 1;
 		_restedText.color = textColor;
+		_restorerPlayer.PlayRandomSound();
 
 		yield return StartCoroutine(FadeOutText());
 

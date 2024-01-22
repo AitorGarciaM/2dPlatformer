@@ -39,6 +39,9 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	[SerializeField] private SpriteRenderer _spRenderer;
 	[SerializeField] private Animator _animationHandler;
 
+	[Header("Audio")]
+	[SerializeField] private RandomAudioPlayer _hitPlayer;
+
 	[Space(5)]
 
 	[Header("Layers & Tags")]
@@ -88,6 +91,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 			_reciveHit = true;
 			_currentHitWaitTime = 0;
 			_currentHitDelayTime = _hitDelayTime;
+			_hitPlayer.PlayRandomSound();
 
 			CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 

@@ -7,6 +7,7 @@ public class Stats : ScriptableObject
 {
 	[Header("Base Stats")]
 	[SerializeField] private float _health;
+	[SerializeField] private int _healings;
 	[SerializeField] private float _mana;
 	[SerializeField] private float _healthRecover;
 	[SerializeField] private float _manaRecover;
@@ -16,6 +17,7 @@ public class Stats : ScriptableObject
 	[SerializeField] private float _liveSuction;
 	
 	public float BaseHealth { get { return _health; } }
+	public int BaseHealings { get { return _healings; } }
 	public float BaseMana { get { return _mana; } }
 	public float HealthRecovery { get { return _healthRecover; } }
 	public float ManaRecovery { get { return _manaRecover; } }

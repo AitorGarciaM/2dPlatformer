@@ -10,7 +10,17 @@ public class EquipedSlot : MonoBehaviour
 
 	private TrinketSlot _trinketSlot;
 
-	public Trinket GetTrinket() { return _trinketSlot.GetTrinket(); }
+	public Trinket GetTrinket()
+	{
+		if (_trinketSlot != null)
+		{
+			return _trinketSlot.GetTrinket();
+		}
+		else
+		{
+			return null;
+		}
+	}
 	public int Id { get { return _id; } }
 	
 	public void Equip(TrinketSlot trinketSlot)

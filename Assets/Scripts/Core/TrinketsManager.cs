@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEditor;
+using TMPro;
 
 public class TrinketsManager : MonoBehaviour, IDataPersistener
 {
@@ -10,6 +11,8 @@ public class TrinketsManager : MonoBehaviour, IDataPersistener
 	public DataSettings _dataSettings;
 	[SerializeField]
 	private GameObject _trinketsMenu;
+	[SerializeField] private TextMeshProUGUI _equipedTriketDescription;
+	[SerializeField] private TextMeshProUGUI _equipedTriketTitle;
 
 	private List<Trinket> _trinkets;
 	private Dictionary<string, TrinketSlot> _trinketsSlotsDict = new Dictionary<string, TrinketSlot>();
@@ -51,6 +54,25 @@ public class TrinketsManager : MonoBehaviour, IDataPersistener
 	public void Unequip(EquipedSlot equipedSlot)
 	{
 		equipedSlot.Unequip();
+	}
+
+	public void ShowTrinketDescription(EquipedSlot equipedSlot)
+	{
+		if(equipedSlot.GetTrinket() == null)
+		{
+			return;
+		}
+
+		Trinket trinket = equipedSlot.GetTrinket();
+
+		_equipedTriketDescription.text = trinket.Description.Replace("{Value}", trinket.GetEffect().GetValue());
+		_equipedTriketTitle.text = trinket.Name;
+	}
+
+	public void ClearTrinketDescription()
+	{
+		_equipedTriketDescription.text = string.Empty;
+		_equipedTriketTitle.text = string.Empty;
 	}
 
 	public DataSettings GetDataSettings()

@@ -50,6 +50,12 @@ public class BossController : MonoBehaviour, IHitable
 	[Header("Visual")]
 	[SerializeField] private SpriteRenderer _spRenderer;
 
+	[Header("Audio")]
+	[SerializeField] private RandomAudioPlayer _landPlayer;
+	[SerializeField] private RandomAudioPlayer _smashPlayer;
+	[SerializeField] private RandomAudioPlayer _hitPlayer;
+	[SerializeField] private RandomAudioPlayer _deathPlayer;
+
 	[Header("Layers")]
 	[SerializeField] private LayerMask _playerMask;
 
@@ -91,6 +97,8 @@ public class BossController : MonoBehaviour, IHitable
 		_animationHandler.SetTrigger("Take_Damage");
 		_currentStats.GetDamage(stats);
 
+		_hitPlayer.PlayRandomSound();
+
 		_healthBar.normalizedValue = _currentStats.CurrentHealth / _stats.BaseHealth;
 	}
 
@@ -99,11 +107,27 @@ public class BossController : MonoBehaviour, IHitable
 		throw new System.NotImplementedException();
 	}
 
+	public void PlayLand()
+	{
+		_landPlayer.PlayRandomSound();
+	}
+
+	public void PlaySmash()
+	{
+		_smashPlayer.PlayRandomSound();
+	}
+
+	private void Awake()
+	{
+		_currentStats = GetComponent<CurrentStats>();
+		_currentStats.Init(_stats);
+	}
+
 	void Start()
     {
 		_rb = GetComponent<Rigidbody2D>();
 		_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-		_currentStats.Init(_stats);
+		_animationHandler.SetController(this);
 		_stage = Stage.BattleInit;
 		_startingBattle = true;
 		_fireFlames = transform.GetChild(1).gameObject;
@@ -353,7 +377,7 @@ public class BossController : MonoBehaviour, IHitable
 		{
 			// Play Death animation.
 			_animationHandler.SetTrigger("Is_Death");
-
+			_deathPlayer.PlayRandomSound();
 			// Deactivates boss behaivour and physics.
 			this.enabled = false;
 			_rb.bodyType = RigidbodyType2D.Static;

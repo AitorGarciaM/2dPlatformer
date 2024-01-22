@@ -8,7 +8,7 @@ public class ButtonIndicator : MonoBehaviour
 	[SerializeField] private List<Sprite> _buttonSprites;
 	[SerializeField] private Image _image;
 
-	private ControllerChecker.ControllerType _currentType;
+	private ControllerChecker.ControllerType _currentType = ControllerChecker.ControllerType.Keyboard;
 
     // Update is called once per frame
     void Update()

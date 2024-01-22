@@ -37,7 +37,14 @@ public class MenuManager : MonoBehaviour
 
 	public void ChangeMenu(GameObject selected)
 	{
-		_eventSystem.firstSelectedGameObject = null;
-		_eventSystem.firstSelectedGameObject = selected;
+		EventSystem.current.SetSelectedGameObject(selected);
+	}
+
+	private IEnumerator ChangeMenuInternal(GameObject selectable)
+	{
+		EventSystem.current.SetSelectedGameObject(null);
+		yield return null;
+		EventSystem.current.SetSelectedGameObject(selectable);
+		yield break;
 	}
 }

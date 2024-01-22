@@ -22,7 +22,7 @@ public class CheckPoint : TransitionDestination
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if(_checkPointWhen == CheckPointWhen.OnTriggerEnter && !_chekPointSet)
+		if(_checkPointWhen == CheckPointWhen.OnTriggerEnter && !_chekPointSet && collision.gameObject.tag == "Player")
 		{
 			PlayerController player = collision.GetComponent<PlayerController>();
 			player.SetLastTransitionDestination(this);

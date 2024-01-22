@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
-[RequireComponent(typeof(MovementSystem), typeof(BatAnimator))]
+[RequireComponent(typeof(MovementSystem))]
 public class BatController : MonoBehaviour, IHitable
 {
 	[SerializeField] private Stats _stats;
@@ -13,13 +13,16 @@ public class BatController : MonoBehaviour, IHitable
 	[SerializeField] private float _nextWaypointDistance;
 	[Header("Physics")]
 	[SerializeField] private CircleCollider2D _attackCollider;
-	[Header("visual")]
+	[Header("Visual")]
 	[SerializeField] private SpriteRenderer _spRenderer;
+	[SerializeField] private BatAnimator _batAnimator;
+	[Header("Audio")]
+	[SerializeField] private RandomAudioPlayer _flyPlayer;
+	[SerializeField] private RandomAudioPlayer _hitPlayer;
 	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _playerMask;
 
 	private Rigidbody2D _rb;
-	private BatAnimator _batAnimator;
 	private CurrentStats _currentStats;
 	private MovementSystem _moveSystem;
 	private Seeker _seeker;
@@ -43,6 +46,7 @@ public class BatController : MonoBehaviour, IHitable
 	public void Hit(CurrentStats stats)
 	{
 		_currentStats.GetDamage(stats);
+		_hitPlayer.PlayRandomSound();
 		CameraShaker.Instance.ShakeCamera(stats.ShakerForceImpact);
 
 		if(_currentStats.CurrentHealth <= 0)
@@ -75,6 +79,11 @@ public class BatController : MonoBehaviour, IHitable
 		}
 	}
 
+	public void PlayFly()
+	{
+		_flyPlayer.PlayRandomSound();
+	}
+
 	// Start is called before the first frame update
 	void Start()
     {
@@ -82,7 +91,6 @@ public class BatController : MonoBehaviour, IHitable
 
 		_currentStats = GetComponent<CurrentStats>();
 		
-		_batAnimator = GetComponent<BatAnimator>();
 		_moveSystem = GetComponent<MovementSystem>();
 		_seeker = GetComponent<Seeker>();
 

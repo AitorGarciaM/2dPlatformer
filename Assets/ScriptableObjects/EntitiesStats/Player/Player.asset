@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   _health: 100
+  _healings: 3
   _mana: 50
   _healthRecover: 0
   _manaRecover: 5
   _attackRate: 0.5
   _damage: 30
   _shakerForceImpact: 0.02
+  _liveSuction: 0

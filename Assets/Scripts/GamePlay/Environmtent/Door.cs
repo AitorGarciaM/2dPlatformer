@@ -11,7 +11,7 @@ public class Door : MonoBehaviour, IDataPersistener
 	[SerializeField] private bool _isLeft;
 	[SerializeField] private bool _isOpen;
 	[SerializeField] private bool _chekOpen;
-
+	[SerializeField] private RandomAudioPlayer _doorPlayer;
 	[HideInInspector]
 	public DataSettings _dataSettings;
 
@@ -127,6 +127,7 @@ public class Door : MonoBehaviour, IDataPersistener
 		{
 			if (Mathf.Abs(transform.position.y - newPosition.y) < 0.01f)
 			{
+				_doorPlayer.PlayRandomSound();
 				endMovement = true;
 				_isOpen = !_isOpen;
 				break;

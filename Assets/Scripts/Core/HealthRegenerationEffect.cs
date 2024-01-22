@@ -16,4 +16,9 @@ public class HealthRegenerationEffect : Effect
 	{
 		gameObject.GetComponent<IHitable>().GetStats().ResetHealthRegeneration();
 	}
+
+	public override string GetValue()
+	{
+		return _value.ToString();
+	}
 }

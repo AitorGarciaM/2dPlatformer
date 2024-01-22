@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-public class BossFightController : MonoBehaviour
+public class BossFightController : MonoBehaviour, IDataPersistener
 {
 	[Header("HUD")]
 	[SerializeField] private GameObject _bossHealthBar;
@@ -17,15 +18,24 @@ public class BossFightController : MonoBehaviour
 	[SerializeField] private AudioClip _end;
 
 	[Header("Systems")]
-	[SerializeField] private AudioSource _musicSource;
 	[SerializeField] private Animator _victoryScreen;
 
 	[SerializeField] private LayerMask _playerMask;
 
+	[HideInInspector]
+	public DataSettings _dataSettings;
+
 	private BoxCollider2D _trigger;
+
+	private bool _bossIsDead;
 
 	private bool _initBattle;
 	private bool _battleEnded;
+
+	private void Awake()
+	{
+		DataPersistenersManager.RegisterDataPersistener(this);
+	}
 
 	// Start is called before the first frame update
 	void Start()
@@ -33,23 +43,18 @@ public class BossFightController : MonoBehaviour
 		_trigger = GetComponent<BoxCollider2D>();
 
 		_initBattle = true;
-		_battleEnded = true;
-		if (_musicSource == null)
-		{
-			Debug.LogWarning("Music Source it's not implemented.");
-		}
-		else
-		{
-			// TO DO: replace for singleton audio manager.
-			_musicSource.Pause();
-			_musicSource.clip = _loop;
-			_musicSource.loop = true;
-		}
+		_battleEnded = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+		if(_bossIsDead)
+		{
+			this.gameObject.SetActive(false);
+			return;
+		}
+
 		// Set up the battle.
 		if(_initBattle)
 		{
@@ -68,40 +73,35 @@ public class BossFightController : MonoBehaviour
 				StartCoroutine(StartMusic(3f));
 			}
 		}
-
-		// Check if battle ends.
-		if((_player.IsDead || _astaroth.IsDead) && !_battleEnded)
+		else if(_astaroth.gameObject.activeSelf) 
 		{
-			EndBattle();
-
-			if (_astaroth.IsDead)
+			// Check if battle ends.
+			if ((_player.IsDead || _astaroth.IsDead) && !_battleEnded)
 			{
-				_victoryScreen.SetTrigger("Play");
-				_bossHealthBar.SetActive(false);
-				_doors.EndBoosFight();
+				EndBattle();
+
+				if (_astaroth.IsDead)
+				{
+					_victoryScreen.SetTrigger("Play");
+					_bossHealthBar.SetActive(false);
+					_doors.EndBoosFight();
+				}
 			}
 		}
-
-		
     }
 
 	private void EndBattle()
 	{
 		// Change battle loop clip to final clip.
-		if (_musicSource != null)
-		{ _musicSource.Pause();
-			_musicSource.clip = _end;
-			_musicSource.loop = false;
-			_musicSource.Play();
-		}
+		BackgroundMusicPlayer.Instance.PushClip(_end, false);
 
 		_battleEnded = true;
+		_bossIsDead = true;
 	}
 
 	private IEnumerator SummonBoss(float time)
 	{
 		yield return new WaitForSeconds(time);
-		_battleEnded = false;
 		_astaroth.gameObject.SetActive(true);
 		_bossHealthBar.SetActive(true);
 		yield return null;
@@ -110,10 +110,36 @@ public class BossFightController : MonoBehaviour
 	private IEnumerator StartMusic(float time)
 	{
 		yield return new WaitForSeconds(time);
-		if (_musicSource != null)
-		{
-			_musicSource.Play();
-		}
-		yield return null;
+		BackgroundMusicPlayer.Instance.PlayJustMusic();
+		yield break;
+	}
+
+	public DataSettings GetDataSettings()
+	{
+		return _dataSettings;
+	}
+
+	public Data SaveData()
+	{
+		return new Data<bool>(_bossIsDead);
+	}
+
+	public void LoadData(Data data)
+	{
+		Data<bool> bossFightData = (Data<bool>)data;
+
+		_bossIsDead = bossFightData.Value;
+	}
+
+	public void SetDataSettings(string dataTag, DataSettings.PersistenceType persistenceType)
+	{
+		_dataSettings.dataTag = dataTag;
+		_dataSettings.persistenceType = persistenceType;
 	}
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(BossFightController))]
+public class BossFightControllerEditor : DataPersisterEditor
+{ }
+#endif

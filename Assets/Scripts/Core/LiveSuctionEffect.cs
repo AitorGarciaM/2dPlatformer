@@ -16,4 +16,9 @@ public class LiveSuctionEffect : Effect
 	{
 		gameObject.GetComponent<IHitable>().GetStats().ResetLiveSuction();
 	}
+
+	public override string GetValue()
+	{
+		return _value.ToString();
+	}
 }

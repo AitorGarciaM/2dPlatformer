@@ -7,7 +7,7 @@ public class Lever : MonoBehaviour, Iinteractable
 {
 	[SerializeField] private CanvasGroup _interactGroup;
 	[SerializeField] private Door _door;
-
+	[SerializeField] private RandomAudioPlayer _leverPlayer;
 	private LeverAnimationHandler _animHandler;
 	private bool _interactable = true;
 
@@ -18,9 +18,15 @@ public class Lever : MonoBehaviour, Iinteractable
 		_interactable = false;
 	}
 
+	public void PlayLever()
+	{
+		_leverPlayer.PlayRandomSound();
+	}
+
 	private void Awake()
 	{
-		_animHandler = GetComponent<LeverAnimationHandler>();
+		_animHandler = transform.GetChild(0).GetComponent<LeverAnimationHandler>();
+		_animHandler.SetLever(this);
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)

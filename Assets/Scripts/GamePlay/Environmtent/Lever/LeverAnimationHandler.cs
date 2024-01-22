@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class LeverAnimationHandler : AnimationHnadler
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	private Lever _lever;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	public void SetLever(Lever lever)
+	{
+		_lever = lever;
+	}
+
+    public void PlayLever()
+	{
+		_lever.PlayLever();
+	}
 }
