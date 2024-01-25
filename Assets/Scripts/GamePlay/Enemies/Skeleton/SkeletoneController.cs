@@ -244,6 +244,7 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 				if (Vector2.Distance(_rb.position, _target.position) > _attackRange || _currentAttackWaitTime < _stats.AttackRate)
 				{
+					_isAttacking = false;
 					_state = State.Follow;
 					break;
 				}
@@ -339,12 +340,14 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
 		_spRenderer.flipX = _isFacingRight;
 
-		if (!_isAttacking)
+
+		if (Mathf.Sign(_rb.velocity.x) > 0)
 		{
-			if (Mathf.Sign(_rb.velocity.x) > 0)
-				_isFacingRight = false;
-			else if(Mathf.Sign(_rb.velocity.x) < 0)
-				_isFacingRight = true;
+			_isFacingRight = false;
+		}
+		else if (Mathf.Sign(_rb.velocity.x) < 0)
+		{
+			_isFacingRight = true;
 		}
 
 		_animationHandler.SetBool("IsFacingRight", _isFacingRight);
