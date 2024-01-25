@@ -249,8 +249,6 @@ public class SkeletoneController : MonoBehaviour, IHitable
 					break;
 				}
 
-				Flip();
-
 				_currentAttackWaitTime = 0;
 				_animationHandler.SetTrigger("Attack");
 				
@@ -341,25 +339,22 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 		_animationHandler.SetFloat("Velocity_X", Mathf.Abs(_rb.velocity.x));
 
-		Flip();
+		if (_rb.velocity.x > 0.001f)
+		{
+			_isFacingRight = false;
+		}
+		else if (_rb.velocity.x < -0.001f)
+		{
+			_isFacingRight = true;
+		}
+		else if(_target != null)
+		{
+			_isFacingRight = Mathf.Sign(_target.position.x - _rb.position.x) < 0;
+		}
 
 		_spRenderer.flipX = _isFacingRight;
 
 		_animationHandler.SetBool("IsFacingRight", _isFacingRight);
-	}
-
-	private void Flip()
-	{
-		float direction = Mathf.Sign(_target.position.x - _rb.position.x);
-
-		if (direction > 0)
-		{
-			_isFacingRight = false;
-		}
-		else if (direction < 0)
-		{
-			_isFacingRight = true;
-		}
 	}
 
 	#region Pathfinding
