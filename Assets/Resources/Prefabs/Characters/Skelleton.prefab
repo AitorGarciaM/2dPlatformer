@@ -203,7 +203,7 @@ MonoBehaviour:
   - {x: 1.9, y: -1.7730765}
   - {x: -0.31, y: -1.7730765}
   _attackArea: {fileID: 2488003966215750453}
-  _attackRange: 0.4
+  _attackRange: 0.6
   _hitWaitTime: 1
   _hitDelayTime: 0.2
   _spRenderer: {fileID: 2488003965222515717}
