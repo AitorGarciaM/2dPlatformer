@@ -75,6 +75,11 @@ public class MovementSystem : MonoBehaviour
 		_rb.gravityScale = 0;
 	}
 
+	private void OnDisable()
+	{
+		_rb.velocity = Vector2.zero;	
+	}
+
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();

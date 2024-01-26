@@ -61,9 +61,10 @@ public class SceneController : MonoBehaviour
 		DataPersistenersManager.SaveAllData();
 
 		PlayerController playerController = FindObjectOfType<PlayerController>();
-		//playerController.PauseControl();
+
 		if (playerController != null)
 		{
+			playerController.PauseControl();
 			playerController.TrasitionToNewScene();
 		}
 
@@ -79,7 +80,11 @@ public class SceneController : MonoBehaviour
 		}
 		yield return StartCoroutine(ScreenFader.Instance.FadeSceneIn());
 
-		//playerController.RestartControl();
+		if (playerController != null)
+		{
+			playerController.RestartControl();
+		}
+
 		_transitioning = false;
 	}
 

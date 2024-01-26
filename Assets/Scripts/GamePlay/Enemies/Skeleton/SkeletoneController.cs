@@ -64,6 +64,8 @@ public class SkeletoneController : MonoBehaviour, IHitable
 	private float _currentHitWaitTime;
 	private float _currentHitDelayTime;
 	private float _changeStateTimer;
+	private float _directionSign;
+
 	private State _state;
 
 	private int _currentWayPoint;
@@ -162,13 +164,22 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 	private void FixedUpdate()
 	{
+		
 		//Check ground at desiredPosition.
-		RaycastHit2D groundCheckRay = Physics2D.Raycast(new Vector2(transform.position.x + 0.25f * Mathf.Sign(_direction), transform.position.y), Vector2.down, 0.25f, LayerMask.GetMask("Ground"));
-
-		if(groundCheckRay.collider == null)
+		if (_direction != 0)
 		{
-			_state = State.Patroll;
-			_changeStateTimer = 2f;
+			_directionSign = Mathf.Sign(_direction);
+		}
+
+		RaycastHit2D groundCheckRay = Physics2D.Raycast(new Vector2(transform.position.x + 0.25f * _directionSign, transform.position.y), Vector2.down, 0.25f, LayerMask.GetMask("Ground"));
+		Debug.DrawLine(new Vector2(transform.position.x + 0.25f * Mathf.Sign(_direction), transform.position.y), new Vector2(transform.position.x + 0.25f * Mathf.Sign(_direction), transform.position.y) + Vector2.down * 0.25f);
+		if (groundCheckRay.collider == null)
+		{
+			_reachedEndOfPath = true;
+		}
+		else
+		{
+			_reachedEndOfPath = false;
 		}
 
 		if (_attackArea.enabled == true)
@@ -195,6 +206,8 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		_currentHitWaitTime += Time.deltaTime;
 		_changeStateTimer -= Time.deltaTime;
 
+		Debug.Log(_reachedEndOfPath);
+
 		if (_reciveHit)
 		{
 			_currentHitDelayTime -= Time.deltaTime;
@@ -206,6 +219,14 @@ public class SkeletoneController : MonoBehaviour, IHitable
 		}
 
 		Collider2D collider = Physics2D.OverlapCircle(_rb.position, _playerDetectionRadiurs, _playerLayerMask);
+
+		if (collider != null)
+		{
+			if (collider.transform.position.y > transform.position.y + 0.5f || collider.transform.position.y < transform.position.y - 0.5f)
+			{
+				collider = null;
+			}
+		}
 		
 		switch (_state)
 		{
@@ -217,32 +238,51 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 				_goBack = false;
 
-				if (collider != null && _changeStateTimer <= 0)
+				if(!_reachedEndOfPath)
 				{
-					_state = State.Follow;
-					_target = collider.transform;
+					if (collider != null && (collider.transform.position.y < _rb.position.y + 0.32f || collider.transform.position.y > _rb.position.y - 0.32f))
+					{
+						_state = State.Follow;
+						_target = collider.transform;
+					}
 				}
 
 				break;
 			case State.Follow:
-				
-				Follow();
-				
-				if (collider == null && _target != null)
-				{
+
+				if(_reachedEndOfPath || _target == null)
+				{ 
+					_state = State.Patroll;
 					_target = null;
 					_targetPosition = _patrollPoints[_nextPatrollPoint];
 					_goBack = true;
+					break;
+				}
+				else if (collider == null && _target != null)
+				{
+					_target = null;
 					_state = State.Patroll;
+					_targetPosition = _patrollPoints[_nextPatrollPoint];
+					_goBack = true;
+					break;
 				}
 
+				Follow();
 				break;
 			case State.Attack:
+
+				if(_target == null)
+				{
+					_state = State.Patroll;
+					_targetPosition = _patrollPoints[_nextPatrollPoint];
+					_goBack = true;
+					break;
+				}
 
 				_isAttacking = true;
 				_direction = 0;
 
-				if (Vector2.Distance(_rb.position, _target.position) > _attackRange || _currentAttackWaitTime < _stats.AttackRate)
+				if (Vector2.Distance(_rb.position, _target.position) > _attackRange && (_target.position.y > _rb.position.y + 0.32f || _target.position.y < _rb.position.y - 0.32f) || _currentAttackWaitTime < _stats.AttackRate)
 				{
 					_isAttacking = false;
 					_state = State.Follow;
@@ -389,19 +429,12 @@ public class SkeletoneController : MonoBehaviour, IHitable
 
 		if(_currentWayPoint >= _path.vectorPath.Count)
 		{
-			_reachedEndOfPath = true;
 			_direction = 0;
 			return;
-		}
-		else
-		{
-			_reachedEndOfPath = false;
 		}
 
 		Vector2 dir = (_path.vectorPath[_currentWayPoint] - (Vector3)_rb.position).normalized;
 		
-		Debug.DrawLine(_rb.position, dir);
-
 		float distance = Vector2.Distance(_rb.position, _path.vectorPath[_currentWayPoint]);
 
 		if (distance < 0.1f)

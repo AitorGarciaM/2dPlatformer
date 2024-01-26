@@ -44,6 +44,7 @@ public class TransitionPoint : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		Debug.Log(collision.name);
 		if(collision.gameObject == _transitioningGameObject)
 		{
 			_transitioningGameObjectPresent = true;
