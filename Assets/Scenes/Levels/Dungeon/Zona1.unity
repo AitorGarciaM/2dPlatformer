@@ -1241,7 +1241,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1717968599, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_Damping
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1717968599, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_BoundingShape2D
@@ -1261,11 +1261,11 @@ PrefabInstance:
       objectReference: {fileID: 606597786}
     - target: {fileID: 1717968601, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.01999998
       objectReference: {fileID: 0}
     - target: {fileID: 1717968601, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.917
+      value: 1.8370001
       objectReference: {fileID: 0}
     - target: {fileID: 1717968601, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1285,11 +1285,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 419479602220026683, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.32
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 419479602220026683, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.06999993
+      value: 0.14999986
       objectReference: {fileID: 0}
     - target: {fileID: 419479602220026683, guid: 60176e55a5bde224fba23057b10b7698, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2437,7 +2437,7 @@ Transform:
   m_GameObject: {fileID: 1000738011}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.3, y: -0.23, z: -0.79398036}
-  m_LocalScale: {x: 6.34, y: 4, z: 1}
+  m_LocalScale: {x: 6.34, y: 4.16, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -7124,18 +7124,6 @@ PrefabInstance:
     - target: {fileID: 8966543497428337859, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
       propertyPath: m_Layer
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
-      propertyPath: _cameraLimit
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
-      propertyPath: _cameraSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
-      propertyPath: _hitWaitTime
-      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}

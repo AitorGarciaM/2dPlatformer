@@ -10967,6 +10967,8 @@ MonoBehaviour:
   _healCount: 3
   _hitWaitTime: 0.75
   _jumpInputBufferTime: 0.2
+  _cameraLimit: 0.5
+  _cameraSpeed: 5
   _spriteRenderer: {fileID: 221124397742939796}
   _animationHandler: {fileID: 1763625088}
   _jumpFX: {fileID: 7985984344845917990, guid: 430737d441d7405429abde3db06212b5, type: 3}
