@@ -32,7 +32,7 @@ public class Spikes : MonoBehaviour
 
 					if(player != null)
 					{
-						if (!player.ResetingPosition)
+						if (!player.ResetingPosition && !player.IsDead)
 						{
 							player.ResetPosition();
 						}
