@@ -21,6 +21,8 @@ public class VideoSetter : MonoBehaviour
 		_vSyncToggle.onValueChanged.AddListener(SetVSync);
 		_fpsToggle.onValueChanged.AddListener(SetFrameRateCap);
 
+		_fpsToggle.isOn = false;
+
 		_resolutions = Screen.resolutions;
 		_filteredResolutions = new List<Resolution>();
 

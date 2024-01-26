@@ -306,7 +306,7 @@ public class MovementSystem : MonoBehaviour
 
 	public bool CanJump()
 	{
-		return LastOnGroundTime > 0 && !IsJumping;
+		return LastOnGroundTime >= _coyoteTime && !IsJumping;
 	}
 
 	public bool CanJumpCut()

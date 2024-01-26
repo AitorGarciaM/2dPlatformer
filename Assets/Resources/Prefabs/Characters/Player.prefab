@@ -11013,9 +11013,9 @@ MonoBehaviour:
   _jumpHangGravityMulty: 1
   _groundCheckPoint: {fileID: 6537366846324980842}
   _wallCheckPoint: {fileID: 545597576}
-  _groundCheckSize: {x: 0.2, y: 0.04}
+  _groundCheckSize: {x: 0.1, y: 0.02}
   _wallCheckSize: {x: 0.15, y: 0.04}
-  _coyoteTime: 0.2
+  _coyoteTime: 0.4
   _slopeCheckDistance: 0.5
   _circleCollider: {fileID: 7248931602930074575}
   _noFriction: {fileID: 6200000, guid: 464d8f9ae83bc5b4cbdea059acfb85b7, type: 2}
