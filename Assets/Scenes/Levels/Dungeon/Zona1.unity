@@ -7126,6 +7126,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
+      propertyPath: _cameraLimit
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
+      propertyPath: _cameraSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142782754823739921, guid: 8ba15400863b4ff4ab61376d56052a91, type: 3}
       propertyPath: _hitWaitTime
       value: 0.75
       objectReference: {fileID: 0}

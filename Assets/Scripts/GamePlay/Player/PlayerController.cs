@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour, IHitable
 
 	[Header("Input")]
 	[SerializeField] private float _jumpInputBufferTime;
+	[SerializeField] private float _cameraLimit;
+	[SerializeField] private float _cameraSpeed;
 
 	[Header("Visual Settings")]
 	[SerializeField] private SpriteRenderer _spriteRenderer;
@@ -521,10 +523,8 @@ public class PlayerController : MonoBehaviour, IHitable
 	
 	private void MoveCamera()
 	{
-		_cameraFocus.position = Vector2.MoveTowards(_cameraFocus.position, (Vector2)transform.position + _moveCamreraVector, 1 * Time.deltaTime);
+		_cameraFocus.position = Vector2.MoveTowards(_cameraFocus.position, (Vector2)transform.position + _moveCamreraVector * _cameraLimit, _cameraSpeed * Time.deltaTime);
 		_cameraFocus.position = new Vector2(transform.position.x, _cameraFocus.position.y);
-
-		
 	}
 
 	private void FixedUpdate()
