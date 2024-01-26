@@ -10,12 +10,14 @@ public class ButtonIndicator : MonoBehaviour
 
 	private ControllerChecker.ControllerType _currentType = ControllerChecker.ControllerType.Keyboard;
 
-    // Update is called once per frame
-    void Update()
+	// Update is called once per frame
+	void Update()
     {
+		Debug.Log(_currentType + " " + ControllerChecker.Instance.CurrentControllerType);
         if(_currentType != ControllerChecker.Instance.CurrentControllerType)
 		{
 			_currentType = ControllerChecker.Instance.CurrentControllerType;
+
 
 			switch (_currentType)
 			{

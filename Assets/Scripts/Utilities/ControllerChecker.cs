@@ -13,6 +13,7 @@ public class ControllerChecker : MonoBehaviour
 
 	private static ControllerChecker s_instance;
 
+	private ControllerChecker _oldInstanceToDestroy;
 	private PlayerInput _input;
 	private ControllerType _controllerType;
 
@@ -20,6 +21,7 @@ public class ControllerChecker : MonoBehaviour
 	{
 		get
 		{
+
 			if(s_instance != null)
 			{
 				return s_instance;
@@ -57,12 +59,30 @@ public class ControllerChecker : MonoBehaviour
 		s_instance = Instantiate(controllerPrefab);
 	}
 
-    // Start is called before the first frame update
-    void Start()
-    {
-		_input = FindObjectOfType<PlayerInput>();
+	private void Awake()
+	{
+		if (Instance != null && Instance.GetInstanceID() != this.GetInstanceID())
+		{
+			if(_controllerType != Instance._controllerType)
+			{
+				_controllerType = Instance._controllerType;
+			}
 
-		OnControllChangesInternal();
+			_oldInstanceToDestroy = Instance;
+		}
+
+		_input = FindObjectOfType<PlayerInput>();
+	}
+
+	// Start is called before the first frame update
+	void Start()
+    {
+		DontDestroyOnLoad(this.gameObject);
+
+		if (_oldInstanceToDestroy != null)
+		{
+			Destroy(_oldInstanceToDestroy.gameObject);
+		}
 	}
 
 	private void OnControllChangesInternal()

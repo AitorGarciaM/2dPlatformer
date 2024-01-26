@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour, IHitable
 		_playerInput = GetComponent<PlayerInput>();
 		_rb = GetComponent<Rigidbody2D>();
 		_moveSystem = GetComponent<MovementSystem>();
-
+		
 		foreach (Transform child in transform)
 		{
 			if(child.tag == _cameraFocusTag)
