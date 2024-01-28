@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 957f9a9210a6f2941a2a8c1ec58beeb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fadeDuration: 1
+  _fadeDuration: 0.5
   _faderCanvasGroup: {fileID: 4910586248731128810}
 --- !u!1 &4910586250122000178
 GameObject:

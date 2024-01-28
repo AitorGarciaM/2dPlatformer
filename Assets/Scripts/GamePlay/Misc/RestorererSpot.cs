@@ -20,6 +20,8 @@ public class RestorererSpot : MonoBehaviour, Iinteractable
 		_healthRestorer = GetComponent<HealthRestorerer>();
 		_potionRestorer = GetComponent<PotionRestorerer>();
 		_checkPoint = GetComponent<CheckPoint>();
+
+		_player = FindObjectOfType<PlayerController>();
 	}
 
 	public void Interact()
@@ -35,8 +37,6 @@ public class RestorererSpot : MonoBehaviour, Iinteractable
 	{
 		if(collision.tag == "Player")
 		{
-			_player = collision.GetComponent<PlayerController>();
-
 			collision.GetComponent<PlayerController>().SetInteractable(this);
 			_canvasGroup.alpha = 1;
 		}
@@ -46,7 +46,6 @@ public class RestorererSpot : MonoBehaviour, Iinteractable
 	{
 		if(collision.tag == "Player")
 		{
-			_player = null;
 			collision.GetComponent<PlayerController>().SetInteractable(null);
 			_canvasGroup.alpha = 0;
 		}

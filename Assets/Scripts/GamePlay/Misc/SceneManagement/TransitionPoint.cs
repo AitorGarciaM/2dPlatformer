@@ -44,13 +44,13 @@ public class TransitionPoint : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Debug.Log(collision.name);
 		if(collision.gameObject == _transitioningGameObject)
 		{
 			_transitioningGameObjectPresent = true;
 
-			if(ScreenFader.Instance.IsFading || SceneController.Instance.Transitioning)
+			if(SceneController.Instance.Transitioning)
 			{
+				Debug.Log("Collisionign Too Son!");
 				return;
 			}
 
@@ -77,22 +77,6 @@ public class TransitionPoint : MonoBehaviour
 			case Transition_Type.DifferentNonGameplayScene:
 				SceneController.Instance.TransitionToScene(this);
 				break;
-		}
-	}
-
-	private void OnTriggerExit2D(Collider2D collision)
-	{
-		if(collision.gameObject == _transitioningGameObject)
-		{
-			if(ScreenFader.Instance.IsFading || SceneController.Instance.Transitioning)
-			{
-				return;
-			}
-
-			if (_transitionWhen == Transition_When.OnTriggerEnter)
-			{
-				_transitioningGameObjectPresent = false;
-			}
 		}
 	}
 

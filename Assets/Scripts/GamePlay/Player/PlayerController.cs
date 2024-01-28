@@ -530,16 +530,13 @@ public class PlayerController : MonoBehaviour, IHitable
 	private void FixedUpdate()
 	{
 		Collider2D collider = Physics2D.OverlapBox(_attackArea.transform.position, _attackArea.size, 0, _enemiesLayer);
-
-		_attackArea.gameObject.SetActive(_animationHandler.IsAttackActive);
-
+		
 		// Attack collision.
 		if (collider != null && _attackArea.gameObject.activeSelf)
 		{
 			var hitable = collider.GetComponent<IHitable>();
 			hitable.Hit(_currentStats);
 			_currentStats.LiveSuctionOverDamage();
-			_attackArea.gameObject.SetActive(false);
 		}
 		
 		// Updates movement.

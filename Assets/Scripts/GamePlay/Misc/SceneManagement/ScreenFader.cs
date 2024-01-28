@@ -65,7 +65,7 @@ public class ScreenFader : MonoBehaviour
 		canvasGroup.alpha = finalAlpha;
 		_isFading = false;
 		canvasGroup.blocksRaycasts = false;
-		yield return null;
+		yield break;
 	}
 
 	public IEnumerator FadeSceneOut()
@@ -73,6 +73,8 @@ public class ScreenFader : MonoBehaviour
 		_faderCanvasGroup.gameObject.SetActive(true);
 
 		yield return Instance.StartCoroutine(Instance.Fade(1f, _faderCanvasGroup));
+
+		yield break;
 	}
 
 	public IEnumerator FadeSceneIn()
@@ -80,5 +82,7 @@ public class ScreenFader : MonoBehaviour
 		yield return Instance.StartCoroutine(Instance.Fade(0f, _faderCanvasGroup));
 
 		_faderCanvasGroup.gameObject.SetActive(false);
+
+		yield break;
 	}
 }

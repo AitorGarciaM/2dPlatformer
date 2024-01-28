@@ -70,6 +70,15 @@ public class SceneController : MonoBehaviour
 
 		yield return StartCoroutine(ScreenFader.Instance.FadeSceneOut());
 		yield return SceneManager.LoadSceneAsync(newSceneName);
+
+		playerController = FindObjectOfType<PlayerController>();
+
+		if (playerController != null)
+		{
+			playerController.PauseControl();
+			playerController.TrasitionToNewScene();
+		}
+
 		DataPersistenersManager.LoadAllData();
 		TransitionDestination entrance = GetDestination(destinationTag);
 		SetEntringGameObjectLocation(entrance);
@@ -80,12 +89,15 @@ public class SceneController : MonoBehaviour
 		}
 		yield return StartCoroutine(ScreenFader.Instance.FadeSceneIn());
 
+		_transitioning = false;
+
 		if (playerController != null)
 		{
 			playerController.RestartControl();
+			Debug.Log(_transitioning);
 		}
 
-		_transitioning = false;
+		yield break;
 	}
 
 	private IEnumerator MenuTransition(string newSceneName, bool resetInputValues, TransitionDestination.Destination_Tag destinationTag, TransitionPoint.Transition_Type transitionType = TransitionPoint.Transition_Type.DiferentZone)
@@ -162,6 +174,11 @@ public class SceneController : MonoBehaviour
 	public void TransitionToStart()
 	{
 		Instance.StartCoroutine(MenuTransition("Tutorial", true, TransitionDestination.Destination_Tag.CheckPoint, TransitionPoint.Transition_Type.DiferentZone));
+	}
+
+	public void TransitionToMenu()
+	{
+		SceneManager.LoadScene("MainMenu");
 	}
 
 	public void SetCheckPoint(CheckPoint checkPoint)
