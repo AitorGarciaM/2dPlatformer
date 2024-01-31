@@ -35,6 +35,7 @@ public class BossController : MonoBehaviour, IHitable
 
 	[Header("Physics")]
 	[SerializeField] private CircleCollider2D _selfCollider;
+	[SerializeField] private CapsuleCollider2D _playerCollider;
 	[SerializeField] private CapsuleCollider2D _flameCollider;
 	[SerializeField] private BoxCollider2D _knifeCollider;
 	[SerializeField] private BoxCollider2D _jumpCollider;
@@ -382,11 +383,13 @@ public class BossController : MonoBehaviour, IHitable
 			this.enabled = false;
 			_rb.bodyType = RigidbodyType2D.Static;
 			_selfCollider.enabled = false;
+			_playerCollider.enabled = false;
 		}
 	}
 
 	private void Jump()
 	{
+		_rb.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
 		_moveSystem.Jump();
 		_cooldDownTime = _jumpCooldDown;
 		_startJump = true;
@@ -411,24 +414,23 @@ public class BossController : MonoBehaviour, IHitable
 
 	private void Move()
 	{
-		if(_startJump)
+		if(_startJump && !_moveSystem.IsGrounded)
 		{
 			_performingJump = true;
 		}
-
-		if(!_startJump && _moveSystem.IsGrounded)
-		{
-			_performingJump = false;
-		}
-
+		
 		if (_performingJump)
 		{
 			_startJump = false;
 			_moveSystem.SetDesiredDirection(Vector2.left * _direction);
-		}
-		else
-		{
-			_direction = 0;
+			Debug.Log(_direction);
+
+			if(_moveSystem.IsGrounded)
+			{
+				Debug.Log("Landing");
+				_performingJump = false;
+				_direction = 0;
+			}
 		}
 	}
 

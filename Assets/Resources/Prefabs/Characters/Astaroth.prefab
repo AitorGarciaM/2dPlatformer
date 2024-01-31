@@ -595,7 +595,7 @@ RectTransform:
   - {fileID: 1857481576}
   - {fileID: 1923163146}
   m_Father: {fileID: 9020102837915087361}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1324,6 +1324,54 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _minIntensity: 0.8
   _maxIntensity: 2
+--- !u!1 &1889509184417296366
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3880303967551440977}
+  - component: {fileID: 828719858989318739}
+  m_Layer: 17
+  m_Name: Collision
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3880303967551440977
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1889509184417296366}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.536, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9020102837915087361}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &828719858989318739
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1889509184417296366}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 0.82}
+  m_Direction: 0
 --- !u!1 &3870841604903153486
 GameObject:
   m_ObjectHideFlags: 0
@@ -2153,7 +2201,7 @@ Transform:
   - {fileID: 7212649606860134413}
   - {fileID: 2138493231524360492}
   m_Father: {fileID: 9020102837915087361}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8341325115425503260
 GameObject:
@@ -2327,6 +2375,7 @@ Transform:
   - {fileID: 71802651}
   - {fileID: 2006972833}
   - {fileID: 499278881}
+  - {fileID: 3880303967551440977}
   - {fileID: 2406951462625800567}
   - {fileID: 1429573714}
   m_Father: {fileID: 0}

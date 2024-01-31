@@ -82,7 +82,6 @@ public class MovementSystem : MonoBehaviour
 
 	private void Awake()
 	{
-		_rb = GetComponent<Rigidbody2D>();
 		IsGrounded = true;
 	}
 
@@ -331,24 +330,27 @@ public class MovementSystem : MonoBehaviour
 
 	private void OnValidate()
 	{
+		_rb = GetComponent<Rigidbody2D>();
+
 		_gravityStrength = -(2 * _jumpHeight) / (_jumpTimeToApex * _jumpTimeToApex);
 
 		_gravityScale = _gravityStrength / Physics2D.gravity.y;
-		_jumpForce = Mathf.Abs(_gravityStrength) * _jumpTimeToApex;
+		_jumpForce = Mathf.Abs(_gravityStrength) * _jumpTimeToApex * _rb.mass;
 	}
 #elif !UNITY_EDITOR
 
 	// Start is called before the first frame update
 	void Start()
     {
+		_rb = GetComponent<Rigidbody2D>();
         _gravityStrength = -(2 * _jumpHeight) / (_jumpTimeToApex * _jumpTimeToApex);
 
 		_gravityScale = _gravityStrength / Physics2D.gravity.y;
-		_jumpForce = Mathf.Abs(_gravityStrength) * _jumpTimeToApex;
+		_jumpForce = Mathf.Abs(_gravityStrength) * _jumpTimeToApex * _rb.mass;
     }
 #endif
 
-#region Gizmos
+	#region Gizmos
 	private void OnDrawGizmos()
 	{
 		if (!_isFlying)

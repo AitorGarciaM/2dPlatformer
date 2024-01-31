@@ -85,6 +85,7 @@ public class BossFightController : MonoBehaviour, IDataPersistener
 					_victoryScreen.SetTrigger("Play");
 					_bossHealthBar.SetActive(false);
 					_doors.EndBoosFight();
+					_bossIsDead = _astaroth.IsDead;
 				}
 			}
 		}
@@ -96,7 +97,6 @@ public class BossFightController : MonoBehaviour, IDataPersistener
 		BackgroundMusicPlayer.Instance.PushClip(_end, false);
 
 		_battleEnded = true;
-		_bossIsDead = true;
 	}
 
 	private IEnumerator SummonBoss(float time)

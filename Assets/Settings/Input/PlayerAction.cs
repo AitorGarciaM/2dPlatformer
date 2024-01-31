@@ -1023,6 +1023,45 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Credits"",
+            ""id"": ""bdd611c4-398e-4c79-967d-fdb7a229f4a9"",
+            ""actions"": [
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""9614c18e-6960-408c-8d50-0ca158edfb08"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=1)"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""eebc904c-8ccd-455b-adc9-a4eb7fd064fe"",
+                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""18b2e6f2-b377-450b-9012-77cbddee7727"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1073,6 +1112,9 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_TrinketMenu = m_UI.FindAction("TrinketMenu", throwIfNotFound: true);
         m_UI_Pause = m_UI.FindAction("Pause", throwIfNotFound: true);
+        // Credits
+        m_Credits = asset.FindActionMap("Credits", throwIfNotFound: true);
+        m_Credits_Skip = m_Credits.FindAction("Skip", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1358,6 +1400,52 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // Credits
+    private readonly InputActionMap m_Credits;
+    private List<ICreditsActions> m_CreditsActionsCallbackInterfaces = new List<ICreditsActions>();
+    private readonly InputAction m_Credits_Skip;
+    public struct CreditsActions
+    {
+        private @PlayerAction m_Wrapper;
+        public CreditsActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Skip => m_Wrapper.m_Credits_Skip;
+        public InputActionMap Get() { return m_Wrapper.m_Credits; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CreditsActions set) { return set.Get(); }
+        public void AddCallbacks(ICreditsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CreditsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CreditsActionsCallbackInterfaces.Add(instance);
+            @Skip.started += instance.OnSkip;
+            @Skip.performed += instance.OnSkip;
+            @Skip.canceled += instance.OnSkip;
+        }
+
+        private void UnregisterCallbacks(ICreditsActions instance)
+        {
+            @Skip.started -= instance.OnSkip;
+            @Skip.performed -= instance.OnSkip;
+            @Skip.canceled -= instance.OnSkip;
+        }
+
+        public void RemoveCallbacks(ICreditsActions instance)
+        {
+            if (m_Wrapper.m_CreditsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICreditsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CreditsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CreditsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CreditsActions @Credits => new CreditsActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -1400,5 +1488,9 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
         void OnTrinketMenu(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+    }
+    public interface ICreditsActions
+    {
+        void OnSkip(InputAction.CallbackContext context);
     }
 }
